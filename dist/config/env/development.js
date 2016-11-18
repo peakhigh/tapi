@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = {
   env: 'development',
   jwtSecret: '0a6b944d-d2fb-46fc-a85e-0295c986cd9f',
-  userdb: 'mongodb://localhost/userstore',
-  db: 'mongodb://localhost/tnt',
+  userdb: 'mongodb://admin:test@ds157677.mlab.com:57677/userstore',
+  db: 'mongodb://admin:test@ds157667.mlab.com:57667/tripsntrucks',
   port: 5000
 };
 module.exports = exports['default'];

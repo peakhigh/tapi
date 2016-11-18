@@ -48,17 +48,17 @@ var TripsSchema = new _base2.default({
          required: true,
          match: [/^[1-9][0-9]{9}$/, 'The value of path {PATH} ({VALUE}) is not a valid mobile number.'],
          config: {
-            trips_trucks: {
-               roles: _util2.default.setObjectProperty('name', { key: 1 }).setObjectProperty('age', 20)
-               // roles: [globals.trips_trucks_ROLES.ADMIN.Code],
-               // role_config: (() => {
-               //    let config = {};
-               //    config[globals.trips_trucks_ROLES.ADMIN.Code] = {
-               //       title: 'Phone Number'
-               //    };
-               //    return config;    
-               // })()
-            } //app based roles
+            trips_trucks: {}
+            // roles: utils.setObjectProperty('name', {key: 1}).setObjectProperty('age', 20)
+            // roles: [globals.trips_trucks_ROLES.ADMIN.Code],
+            // role_config: (() => {
+            //    let config = {};
+            //    config[globals.trips_trucks_ROLES.ADMIN.Code] = {
+            //       title: 'Phone Number'
+            //    };
+            //    return config;    
+            // })()
+            //app based roles
          }
       }
    }
