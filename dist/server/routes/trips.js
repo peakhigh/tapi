@@ -57,7 +57,7 @@ router.route('/form').get(function (req, res, next) {
 router.route('/formglobal').get(function (req, res, next) {
   //  var uid = req.params.uid,
   //      path = req.params[0] ? req.params[0] : 'index.html';
-  console.log('...', _util2.default.setObjectProperty('name', { key: 1 }).setObjectProperty('age', 20));
+  //  console.log('...', utils.setObjectProperty('name', {key: 1}).setObjectProperty('age', 20));
   return res.json({
     value: '' //globals.TEST
   });

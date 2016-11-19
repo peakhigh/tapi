@@ -1,3 +1,5 @@
+import globals from './globals';
+
 export default { 
    cloneObject: function (source, destination) {
       for (let prop in source) {
@@ -7,13 +9,18 @@ export default {
       }
       return destination;
    },
-   setObjectProperty: function (key, value) {
+   setRoleDetails: function (key, value) {
       let obj = {};
       obj[key] = value;
-      Object.prototype.setObjectProperty = function (k, v) {
+      obj.setRoleDetails = function (k, v) {
          this[k] = v;
          return this;
       };
       return obj;
+   },
+   defineAppConfig: function (appName, appConfig) {
+      console.log('.................', appName);
+      globals.defineGlobal(appName, appConfig, true, true);
+      console.log('.................', globals.TRIPS_TRUCKS);
    }
 };
