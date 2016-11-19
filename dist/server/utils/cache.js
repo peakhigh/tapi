@@ -19,11 +19,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 // export default { instance }
 
 //TODO:: use singleton class and load all appconfigs only once
-//TODO:: load app configs from the applicationConfig directory
+//TODO:: load app configs from the applicationConfig directory 
 //automate it in the constructor
 var Cache = function Cache() {
    _classCallCheck(this, Cache);
 
+   // everything should be json files from applicationConfig directory
    this.TRIPS_TRUCKS = {
       ROLES: {
          ADMIN: {
