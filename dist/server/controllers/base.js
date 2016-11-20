@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -24,6 +24,7 @@ var BaseModel = function BaseModel(options) {
   };
 
   this.list = function (req, res, next) {
+    console.log('user......', req.user);
     var _req$query = req.query;
     var _req$query$limit = _req$query.limit;
     var limit = _req$query$limit === undefined ? 50 : _req$query$limit;

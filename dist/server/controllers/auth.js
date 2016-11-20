@@ -16,6 +16,10 @@ var _APIError = require('../helpers/APIError');
 
 var _APIError2 = _interopRequireDefault(_APIError);
 
+var _util = require('../utils/util');
+
+var _util2 = _interopRequireDefault(_util);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var config = require('../../config/env');
@@ -37,8 +41,11 @@ function login(req, res, next) {
   // Ideally you'll fetch this from the db
   // Idea here was to show how jwt works with simplicity
   if (req.body.username === user.username && req.body.password === user.password) {
+    //add app also in authentication
     var token = _jsonwebtoken2.default.sign({
-      username: user.username
+      username: user.username,
+      role: 'ADMIN', //TODO:: get from DB
+      app: _util2.default.getRequestOrigin(req.headers.origin)
     }, config.jwtSecret);
     return res.json({
       token: token,

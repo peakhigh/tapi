@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
 import httpStatus from 'http-status';
 import APIError from '../helpers/APIError';
+import utils from '../utils/util';
+
 
 const config = require('../../config/env');
 
@@ -20,9 +22,11 @@ const user = {
 function login(req, res, next) {
   // Ideally you'll fetch this from the db
   // Idea here was to show how jwt works with simplicity
-  if (req.body.username === user.username && req.body.password === user.password) {
+  if (req.body.username === user.username && req.body.password === user.password) {//add app also in authentication
     const token = jwt.sign({
-      username: user.username
+      username: user.username,
+      role: 'ADMIN', //TODO:: get from DB
+      app: utils.getRequestOrigin(req.headers.origin)
     }, config.jwtSecret);
     return res.json({
       token,
