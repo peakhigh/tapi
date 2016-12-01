@@ -41,8 +41,7 @@ var TripsSchema = new _base2.default({
          db: {},
          config: { //app based roles    
             trips_trucks: {
-               roles: ['*'],
-               role_config: {}
+               roles: ['*']
             }
          }
       },
@@ -52,7 +51,11 @@ var TripsSchema = new _base2.default({
          match: [/^[1-9][0-9]{9}$/, 'The value of path {PATH} ({VALUE}) is not a valid mobile number.'],
          config: {
             trips_trucks: {
-               roles: _util2.default.setRoleDetails(_cache2.default.TRIPS_TRUCKS.ROLES.ADMIN, { key: 1 }).setRoleDetails(_cache2.default.TRIPS_TRUCKS.ROLES.TRUCK_USER, { age: 1 })
+               roles: _util2.default.setRoleDetails(_cache2.default.TRIPS_TRUCKS.ROLES.ADMIN, {
+                  title: 'Phone Number'
+               }).setRoleDetails(_cache2.default.TRIPS_TRUCKS.ROLES.TRUCK_USER, {
+                  title: 'Mobile'
+               })
             } //app based roles
          }
       }

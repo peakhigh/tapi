@@ -20,6 +20,7 @@ export default class BaseSchema {
          }
          //globals.defineGlobal('TEST', 'TEST123', false, false);
          Object.keys(fSchema).forEach((field) => {
+               //set title            
                let htmlOnly = fSchema[field].html;
                delete fSchema[field].html;
                let dbOnly = fSchema[field].db;
@@ -28,14 +29,26 @@ export default class BaseSchema {
                delete fSchema[field].config;
 
                //set dbschema
-               dbSchema[field] = fSchema[field];
+               dbSchema[field] = fSchema[field];//get the common props
                if (dbOnly && Object.keys(dbOnly).length > 0) {
-                  console.log('........');
-                  utils.cloneObject(dbOnly, dbSchema);
-                  console.log('........', utils.cloneObject(dbOnly, dbSchema));
+                  utils.cloneObject(dbOnly, dbSchema);//attach the db specific
                }
 
-               //html form schemas - role based
+               // //html form schemas - role based
+               // let htmlSchema = {}; //prepare a base html schema
+               // htmlSchema[field] = fSchema[field];//get the common props
+               // if (htmlOnly && Object.keys(htmlOnly).length > 0) {
+               //    //attach the html specific
+               //    utils.cloneObject(htmlOnly, htmlSchema);
+               // }
+
+               // //now deal with application based configs
+               // if(config && Object.keys(config).length > 0){
+               //     //for each application
+               //     Object.keys(config).forEach(function(app_key){
+
+               //     });
+               // }
          });
          return dbSchema;
       };          

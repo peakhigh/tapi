@@ -29,9 +29,7 @@ const TripsSchema = new BaseSchemaFactory({
          },
          config: { //app based roles    
             trips_trucks: {
-               roles: ['*'],
-               role_config: {
-               }
+               roles: ['*']
             }       
          }
       },
@@ -41,7 +39,11 @@ const TripsSchema = new BaseSchemaFactory({
          match: [/^[1-9][0-9]{9}$/, 'The value of path {PATH} ({VALUE}) is not a valid mobile number.'],
          config: {
             trips_trucks: {               
-               roles: utils.setRoleDetails(cache.TRIPS_TRUCKS.ROLES.ADMIN, {key: 1}).setRoleDetails(cache.TRIPS_TRUCKS.ROLES.TRUCK_USER, {age:1})
+               roles: utils.setRoleDetails(cache.TRIPS_TRUCKS.ROLES.ADMIN, {
+                  title: 'Phone Number'
+               }).setRoleDetails(cache.TRIPS_TRUCKS.ROLES.TRUCK_USER, {
+                  title: 'Mobile'
+               })
             } //app based roles
          }
       }
