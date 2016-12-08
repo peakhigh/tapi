@@ -24,8 +24,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Cache = function Cache() {
    _classCallCheck(this, Cache);
 
-   // everything should be json files from applicationConfig directory
-   this.TRIPS_TRUCKS = {
+   //TODO:: everything should be json files from applicationConfig directory
+   this.APP_CONFIG = {};
+   this.APP_CONFIG.TRIPS_TRUCKS = {
       ROLES: {
          ADMIN: {
             Id: 1,
