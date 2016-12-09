@@ -18,3 +18,25 @@
  * if timedout when calling if expired, reset the token (everything in our api ajax call)
  *
  */
+
+/**
+ * 1) create trips schema
+ * 2) create apis for form, grid for trips
+ * 3) use token in the apis to determine roles, application details  etc
+ * 4) make these trips apis generic so that the same work for all other collections
+ * 5) work on link columns
+ * 6) add/ edit/ delete/ search apis (filters designed @frontend)
+ * 7) search with multiple collections (link columns attached)
+ * 8) validations @backend -> role based -> on operations like add/edit/delete -> on collections
+ * 9) cache mechanism to store at once and serve at all requests
+ * 10) user service for login, logout, userregistration, edit profile, change password, forgot password, etc
+ * 
+ * UI
+ * 1) form plugin to draw form with validations
+ * 2) grid plugin with api call to draw and custom filters designed @frontend, template based
+ * 3) menu plugin
+ * 4) draw multiple forms & grids on the page
+ * 5) login, logout 
+ * 6) website
+ * 7) website design, content, domain, seo etc
+ */

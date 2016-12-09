@@ -54,15 +54,8 @@ var BaseSchema = function BaseSchema(options) {
       if (!options.excludeOwner) {
          _this.getOwnerColumns(fSchema);
       }
-      var roleBasedHtmlSchemas = {};
-      var roleBasedDBSchemas = {};
-      // Object.keys(cache.APP_CONFIG).forEach((appKey) => {// for each application
-      //    Object.keys(cache.APP_CONFIG[appKey].ROLES).forEach((role) => {//for each role
-      //       schemas[appKey+constants.CONFIG_KEY_SEPERATOR+cache.APP_CONFIG[appKey].ROLES[role].Code+constants.CONFIG_KEY_SEPERATOR+'Form'] = {};
-      //       schemas[appKey+constants.CONFIG_KEY_SEPERATOR+cache.APP_CONFIG[appKey].ROLES[role].Code+constants.CONFIG_KEY_SEPERATOR+'Grid'] = {};
-      //    });
-      // });
-      //globals.defineGlobal('TEST', 'TEST123', false, false);
+      var roleBasedSchemas = {};
+      //globals.defineGlobal('TEST', 'TEST123', false, false);         
       Object.keys(fSchema).forEach(function (field) {
          //set title if not exists
          if (!fSchema[field].title) {
@@ -90,29 +83,72 @@ var BaseSchema = function BaseSchema(options) {
          Object.keys(_cache2.default.APP_CONFIG).forEach(function (appKey) {
             // for each application
             Object.keys(_cache2.default.APP_CONFIG[appKey].ROLES).forEach(function (role) {
-               //for each role
+               //for each role      
+               //application key + role code + collection name
                var cacheKey = appKey + _constants2.default.CONFIG_KEY_SEPERATOR + _cache2.default.APP_CONFIG[appKey].ROLES[role].Code + _constants2.default.CONFIG_KEY_SEPERATOR + options.collection;
                var formKey = cacheKey + _constants2.default.CONFIG_KEY_SEPERATOR + _constants2.default.CONFIG_KEY_FORM_PREFIX;
                var gridKey = cacheKey + _constants2.default.CONFIG_KEY_SEPERATOR + _constants2.default.CONFIG_KEY_GRID_PREFIX;
                var dbKey = cacheKey + _constants2.default.CONFIG_KEY_SEPERATOR + _constants2.default.CONFIG_KEY_DB_PREFIX;
-
-               if (!roleBasedHtmlSchemas[formKey]) {
-                  roleBasedHtmlSchemas[formKey] = {};
+               if (!roleBasedSchemas[formKey]) {
+                  //for first field, initialize
+                  roleBasedSchemas[formKey] = {};
                }
+               if (!roleBasedSchemas[gridKey]) {
+                  //for first field, initialize
+                  roleBasedSchemas[gridKey] = {};
+               }
+               if (!roleBasedSchemas[dbKey]) {
+                  //for first field, initialize
+                  roleBasedSchemas[dbKey] = {};
+               }
+
                //create schemas for form & grid for this collection
-               //1. process form attributes
-               roleBasedHtmlSchemas[formKey][field] = fSchema[field]; //attach the common props
-               if (htmlOnly && Object.keys(htmlOnly).length > 0) {
-                  _util2.default.cloneObject(htmlOnly, roleBasedHtmlSchemas[formKey][field]); //attach the html specific
+               var currentRoleHtmlOnlyAttrs = null;
+               var currentRoleDBOnlyAttrs = null;
+               if (config && Object.keys(config).length > 0 && config[appKey] && config[appKey].html && config[appKey].html.roles_config && config[appKey].html.roles_config[_cache2.default.APP_CONFIG[appKey].ROLES[role].Code]) {
+                  currentRoleHtmlOnlyAttrs = config[appKey].html.roles_config[_cache2.default.APP_CONFIG[appKey].ROLES[role].Code];
                }
-               if (config && Object.keys(config).length > 0 && config[appKey] && config[appKey][_cache2.default.APP_CONFIG[appKey].ROLES[role].code]) {
-                  //customization exists for this app, role & field combination 
-                  _util2.default.cloneObject(config[appKey][_cache2.default.APP_CONFIG[appKey].ROLES[role].code], roleBasedHtmlSchemas[formKey][field]);
+               if (config && Object.keys(config).length > 0 && config[appKey] && config[appKey].db && config[appKey].db.roles_config && config[appKey].db.roles_config[_cache2.default.APP_CONFIG[appKey].ROLES[role].Code]) {
+                  currentRoleDBOnlyAttrs = config[appKey].db.roles_config[_cache2.default.APP_CONFIG[appKey].ROLES[role].Code];
                }
-               //2. process grid attributes
-               //collect the grid attributes
 
-               //3. process role based dbschema into cache which can be used for validations on every form submits etc to validate data
+               //1. process form attributes
+               roleBasedSchemas[formKey][field] = fSchema[field]; //attach the common props
+               if (htmlOnly && Object.keys(htmlOnly).length > 0) {
+                  _util2.default.cloneObject(htmlOnly, roleBasedSchemas[formKey][field]); //attach the html specific
+               }
+               if (currentRoleHtmlOnlyAttrs) {
+                  //customization exists for this app, role & field combination 
+                  _util2.default.cloneObject(currentRoleHtmlOnlyAttrs, roleBasedSchemas[formKey][field]);
+               }
+               //2. process grid attributes                     
+               if (options.gridAttributes && options.gridAttributes.length > 0) {
+                  //collect the grid attributes
+                  roleBasedSchemas[gridKey][field] = {};
+                  options.gridAttributes.forEach(function (attr) {
+                     if (currentRoleHtmlOnlyAttrs && currentRoleHtmlOnlyAttrs[attr]) {
+                        //get from role based html specific
+                        roleBasedSchemas[gridKey][field][attr] = currentRoleHtmlOnlyAttrs[attr];
+                     } else if (htmlOnly && htmlOnly[attr]) {
+                        //get from general html specific
+                        roleBasedSchemas[gridKey][field][attr] = htmlOnly[attr];
+                     } else {
+                        //get from common attributes
+                        roleBasedSchemas[gridKey][field][attr] = fSchema[field][attr];
+                     }
+                  });
+               }
+               //3. process role based dbschema into cache which can be used for validations on every form submits etc to validate data                     
+               roleBasedSchemas[dbKey][field] = fSchema[field]; //attach the common props first                     
+               if (dbOnly && Object.keys(dbOnly).length > 0) {
+                  _util2.default.cloneObject(dbOnly, roleBasedSchemas[dbKey][field]); //now override db specific
+               }
+               if (currentRoleDBOnlyAttrs) {
+                  //customization exists for this app, role & field combination 
+                  _util2.default.cloneObject(currentRoleDBOnlyAttrs, roleBasedSchemas[formKey][field]);
+               }
+
+               //store these role based schemas into cache and return them via apis                                     
             });
          });
       });
