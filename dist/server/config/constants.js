@@ -11,9 +11,9 @@ var Constants = function Constants() {
   _classCallCheck(this, Constants);
 
   this.CONFIG_KEY_SEPERATOR = '#';
-  this.CONFIG_KEY_FORM_PREFIX = 'Form';
-  this.CONFIG_KEY_GRID_PREFIX = 'Grid';
-  this.CONFIG_KEY_DB_PREFIX = 'DB';
+  this.CONFIG_KEY_FORM_SUFFIX = 'Form';
+  this.CONFIG_KEY_GRID_SUFFIX = 'Grid';
+  this.CONFIG_KEY_DB_SUFFIX = 'DB';
 };
 
 exports.default = new Constants();

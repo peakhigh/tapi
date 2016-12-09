@@ -46,9 +46,9 @@ export default class BaseSchema {
                   Object.keys(cache.APP_CONFIG[appKey].ROLES).forEach((role) => {//for each role      
                      //application key + role code + collection name
                      let cacheKey = appKey + constants.CONFIG_KEY_SEPERATOR + cache.APP_CONFIG[appKey].ROLES[role].Code + constants.CONFIG_KEY_SEPERATOR + options.collection;
-                     let formKey = cacheKey + constants.CONFIG_KEY_SEPERATOR + constants.CONFIG_KEY_FORM_PREFIX;
-                     let gridKey = cacheKey + constants.CONFIG_KEY_SEPERATOR + constants.CONFIG_KEY_GRID_PREFIX;
-                     let dbKey = cacheKey + constants.CONFIG_KEY_SEPERATOR + constants.CONFIG_KEY_DB_PREFIX;
+                     let formKey = cacheKey + constants.CONFIG_KEY_SEPERATOR + constants.CONFIG_KEY_FORM_SUFFIX;
+                     let gridKey = cacheKey + constants.CONFIG_KEY_SEPERATOR + constants.CONFIG_KEY_GRID_SUFFIX;
+                     let dbKey = cacheKey + constants.CONFIG_KEY_SEPERATOR + constants.CONFIG_KEY_DB_SUFFIX;
                      if (!roleBasedSchemas[formKey]) {//for first field, initialize
                         roleBasedSchemas[formKey] = {};
                      }
@@ -99,12 +99,12 @@ export default class BaseSchema {
                      if (currentRoleDBOnlyAttrs) {
                         //customization exists for this app, role & field combination 
                         utils.cloneObject(currentRoleDBOnlyAttrs, roleBasedSchemas[formKey][field]);
-                     }     
-
-                     //store these role based schemas into cache and return them via apis                                     
+                     }                                                     
                   });
                });
          });
+         //store these role based schemas into cache and return them via apis    
+         cache.updateSchemaStore(roleBasedSchemas);
          return dbSchema;
       };          
       this.attachHooks = () => {

@@ -30,6 +30,7 @@
  * 8) validations @backend -> role based -> on operations like add/edit/delete -> on collections
  * 9) cache mechanism to store at once and serve at all requests
  * 10) user service for login, logout, userregistration, edit profile, change password, forgot password, etc
+ * 11) complete TODOs
  * 
  * UI
  * 1) form plugin to draw form with validations

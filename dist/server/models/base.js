@@ -86,9 +86,9 @@ var BaseSchema = function BaseSchema(options) {
                //for each role      
                //application key + role code + collection name
                var cacheKey = appKey + _constants2.default.CONFIG_KEY_SEPERATOR + _cache2.default.APP_CONFIG[appKey].ROLES[role].Code + _constants2.default.CONFIG_KEY_SEPERATOR + options.collection;
-               var formKey = cacheKey + _constants2.default.CONFIG_KEY_SEPERATOR + _constants2.default.CONFIG_KEY_FORM_PREFIX;
-               var gridKey = cacheKey + _constants2.default.CONFIG_KEY_SEPERATOR + _constants2.default.CONFIG_KEY_GRID_PREFIX;
-               var dbKey = cacheKey + _constants2.default.CONFIG_KEY_SEPERATOR + _constants2.default.CONFIG_KEY_DB_PREFIX;
+               var formKey = cacheKey + _constants2.default.CONFIG_KEY_SEPERATOR + _constants2.default.CONFIG_KEY_FORM_SUFFIX;
+               var gridKey = cacheKey + _constants2.default.CONFIG_KEY_SEPERATOR + _constants2.default.CONFIG_KEY_GRID_SUFFIX;
+               var dbKey = cacheKey + _constants2.default.CONFIG_KEY_SEPERATOR + _constants2.default.CONFIG_KEY_DB_SUFFIX;
                if (!roleBasedSchemas[formKey]) {
                   //for first field, initialize
                   roleBasedSchemas[formKey] = {};
@@ -147,11 +147,11 @@ var BaseSchema = function BaseSchema(options) {
                   //customization exists for this app, role & field combination 
                   _util2.default.cloneObject(currentRoleDBOnlyAttrs, roleBasedSchemas[formKey][field]);
                }
-
-               //store these role based schemas into cache and return them via apis                                     
             });
          });
       });
+      //store these role based schemas into cache and return them via apis    
+      _cache2.default.updateSchemaStore(roleBasedSchemas);
       return dbSchema;
    };
    this.attachHooks = function () {
