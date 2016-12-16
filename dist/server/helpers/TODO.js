@@ -21,6 +21,7 @@
 
 /**
  * 1) create trips schema
+ * 1.1) nested schemas
  * 2) create apis for form, grid for trips
  * 3) use token in the apis to determine roles, application details  etc
  * 4) make these trips apis generic so that the same work for all other collections
