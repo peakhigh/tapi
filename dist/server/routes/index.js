@@ -20,6 +20,10 @@ var _trips = require('./trips');
 
 var _trips2 = _interopRequireDefault(_trips);
 
+var _trucks = require('./trucks');
+
+var _trucks2 = _interopRequireDefault(_trucks);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = _express2.default.Router(); // eslint-disable-line new-cap
@@ -32,8 +36,11 @@ router.get('/health-check', function (req, res) {
 // mount user routes at /users
 router.use('/users', _user2.default);
 
-// mount user routes at /users
+// mount user routes at /trips
 router.use('/trips', _trips2.default);
+
+// mount user routes at /trucks
+router.use('/trucks', _trucks2.default);
 
 // mount auth routes at /auth
 router.use('/auth', _auth2.default);

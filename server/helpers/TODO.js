@@ -20,11 +20,11 @@
  */
 
 /**
- * 1) create trips schema
- * 1.1) nested schemas
- * 2) create apis for form, grid for trips
- * 3) use token in the apis to determine roles, application details  etc
- * 4) make these trips apis generic so that the same work for all other collections
+ * 1) create trips schema - created trucks - done
+ * 1.1) nested schemas - done
+ * 2) create apis for form, grid for trips - done
+ * 3) use token in the apis to determine roles, application details  etc - done
+ * 4) make these trips apis generic so that the same work for all other collections - done
  * 5) work on link columns
  * 6) add/ edit/ delete/ search apis (filters designed @frontend)
  * 7) search with multiple collections (link columns attached)
@@ -32,6 +32,8 @@
  * 9) cache mechanism to store at once and serve at all requests
  * 10) user service for login, logout, userregistration, edit profile, change password, forgot password, etc
  * 11) complete TODOs
+ * 12) Use multiple Mongo connections (for userstore & trips_trucks seperately)
+ * 13) like odin, use multiple hosts & passport for user schema & authentication
  * 
  * UI
  * 1) form plugin to draw form with validations

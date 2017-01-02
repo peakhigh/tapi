@@ -21,7 +21,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // console.log(cache.TRIPS_TRUCKS);
 
 // import globals from '../utils/globals';
-var TripsSchema = new _base2.default({
+var CurrentSchema = new _base2.default({
    collection: 'Trips',
    schema: {
       /*
@@ -66,6 +66,6 @@ var TripsSchema = new _base2.default({
 // console.log(utils.setObjectProperty('name', {key: 1}).setObjectProperty('age', 20));
 
 // import tripsTrucks from '../applicationsConfig/trips_trucks.js';
-exports.default = TripsSchema.getSchema();
+exports.default = CurrentSchema.getSchema();
 module.exports = exports['default'];
 //# sourceMappingURL=trips.js.map

@@ -1,0 +1,1 @@
+{"version":3,"sources":["server/controllers/trucks.js"],"names":["currentModel","model"],"mappings":";;;;;;AAAA;;;;AAEA;;;;;;AAEA,IAAIA,eAAe,mBAAoB,EAAEC,uBAAF,EAApB,CAAnB;;kBAEe,EAAED,0BAAF,E","file":"server/controllers/trucks.js","sourceRoot":"../../.."}

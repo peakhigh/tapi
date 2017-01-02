@@ -14,6 +14,9 @@
 //TODO:: load app configs from the applicationConfig directory 
 //automate it in the constructor
 import utils from './util';
+import authUtils from './auth';
+import constants from '../config/constants';
+
 class Cache {
   constructor() {
     //TODO:: everything should be json files from applicationConfig directory
@@ -47,11 +50,23 @@ class Cache {
      if (!this.SCHEMA_STORE) { //schema store contains all the schemas per html(form, grid) per db per role per app per collection like a key value 
         this.SCHEMA_STORE = {};
      }
-     //key strucrure
+     //key structure
      //for form => appKey + sep + role.Code + sep + collection_name + sep + CONFIG_KEY_FORM_SUFFIX
      //for grid => appKey + sep + role.Code + sep + collection_name + sep + CONFIG_KEY_GRID_SUFFIX
      //for db => appKey + sep + role.Code + sep + collection_name + sep + CONFIG_KEY_DB_SUFFIX
      utils.cloneObject(roleBasedSchemas, this.SCHEMA_STORE);
+  }
+  getRequestSchema(req) {
+      let key = this.getKey(req);
+      return key ? this.SCHEMA_STORE[key] : {};
+  }
+  getKey(req) {
+     let tokenDetails = authUtils.decodeToken(req.headers);
+     if (tokenDetails) {
+        let urlParts = req.originalUrl.replace('/', '').split('?')[0].split('#')[0].split('/');
+        //app + role + collection + key_type(form/grid/db)
+        return (tokenDetails.app + constants.CONFIG_KEY_SEPERATOR + tokenDetails.role + constants.CONFIG_KEY_SEPERATOR + urlParts[1] + constants.CONFIG_KEY_SEPERATOR + urlParts[2]).toUpperCase();
+     }
   }
 }
 

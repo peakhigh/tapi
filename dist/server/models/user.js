@@ -30,6 +30,10 @@ var UserSchema = new _mongoose2.default.Schema({
     type: String,
     required: true
   },
+  password: {
+    type: String,
+    required: true
+  },
   mobileNumber: {
     type: String,
     required: true,

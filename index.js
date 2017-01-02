@@ -2,6 +2,8 @@ import Promise from 'bluebird';
 import mongoose from 'mongoose';
 import config from './config/env';
 import app from './config/express';
+import expressJwt from 'express-jwt';
+
 
 // promisify mongoose
 Promise.promisifyAll(mongoose);
@@ -13,6 +15,9 @@ mongoose.connection.on('error', () => {
 });
 
 const debug = require('debug')('express-mongoose-es6-rest-api:index');
+
+// TODO - set auth globally
+// app.use(expressJwt({ secret: config.jwtSecret}).unless({path: ['/auth']}));
 
 // listen on port config.port
 app.listen(config.port, () => {

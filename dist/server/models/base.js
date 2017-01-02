@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", {
    value: true
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 var _bluebird = require('bluebird');
 
 var _bluebird2 = _interopRequireDefault(_bluebird);
@@ -47,112 +49,185 @@ var BaseSchema = function BaseSchema(options) {
 
    this.filterSchema = function () {
       var fSchema = options.schema;
+      var self = _this;
+      /** ID - is it coming default after add/edit */
       var dbSchema = {};
       if (!options.excludeDates) {
-         _this.getDateColumns(fSchema);
+         self.getDateColumns(fSchema);
       }
       if (!options.excludeOwner) {
-         _this.getOwnerColumns(fSchema);
+         self.getOwnerColumns(fSchema);
       }
       var roleBasedSchemas = {};
-      //globals.defineGlobal('TEST', 'TEST123', false, false);         
       Object.keys(fSchema).forEach(function (field) {
-         //set title if not exists
-         if (!fSchema[field].title) {
-            //camelcase to uppercase. step 1)insert a space before all caps. step 2)uppercase the first character
-            fSchema[field].title = field.replace(/([A-Z])/g, ' $1').replace(/^./, function (str) {
-               return str.toUpperCase();
-            });
-         }
-
-         var htmlOnly = fSchema[field].html;
-         delete fSchema[field].html;
-         var dbOnly = fSchema[field].db;
-         delete fSchema[field].db;
-         var config = fSchema[field].config;
-         delete fSchema[field].config;
-
-         //now fSchema[field] contains the common properties for that field
-
-         //set dbschema
-         dbSchema[field] = fSchema[field]; //get the common props
-         if (dbOnly && Object.keys(dbOnly).length > 0) {
-            _util2.default.cloneObject(dbOnly, dbSchema); //attach the db specific
-         }
-
-         Object.keys(_cache2.default.APP_CONFIG).forEach(function (appKey) {
-            // for each application
-            Object.keys(_cache2.default.APP_CONFIG[appKey].ROLES).forEach(function (role) {
-               //for each role      
-               //application key + role code + collection name
-               var cacheKey = appKey + _constants2.default.CONFIG_KEY_SEPERATOR + _cache2.default.APP_CONFIG[appKey].ROLES[role].Code + _constants2.default.CONFIG_KEY_SEPERATOR + options.collection;
-               var formKey = cacheKey + _constants2.default.CONFIG_KEY_SEPERATOR + _constants2.default.CONFIG_KEY_FORM_SUFFIX;
-               var gridKey = cacheKey + _constants2.default.CONFIG_KEY_SEPERATOR + _constants2.default.CONFIG_KEY_GRID_SUFFIX;
-               var dbKey = cacheKey + _constants2.default.CONFIG_KEY_SEPERATOR + _constants2.default.CONFIG_KEY_DB_SUFFIX;
-               if (!roleBasedSchemas[formKey]) {
-                  //for first field, initialize
-                  roleBasedSchemas[formKey] = {};
-               }
-               if (!roleBasedSchemas[gridKey]) {
-                  //for first field, initialize
-                  roleBasedSchemas[gridKey] = {};
-               }
-               if (!roleBasedSchemas[dbKey]) {
-                  //for first field, initialize
-                  roleBasedSchemas[dbKey] = {};
-               }
-
-               //create schemas for form & grid for this collection
-               var currentRoleHtmlOnlyAttrs = null;
-               var currentRoleDBOnlyAttrs = null;
-               if (config && Object.keys(config).length > 0 && config[appKey] && config[appKey].html && config[appKey].html.roles_config && config[appKey].html.roles_config[_cache2.default.APP_CONFIG[appKey].ROLES[role].Code]) {
-                  currentRoleHtmlOnlyAttrs = config[appKey].html.roles_config[_cache2.default.APP_CONFIG[appKey].ROLES[role].Code];
-               }
-               if (config && Object.keys(config).length > 0 && config[appKey] && config[appKey].db && config[appKey].db.roles_config && config[appKey].db.roles_config[_cache2.default.APP_CONFIG[appKey].ROLES[role].Code]) {
-                  currentRoleDBOnlyAttrs = config[appKey].db.roles_config[_cache2.default.APP_CONFIG[appKey].ROLES[role].Code];
-               }
-
-               //1. process form attributes
-               roleBasedSchemas[formKey][field] = fSchema[field]; //attach the common props
-               if (htmlOnly && Object.keys(htmlOnly).length > 0) {
-                  _util2.default.cloneObject(htmlOnly, roleBasedSchemas[formKey][field]); //attach the html specific
-               }
-               if (currentRoleHtmlOnlyAttrs) {
-                  //customization exists for this app, role & field combination 
-                  _util2.default.cloneObject(currentRoleHtmlOnlyAttrs, roleBasedSchemas[formKey][field]);
-               }
-               //2. process grid attributes                     
-               if (options.gridAttributes && options.gridAttributes.length > 0) {
-                  //collect the grid attributes
-                  roleBasedSchemas[gridKey][field] = {};
-                  options.gridAttributes.forEach(function (attr) {
-                     if (currentRoleHtmlOnlyAttrs && currentRoleHtmlOnlyAttrs[attr]) {
-                        //get from role based html specific
-                        roleBasedSchemas[gridKey][field][attr] = currentRoleHtmlOnlyAttrs[attr];
-                     } else if (htmlOnly && htmlOnly[attr]) {
-                        //get from general html specific
-                        roleBasedSchemas[gridKey][field][attr] = htmlOnly[attr];
-                     } else {
-                        //get from common attributes
-                        roleBasedSchemas[gridKey][field][attr] = fSchema[field][attr];
-                     }
-                  });
-               }
-               //3. process role based dbschema into cache which can be used for validations on every form submits etc to validate data                     
-               roleBasedSchemas[dbKey][field] = fSchema[field]; //attach the common props first                     
-               if (dbOnly && Object.keys(dbOnly).length > 0) {
-                  _util2.default.cloneObject(dbOnly, roleBasedSchemas[dbKey][field]); //now override db specific
-               }
-               if (currentRoleDBOnlyAttrs) {
-                  //customization exists for this app, role & field combination 
-                  _util2.default.cloneObject(currentRoleDBOnlyAttrs, roleBasedSchemas[formKey][field]);
-               }
-            });
-         });
+         self.processField(self, field, fSchema[field], dbSchema, roleBasedSchemas);
       });
       //store these role based schemas into cache and return them via apis    
       _cache2.default.updateSchemaStore(roleBasedSchemas);
       return dbSchema;
+   };
+   this.setFieldDetails = function (self, field, fieldData, schemaObject) {
+      if (field.indexOf('.') > 0) {
+         var fieldPathParts = field.split('.');
+         var projection = schemaObject;
+         for (var i = 0; i < fieldPathParts.length - 1; i++) {
+            if (fieldPathParts[i].indexOf('[') === 0) {
+               //array of objects
+               fieldPathParts[i] = fieldPathParts[i].replace('[', '').replace(']', '');
+               if (!projection[fieldPathParts[i]]) {
+                  projection[fieldPathParts[i]] = [{}];
+               }
+               projection = projection[fieldPathParts[i]][0];
+            } else {
+               if (!projection[fieldPathParts[i]]) {
+                  projection[fieldPathParts[i]] = {};
+               }
+               projection = projection[fieldPathParts[i]];
+            }
+         }
+         projection[fieldPathParts[fieldPathParts.length - 1]] = fieldData;
+      } else {
+         schemaObject[field] = fieldData;
+      }
+   };
+   this.processField = function (self, field, fieldData, dbSchema, roleBasedSchemas) {
+      if (fieldData instanceof Array || (typeof fieldData === 'undefined' ? 'undefined' : _typeof(fieldData)) === 'object' && typeof fieldData.type === 'undefined') {
+         //indicates a nested field
+         if (fieldData instanceof Array) {
+            Object.keys(fieldData[0]).forEach(function (nestedField) {
+               self.processField(self, '[' + field + '].' + nestedField, fieldData[0][nestedField], dbSchema, roleBasedSchemas);
+            });
+         } else {
+            Object.keys(fieldData).forEach(function (nestedField) {
+               self.processField(self, field + '.' + nestedField, fieldData[nestedField], dbSchema, roleBasedSchemas);
+            });
+         }
+         return;
+      }
+      var fieldParts = field.split('.');
+
+      //set title if not exists
+      if (typeof fieldData.title === 'undefined') {
+         //camelcase to uppercase. step 1)insert a space before all caps. step 2)uppercase the first character
+         if (fieldParts.length > 0) {
+            //if parent path exists
+            fieldData.title = fieldParts[fieldParts.length - 1].replace(/([A-Z])/g, ' $1').replace(/^./, function (str) {
+               return str.toUpperCase();
+            });
+         } else {
+            fieldData.title = field.replace(/([A-Z])/g, ' $1').replace(/^./, function (str) {
+               return str.toUpperCase();
+            });
+         }
+      }
+
+      var htmlOnly = fieldData.html;
+      delete fieldData.html;
+      var dbOnly = fieldData.db;
+      delete fieldData.db;
+      var config = fieldData.config;
+      delete fieldData.config;
+
+      //now fieldData contains the common properties for that field
+
+      //set dbschema
+      var fieldDBData = {};
+      _util2.default.cloneObject(fieldDBData, fieldData); //get the common props
+      if (dbOnly && Object.keys(dbOnly).length > 0) {
+         _util2.default.cloneObject(dbOnly, fieldDBData); //attach the db specific
+      }
+      self.setFieldDetails(self, field, fieldDBData, dbSchema);
+
+      var stringifiedFieldSchema = {}; //stringified types, default values etc
+      Object.keys(fieldData).forEach(function (key) {
+         if (typeof fieldData[key] === 'function') {
+            stringifiedFieldSchema[key] = fieldData[key].name;
+         } else {
+            stringifiedFieldSchema[key] = fieldData[key];
+         }
+      });
+
+      Object.keys(_cache2.default.APP_CONFIG).forEach(function (appKey) {
+         // for each application
+         Object.keys(_cache2.default.APP_CONFIG[appKey].ROLES).forEach(function (role) {
+            //for each role      
+            //application key + role code + collection name
+            var cacheKey = appKey + _constants2.default.CONFIG_KEY_SEPERATOR + _cache2.default.APP_CONFIG[appKey].ROLES[role].Code + _constants2.default.CONFIG_KEY_SEPERATOR + options.collection;
+            var formKey = cacheKey + _constants2.default.CONFIG_KEY_SEPERATOR + _constants2.default.CONFIG_KEY_FORM_SUFFIX;
+            var gridKey = cacheKey + _constants2.default.CONFIG_KEY_SEPERATOR + _constants2.default.CONFIG_KEY_GRID_SUFFIX;
+            var dbKey = cacheKey + _constants2.default.CONFIG_KEY_SEPERATOR + _constants2.default.CONFIG_KEY_DB_SUFFIX;
+            formKey = formKey.toUpperCase();
+            gridKey = gridKey.toUpperCase();
+            dbKey = dbKey.toUpperCase();
+            if (!roleBasedSchemas[formKey]) {
+               //for first field, initialize
+               roleBasedSchemas[formKey] = {};
+            }
+            if (!roleBasedSchemas[gridKey]) {
+               //for first field, initialize
+               roleBasedSchemas[gridKey] = {};
+            }
+            if (!roleBasedSchemas[dbKey]) {
+               //for first field, initialize
+               roleBasedSchemas[dbKey] = {};
+            }
+
+            //create schemas for form & grid for this collection
+            var currentRoleHtmlOnlyAttrs = null;
+            var currentRoleDBOnlyAttrs = null;
+            if (config && Object.keys(config).length > 0 && config[appKey] && config[appKey].html && config[appKey].html.roles_config && config[appKey].html.roles_config[_cache2.default.APP_CONFIG[appKey].ROLES[role].Code]) {
+               currentRoleHtmlOnlyAttrs = config[appKey].html.roles_config[_cache2.default.APP_CONFIG[appKey].ROLES[role].Code];
+            }
+            if (config && Object.keys(config).length > 0 && config[appKey] && config[appKey].db && config[appKey].db.roles_config && config[appKey].db.roles_config[_cache2.default.APP_CONFIG[appKey].ROLES[role].Code]) {
+               currentRoleDBOnlyAttrs = config[appKey].db.roles_config[_cache2.default.APP_CONFIG[appKey].ROLES[role].Code];
+            }
+
+            //1. process form attributes
+            var fieldFormData = {};
+            _util2.default.cloneObject(stringifiedFieldSchema, fieldFormData); //attach the common props                
+            if (htmlOnly && Object.keys(htmlOnly).length > 0) {
+               _util2.default.cloneObject(htmlOnly, fieldFormData); //attach the html specific
+            }
+            if (currentRoleHtmlOnlyAttrs) {
+               //customization exists for this app, role & field combination 
+               _util2.default.cloneObject(currentRoleHtmlOnlyAttrs, fieldFormData);
+            }
+            self.setFieldDetails(self, field, fieldFormData, roleBasedSchemas[formKey]);
+
+            //2. process grid attributes                     
+            if (options.gridAttributes && options.gridAttributes.length > 0) {
+               (function () {
+                  //collect the grid attributes
+                  // roleBasedSchemas[gridKey][field] = {};
+                  var fieldGridData = {};
+                  options.gridAttributes.forEach(function (attr) {
+                     if (currentRoleHtmlOnlyAttrs && currentRoleHtmlOnlyAttrs[attr]) {
+                        //get from role based html specific
+                        fieldGridData[attr] = currentRoleHtmlOnlyAttrs[attr];
+                     } else if (htmlOnly && htmlOnly[attr]) {
+                        //get from general html specific
+                        fieldGridData[attr] = htmlOnly[attr];
+                     } else {
+                        //get from common attributes
+                        fieldGridData[attr] = stringifiedFieldSchema[attr];
+                     }
+                  });
+                  self.setFieldDetails(self, field, fieldGridData, roleBasedSchemas[gridKey]);
+               })();
+            }
+            //3. process role based dbschema into cache which can be used for validations on every form submits etc to validate data      
+            var fieldRoleDBData = {};
+            _util2.default.cloneObject(stringifiedFieldSchema, fieldRoleDBData); //attach the common props first       
+            if (dbOnly && Object.keys(dbOnly).length > 0) {
+               _util2.default.cloneObject(dbOnly, fieldRoleDBData); //now override db specific
+            }
+            if (currentRoleDBOnlyAttrs) {
+               //customization exists for this app, role & field combination 
+               _util2.default.cloneObject(currentRoleDBOnlyAttrs, fieldRoleDBData);
+            }
+            self.setFieldDetails(self, field, fieldRoleDBData, roleBasedSchemas[dbKey]);
+         });
+      });
    };
    this.attachHooks = function () {
       /**
@@ -205,7 +280,7 @@ var BaseSchema = function BaseSchema(options) {
       };
    };
    this.getOwnerColumns = function (schema) {
-      schema.owner = {
+      schema.createdBy = {
          type: String
       };
    };

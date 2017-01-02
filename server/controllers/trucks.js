@@ -1,4 +1,4 @@
-import model from '../models/trips';
+import model from '../models/trucks';
 
 import BaseCtrlFactory from './base';
 

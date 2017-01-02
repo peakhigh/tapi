@@ -5,7 +5,7 @@ import utils from '../utils/util';
 import cache from '../utils/cache';
 
 // console.log(cache.TRIPS_TRUCKS);
-const TripsSchema = new BaseSchemaFactory({ 
+const CurrentSchema = new BaseSchemaFactory({ 
    collection: 'Trips',   
    schema: {
       /*
@@ -52,4 +52,4 @@ const TripsSchema = new BaseSchemaFactory({
    gridAttributes: ['title']
 }); 
 // console.log(utils.setObjectProperty('name', {key: 1}).setObjectProperty('age', 20));
-export default TripsSchema.getSchema();
+export default CurrentSchema.getSchema();

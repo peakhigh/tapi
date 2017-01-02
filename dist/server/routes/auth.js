@@ -35,10 +35,6 @@ var router = _express2.default.Router(); // eslint-disable-line new-cap
 /** POST /api/auth/login - Returns token if correct username and password is provided */
 router.route('/login').post((0, _expressValidation2.default)(_paramValidation2.default.login), _auth2.default.login);
 
-/** GET /api/auth/random-number - Protected route,
- * needs token returned by the above as header. Authorization: Bearer {token} */
-router.route('/random-number').get((0, _expressJwt2.default)({ secret: _env2.default.jwtSecret }), _auth2.default.getRandomNumber);
-
 exports.default = router;
 module.exports = exports['default'];
 //# sourceMappingURL=auth.js.map

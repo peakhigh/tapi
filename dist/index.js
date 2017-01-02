@@ -20,6 +20,10 @@ var _express = require('./config/express');
 
 var _express2 = _interopRequireDefault(_express);
 
+var _expressJwt = require('express-jwt');
+
+var _expressJwt2 = _interopRequireDefault(_expressJwt);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // promisify mongoose
@@ -32,6 +36,9 @@ _mongoose2.default.connection.on('error', function () {
 });
 
 var debug = require('debug')('express-mongoose-es6-rest-api:index');
+
+// TODO - set auth globally
+// app.use(expressJwt({ secret: config.jwtSecret}).unless({path: ['/auth']}));
 
 // listen on port config.port
 _express2.default.listen(_env2.default.port, function () {

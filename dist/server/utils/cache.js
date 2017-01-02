@@ -25,6 +25,14 @@ var _util = require('./util');
 
 var _util2 = _interopRequireDefault(_util);
 
+var _auth = require('./auth');
+
+var _auth2 = _interopRequireDefault(_auth);
+
+var _constants = require('../config/constants');
+
+var _constants2 = _interopRequireDefault(_constants);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -68,11 +76,27 @@ var Cache = function () {
             //schema store contains all the schemas per html(form, grid) per db per role per app per collection like a key value 
             this.SCHEMA_STORE = {};
          }
-         //key strucrure
+         //key structure
          //for form => appKey + sep + role.Code + sep + collection_name + sep + CONFIG_KEY_FORM_SUFFIX
          //for grid => appKey + sep + role.Code + sep + collection_name + sep + CONFIG_KEY_GRID_SUFFIX
          //for db => appKey + sep + role.Code + sep + collection_name + sep + CONFIG_KEY_DB_SUFFIX
          _util2.default.cloneObject(roleBasedSchemas, this.SCHEMA_STORE);
+      }
+   }, {
+      key: 'getRequestSchema',
+      value: function getRequestSchema(req) {
+         var key = this.getKey(req);
+         return key ? this.SCHEMA_STORE[key] : {};
+      }
+   }, {
+      key: 'getKey',
+      value: function getKey(req) {
+         var tokenDetails = _auth2.default.decodeToken(req.headers);
+         if (tokenDetails) {
+            var urlParts = req.originalUrl.replace('/', '').split('?')[0].split('#')[0].split('/');
+            //app + role + collection + key_type(form/grid/db)
+            return (tokenDetails.app + _constants2.default.CONFIG_KEY_SEPERATOR + tokenDetails.role + _constants2.default.CONFIG_KEY_SEPERATOR + urlParts[1] + _constants2.default.CONFIG_KEY_SEPERATOR + urlParts[2]).toUpperCase();
+         }
       }
    }]);
 
