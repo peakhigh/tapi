@@ -1,1 +1,0 @@
-{"version":3,"sources":["config/env/production.js"],"names":["env","jwtSecret","userdb","db","port","defaultapp"],"mappings":";;;;;kBAAe;AACbA,OAAK,aADQ;AAEbC,aAAW,sCAFE;AAGbC,UAAQ,+BAHK;AAIbC,MAAI,yBAJS;AAKbC,QAAM,IALO;AAMbC,cAAY;AANC,C","file":"config/env/production.js","sourceRoot":"../../.."}

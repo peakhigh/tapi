@@ -1,1 +1,0 @@
-{"version":3,"sources":["server/routes/trips.js"],"names":["baseRoute","controller","router"],"mappings":";;;;;;AAAA;;;;AACA;;;;;;AAEA,IAAMA,YAAY,mBAAc,EAAEC,2BAAF,EAAd,CAAlB;;kBAEeD,UAAUE,M","file":"server/routes/trips.js","sourceRoot":"../../.."}

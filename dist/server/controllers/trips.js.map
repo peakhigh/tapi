@@ -1,1 +1,0 @@
-{"version":3,"sources":["server/controllers/trips.js"],"names":["currentModel","model"],"mappings":";;;;;;AAAA;;;;AAEA;;;;;;AAEA,IAAIA,eAAe,mBAAoB,EAAEC,sBAAF,EAApB,CAAnB;;kBAEe,EAAED,0BAAF,E","file":"server/controllers/trips.js","sourceRoot":"../../.."}
