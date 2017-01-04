@@ -34,19 +34,19 @@ class Cache {
                SideMenu: [{
                   title: 'Dashboard',
                   icon: 'fa-dashboard',
-                  action: 'dashboard'
+                  page: 'dashboard'
                }, {
                   title: 'Trips',
                   icon: 'fa-table',
-                  action: 'managetrips',
+                  page: 'managetrips',
                   Menu: [{
                         title: 'Add New',
                         icon: 'fa-table',
-                        action: 'newtrips'
+                        page: 'newtrips'
                      }, {
                         title: 'Manage',
                         icon: 'fa-table',
-                        action: 'managetrip'
+                        page: 'managetrips'
                      }
                   ]
                }]
@@ -67,33 +67,33 @@ class Cache {
                SideMenu: [{
                   title: 'Dashboard',
                   icon: 'fa-dashboard',
-                  action: 'dashboard'
+                  page: 'dashboard'
                }, {
                   title: 'Trucks',
                   icon: 'fa-table',
-                  action: 'managetruck',
+                  page: 'managetrucks',
                   Menu: [{
                         title: 'Add New',
                         icon: 'fa-table',
-                        action: 'newtruck'
+                        page: 'newtrucks'
                      }, {
                         title: 'Manage',
                         icon: 'fa-table',
-                        action: 'managetruck'
+                        page: 'managetrucks'
                      }
                   ]
                }, {
                   title: 'Trips',
                   icon: 'fa-table',
-                  action: 'managetrips',
+                  page: 'managetrips',
                   Menu: [{
                         title: 'Add New',
                         icon: 'fa-table',
-                        action: 'newtrips'
+                        page: 'newtrips'
                      }, {
                         title: 'Manage',
                         icon: 'fa-table',
-                        action: 'managetrip'
+                        page: 'managetrips'
                      }
                   ]
                }]
