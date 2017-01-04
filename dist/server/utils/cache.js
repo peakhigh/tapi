@@ -56,19 +56,19 @@ var Cache = function () {
                   SideMenu: [{
                      title: 'Dashboard',
                      icon: 'fa-dashboard',
-                     key: 'dashboard'
+                     action: 'dashboard'
                   }, {
                      title: 'Trips',
                      icon: 'fa-table',
-                     key: 'managetrips',
+                     action: 'managetrips',
                      Menu: [{
                         title: 'Add New',
                         icon: 'fa-table',
-                        key: 'newtrips'
+                        action: 'newtrips'
                      }, {
                         title: 'Manage',
                         icon: 'fa-table',
-                        key: 'managetrip'
+                        action: 'managetrip'
                      }]
                   }]
                }
@@ -88,32 +88,32 @@ var Cache = function () {
                   SideMenu: [{
                      title: 'Dashboard',
                      icon: 'fa-dashboard',
-                     key: 'dashboard'
+                     action: 'dashboard'
                   }, {
                      title: 'Trucks',
                      icon: 'fa-table',
-                     key: 'managetruck',
+                     action: 'managetruck',
                      Menu: [{
                         title: 'Add New',
                         icon: 'fa-table',
-                        key: 'newtruck'
+                        action: 'newtruck'
                      }, {
                         title: 'Manage',
                         icon: 'fa-table',
-                        key: 'managetruck'
+                        action: 'managetruck'
                      }]
                   }, {
                      title: 'Trips',
                      icon: 'fa-table',
-                     key: 'managetrips',
+                     action: 'managetrips',
                      Menu: [{
                         title: 'Add New',
                         icon: 'fa-table',
-                        key: 'newtrips'
+                        action: 'newtrips'
                      }, {
                         title: 'Manage',
                         icon: 'fa-table',
-                        key: 'managetrip'
+                        action: 'managetrip'
                      }]
                   }]
                }
