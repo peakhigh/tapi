@@ -7,7 +7,7 @@ utils.defineAppConfig('TRIPS_TRUCKS', {
       },
       TRUCK_USER: {
          Id: 2,
-         Code: 'TRUCK_USER'
+         Code: 'TRUCK_USER'         
       },
       TRUCK_OWNER: {
          Id: 3,
@@ -19,7 +19,7 @@ utils.defineAppConfig('TRIPS_TRUCKS', {
       },
       CALL_CENTER_USER: {
          Id: 5,
-         Code: 'CALL_CENTER_USER'
+         Code: 'CALL_CENTER_USER'         
       }
    }   
 });

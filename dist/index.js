@@ -30,10 +30,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 _bluebird2.default.promisifyAll(_mongoose2.default);
 
 // connect to mongo db
-_mongoose2.default.connect(_env2.default.db, { server: { socketOptions: { keepAlive: 1 } } });
-_mongoose2.default.connection.on('error', function () {
-  throw new Error('unable to connect to database: ' + _env2.default.db);
-});
+// mongoose.connect(config.db, { server: { socketOptions: { keepAlive: 1 } } });
+// mongoose.connection.on('error', () => {
+//   throw new Error(`unable to connect to database: ${config.db}`);
+// });
 
 var debug = require('debug')('express-mongoose-es6-rest-api:index');
 

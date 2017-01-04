@@ -29,7 +29,28 @@ class Cache {
          },
          TRUCK_USER: {
             Id: 2,
-            Code: 'TRUCK_USER'
+            Code: 'TRUCK_USER',
+            Menu: {
+               SideMenu: [{
+                  title: 'Dashboard',
+                  icon: 'fa-dashboard',
+                  key: 'dashboard'
+               }, {
+                  title: 'Trips',
+                  icon: 'fa-table',
+                  key: 'managetrips',
+                  Menu: [{
+                        title: 'Add New',
+                        icon: 'fa-table',
+                        key: 'newtrips'
+                     }, {
+                        title: 'Manage',
+                        icon: 'fa-table',
+                        key: 'managetrip'
+                     }
+                  ]
+               }]
+            }
          },
          TRUCK_OWNER: {
             Id: 3,
@@ -41,7 +62,42 @@ class Cache {
          },
          CALL_CENTER_USER: {
             Id: 5,
-            Code: 'CALL_CENTER_USER'
+            Code: 'CALL_CENTER_USER',
+            Menu: {
+               SideMenu: [{
+                  title: 'Dashboard',
+                  icon: 'fa-dashboard',
+                  key: 'dashboard'
+               }, {
+                  title: 'Trucks',
+                  icon: 'fa-table',
+                  key: 'managetruck',
+                  Menu: [{
+                        title: 'Add New',
+                        icon: 'fa-table',
+                        key: 'newtruck'
+                     }, {
+                        title: 'Manage',
+                        icon: 'fa-table',
+                        key: 'managetruck'
+                     }
+                  ]
+               }, {
+                  title: 'Trips',
+                  icon: 'fa-table',
+                  key: 'managetrips',
+                  Menu: [{
+                        title: 'Add New',
+                        icon: 'fa-table',
+                        key: 'newtrips'
+                     }, {
+                        title: 'Manage',
+                        icon: 'fa-table',
+                        key: 'managetrip'
+                     }
+                  ]
+               }]
+            }
          }
       }      
    };   

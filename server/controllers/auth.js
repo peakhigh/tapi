@@ -2,14 +2,25 @@ import jwt from 'jsonwebtoken';
 import httpStatus from 'http-status';
 import APIError from '../helpers/APIError';
 import utils from '../utils/util';
-
+import cache from '../utils/cache';
 
 const config = require('../../config/env');
 
 // sample user, used for authentication
-const user = {
-  username: 'react',
-  password: 'express'
+const callcenterUser = {
+  username: 'callcenter',
+  password: '12345',
+  role: 'CALL_CENTER_USER',
+  firstName: 'Call',
+  lastName: 'Center'
+};
+
+const truckUser = {
+  username: 'trip',
+  password: '12345',
+  role: 'TRUCK_USER',
+  firstName: 'Truck',
+  lastName: 'User'
 };
 
 /**
@@ -20,17 +31,29 @@ const user = {
  * @returns {*}
  */
 function login(req, res, next) {
-  // Ideally you'll fetch this from the db
-  // Idea here was to show how jwt works with simplicity
-  if (req.body.username === user.username && req.body.password === user.password) {//add app also in authentication
+  /** TODO: read from DB */
+  let userRecord;
+  if (req.body.username === callcenterUser.username && req.body.password === callcenterUser.password) {
+     userRecord = callcenterUser;
+  } else if (req.body.username === truckUser.username && req.body.password === truckUser.password) {
+     userRecord = truckUser;
+  }
+  let app = utils.getRequestOrigin(req.headers.origin);
+
+  if (userRecord) {
     const token = jwt.sign({
-      username: user.username,
-      role: 'ADMIN', //TODO:: get from DB
-      app: utils.getRequestOrigin(req.headers.origin)
+      username: userRecord.username,
+      role: userRecord.role,
+      app: app
     }, config.jwtSecret);
     return res.json({
       token,
-      username: user.username
+      user: {
+         username: userRecord.username,
+         role: userRecord.role,
+         name: `${userRecord.firstName} ${userRecord.lastName}`,
+         menu: cache.APP_CONFIG[app.toUpperCase()].ROLES[userRecord.role.toUpperCase()].Menu
+      }       
     });
   }
 

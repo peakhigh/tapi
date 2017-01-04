@@ -4,5 +4,5 @@ export default {
   userdb: 'mongodb://admin:test@ds157677.mlab.com:57677/userstore',
   db: 'mongodb://admin:test@ds157667.mlab.com:57667/tripsntrucks',
   port: 5000,
-  defaultapp: 'TRIPS_TRUCKS'
+  defaultapp: 'TRIPS_TRUCKS'  
 };
