@@ -96,6 +96,6 @@ const CurrentSchema = new BaseSchemaFactory({
          required: false
       }
    },
-   gridAttributes: ['title']
+   gridAttributes: ['title']   
 }); 
 export default CurrentSchema.getSchema();

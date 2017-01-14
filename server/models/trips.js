@@ -3,51 +3,114 @@ import BaseSchemaFactory from './base';
 import utils from '../utils/util';
 // import tripsTrucks from '../applicationsConfig/trips_trucks.js';
 import cache from '../utils/cache';
+import schemaUtils from '../utils/schema';
+let Schema = require('mongoose').Schema;
 
 // console.log(cache.TRIPS_TRUCKS);
 const CurrentSchema = new BaseSchemaFactory({ 
    collection: 'Trips',   
    schema: {
-      /*
-      define common, html-only, db-only properties
-      grid-only columns - role based
-      */
-      /*
-      role based permissions
-      owner columns
-      date columns
-      link columns
-       */
-      username: {
-         type: String,
-         required: true,         
-         html: {
-
-         },       
-         db: {
-
+      status: {
+         type: String //enum new, pending, ..
+      },
+      expectedTripCost: {
+         type: Number
+      },
+      maxTripCost: {
+         type: Number
+      },
+      receiverTinNumber: {
+         type: String
+      },
+      senderTinNumber: {
+         type: String
+      },
+      receiverServiceTaxNumber: {
+         type: String
+      },      
+      senderServiceTaxNumber: {
+         type: String
+      },
+      truckDetails: {
+         type: Object //read only ( dump the truck details at the time of assignment)
+      },
+      currentPoint: {
+         type: String //location of truck if status is running
+      },
+      finalTripCost: {
+         type: Number
+      },       
+      paymentsReceived: schemaUtils.spend(true),        
+      quotes: {
+         cost: {
+            type: Number
+         },
+         userId: {
+            type: Schema.Types.ObjectId
+         },
+         userRole: {
+            type: String
+         },
+         comment: {
+            type: String
          }
       },
-      mobileNumber: {
-         type: String,
-         required: true,
-         match: [/^[1-9][0-9]{9}$/, 'The value of path {PATH} ({VALUE}) is not a valid mobile number.'],
-         config: {//if config, it is considered same for all roles
-            trips_trucks: {               
-               html: {//if html specific not mentioned, it is considered same for all roles
-                  roles: ['*'],
-                  roles_config: utils.setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.ADMIN.Code, {
-                     title: 'Phone Number'
-                  }).setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_USER.Code, {
-                     title: 'Mobile'
-                  })
-               },
-               db: {//if db specific not mentioned, it is considered same for all roles
-                  roles: ['*']
-               }             
-            } //app based roles
-         }
-      }
+      vehicleRequirements: {
+         vechicleType: {
+            type: String //enum needed -- closed Body, open body,trally, mini truck, auto
+         },
+         minRating: {
+            type: Number
+         },
+         minCapacity: {
+            type: Number
+         }         
+      },    
+      totalWeight: {
+         type: Number
+      },
+      spends: schemaUtils.spend(true), 
+      pickup: [{
+         date: {
+            type: Date     
+         },         
+         address: schemaUtils.address(),                                 
+         contact: schemaUtils.contact(true),
+         material: [{
+            name: {
+               type: String
+            },
+            materialType: {
+               type: String     
+            },
+            description: {
+               type: String
+            },
+            weight: {
+               type: Number
+            }, 
+            weightUnit: {
+               type: Number
+            },
+            approximateCost: {
+               type: Number
+            }
+         }],
+         formalities: schemaUtils.tripFormality()         
+      }], 
+      drop: [{
+         date: {
+            type: Date     
+         },        
+         address: schemaUtils.address(),                         
+         contact: schemaUtils.contact(true),
+         itemsToDrop: {
+            type: [String] //pickup.material.name array
+         },
+         formalities: schemaUtils.tripFormality()         
+      }],
+      comments: schemaUtils.comment(true),
+      otherDocs: schemaUtils.tripDoc(true)     
    },
    gridAttributes: ['title']
 }); 
