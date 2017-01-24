@@ -4,7 +4,6 @@ import config from './config/env';
 import app from './config/express';
 import expressJwt from 'express-jwt';
 
-
 // promisify mongoose
 Promise.promisifyAll(mongoose);
 
