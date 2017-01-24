@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>T-API Test</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+var tokenResponse = null;
+
+  //how to login
+  //creates a auth token which should be used in next requests
+	// $.ajax({
+	//   type: "POST",
+	//   url: 'http://localhost:5000/api/auth/login',
+	//   data: {
+	// 	  username: 'callcenter',
+	// 	  password: '12345'
+	// 	},
+	//   success: function(response){
+	// 	  console.log(response);        
+	// 		tokenResponse = response;
+	// 		localStorage.setItem('auth-token', response.token);
+   //       console.log(localStorage.getItem('auth-token'));
+	//   },
+	//   dataType: 'json'
+	// });
+
+
+			// $.ajax({
+			// 	type: "GET",
+			// 	url: 'http://localhost:3000/api/auth/random-number',
+			// 	headers: {'Authorization': 'Bearer ' + localStorage.getItem('auth-token') },
+			// 	success: function(response){
+			// 		console.log(response);
+			// 		//tokenResponse = resonse;
+					
+			// 	},
+			// 	dataType: 'json'
+			// });
+
+
+	// $.ajax({
+	// 	type: "POST",
+	// 	url: 'http://localhost:3000/api/users',
+	// 	  data: {
+	// 	  username: 'react',
+	// 	  mobileNumber: '9849776999'
+	// 	},
+	// 	//headers: {'Authorization': 'Bearer ' + localStorage.getItem('auth-token') },
+	// 	success: function(response){
+	// 		console.log(response);
+	// 		//tokenResponse = resonse;
+			
+	// 	},
+	// 	dataType: 'json'
+	// });
+
+
+	// $.ajax({
+	// 	type: "POST",
+	// 	url: 'http://localhost:5000/api/test/',		
+   //    data: {
+   //       entry: {
+   //          username: 'react2',
+   //          mobileNumber: '9849776999'   
+   //       }      
+   //    },
+	// 	headers: {'Authorization': 'Bearer ' + localStorage.getItem('auth-token') },
+	// 	success: function(response){
+	// 		console.log(response);			
+	// 	},
+	// 	dataType: 'json'
+	// });
+
+   // $.ajax({
+	// 	type: "GET",
+	// 	url: 'http://localhost:5000/api/test/',		
+   //    // data: {
+   //    //    entry: {ss
+   //    //       username: 'react2',
+   //    //       mobileNumber: '9849776999'   
+   //    //    }      
+   //    // },
+	// 	headers: {'Authorization': 'Bearer ' + localStorage.getItem('auth-token') },
+	// 	success: function(response){
+	// 		console.log(response);			
+	// 	},
+	// 	dataType: 'json'
+	// });
+
+   // console.log(localStorage.getItem('auth-token'));
+
+   /* trucks */
+   // $.ajax({
+	// 	type: "GET",
+	// 	url: 'http://localhost:5000/api/trucks/form',		
+	// 	headers: {'Authorization': 'Bearer ' + localStorage.getItem('auth-token') },
+	// 	success: function(response){
+	// 		console.log('form - ', response);			
+	// 	},
+	// 	dataType: 'json'
+	// });
+
+   // $.ajax({
+	// 	type: "GET",
+	// 	url: 'http://localhost:5000/api/trucks/grid',		
+	// 	headers: {'Authorization': 'Bearer ' + localStorage.getItem('auth-token') },
+	// 	success: function(response){
+	// 		console.log('grid - ', response);			
+	// 	},
+	// 	dataType: 'json'
+	// });
+
+   // $.ajax({
+	// 	type: "GET",
+	// 	url: 'http://localhost:5000/api/trucks/db',		
+	// 	headers: {'Authorization': 'Bearer ' + localStorage.getItem('auth-token') },
+	// 	success: function(response){
+	// 		console.log('db - ', response);			
+	// 	},
+	// 	dataType: 'json'
+	// });
+
+
+   /* trips */ 
+   $.ajax({
+		type: "GET",
+		url: 'http://localhost:5000/api/trips/form',		
+		headers: {'Authorization': 'Bearer ' + localStorage.getItem('auth-token') },
+		success: function(response){
+			console.log('form - ', response);			
+		},
+		dataType: 'json'
+	});
+
+   $.ajax({
+		type: "GET",
+		url: 'http://localhost:5000/api/trips/grid',		
+		headers: {'Authorization': 'Bearer ' + localStorage.getItem('auth-token') },
+		success: function(response){
+			console.log('grid - ', response);			
+		},
+		dataType: 'json'
+	});
+
+   $.ajax({
+		type: "GET",
+		url: 'http://localhost:5000/api/trips/db',		
+		headers: {'Authorization': 'Bearer ' + localStorage.getItem('auth-token') },
+		success: function(response){
+			console.log('db - ', response);			
+		},
+		dataType: 'json'
+	});
+
+
+
+
+
+//http://localhost:3000/api/auth/random-number
+</script>
+</head>
+<body>
+ This is API test.
+</body>
+</html>
