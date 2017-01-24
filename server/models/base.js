@@ -50,12 +50,18 @@ export default class BaseSchema {
          } else {
             schemaObject[field] = fieldData;
          }
-      };
-      this.processField = (self, field, fieldData, dbSchema, roleBasedSchemas) => {     
+      };      
+      this.processField = (self, field, fieldData, dbSchema, roleBasedSchemas) => {   
+         // console.log('field', field);
          if ((fieldData instanceof Array) || (typeof fieldData === 'object' && typeof fieldData.type === 'undefined')) { //indicates a nested field
             if (fieldData instanceof Array) {
                Object.keys(fieldData[0]).forEach((nestedField) => {   
-                  self.processField(self, `[${field}].${nestedField}`, fieldData[0][nestedField], dbSchema, roleBasedSchemas);
+                  //for processing nested arrays
+                  let parts = field.split('.');
+                  parts[parts.length - 1] = `[${parts[parts.length - 1]}]`;
+                  let formattedField = parts.join('.');
+
+                  self.processField(self, `${formattedField}.${nestedField}`, fieldData[0][nestedField], dbSchema, roleBasedSchemas);
                });          
             } else {
                Object.keys(fieldData).forEach((nestedField) => {   
@@ -64,6 +70,7 @@ export default class BaseSchema {
             }                      
             return;  
          }
+
          let fieldParts = field.split('.');
 
          //set title if not exists
@@ -92,11 +99,20 @@ export default class BaseSchema {
             utils.cloneObject(dbOnly, fieldDBData);//attach the db specific
          }
          self.setFieldDetails(self, field, fieldDBData, dbSchema);
-         
+                  
          let stringifiedFieldSchema = {}; //stringified types, default values etc
          Object.keys(fieldData).forEach((key) => {
             if (typeof fieldData[key] === 'function') {
                stringifiedFieldSchema[key] = fieldData[key].name;
+            } else if (fieldData[key] instanceof Array && fieldData[key].length > 0) {//type = [String] or Arrays  
+                  stringifiedFieldSchema[key] = [];
+                  fieldData[key].forEach((subEle) => {
+                     if (typeof subEle === 'function') {
+                        stringifiedFieldSchema[key].push(subEle.name);
+                     } else {
+                        stringifiedFieldSchema[key].push(subEle);
+                     }
+                  });                                               
             } else {
                stringifiedFieldSchema[key] = fieldData[key];
             }

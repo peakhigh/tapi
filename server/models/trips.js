@@ -97,7 +97,7 @@ const CurrentSchema = new BaseSchemaFactory({
             }
          }],
          formalities: schemaUtils.tripFormality()         
-      }], 
+      }],
       drop: [{
          date: {
             type: Date     
