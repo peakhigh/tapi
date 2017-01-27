@@ -6,9 +6,13 @@ import globals from '../utils/globals';
 import utils from '../utils/util';
 import cache from '../utils/cache';
 import constants from '../config/constants';
+//let rootDir = require('path').dirname(require.main.filename);
+const fs = require('fs');
+const path = require('path');
 
 export default class BaseSchema {
-   constructor(options) {      
+   constructor(options) {     
+      let computedFieldSchemas = {};       
       this.filterSchema = () => {
          let fSchema = options.schema;
          let self = this;
@@ -20,14 +24,57 @@ export default class BaseSchema {
          if (!options.excludeOwner) {
             self.getOwnerColumns(fSchema);
          }
+
+         // self.fieldConfigs = {};
+         self.fieldServiceMap = {};
+         self.serviceSchemas = {};
+         self.serviceConfigs = {};
+         let servicesPath = path.resolve(`server/services/${options.collection.toLowerCase()}`);
+         console.log('Services Path', servicesPath);
+         if (fs.existsSync(servicesPath)) {//prepare for computing services schema
+            let services = fs.readdirSync(servicesPath); // store service configs         
+            services.forEach((serviceFileName) => {//for each schema
+               let serviceName = serviceFileName.replace('.js', '');
+               // self.serviceSchemas[serviceName] = {};                     
+               let serviceConfig = require(`${servicesPath}/${serviceFileName}`);               
+               self.serviceConfigs[serviceName] = serviceConfig;
+               if (serviceConfig.schemaFields && serviceConfig.schemaFields.length > 0) {
+                  serviceConfig.schemaFields.forEach((field) => {
+                     if (!self.fieldServiceMap[field]) {
+                        self.fieldServiceMap[field] = [];
+                     } 
+                     self.fieldServiceMap[field].push(serviceName);
+                     // self.serviceSchemas[serviceName][field] = {};//put empty config which will be overridden when that individual field config is computed                     
+                  });
+                  if (serviceConfig.schemaOverrideFeilds) {
+                     Object.keys(serviceConfig.schemaOverrideFeilds).forEach((field) => {
+                        if (!self.fieldServiceMap[field]) {
+                           self.fieldServiceMap[field] = [];
+                        } 
+                        self.fieldServiceMap[field].push(serviceName);
+                        // self.serviceSchemas[serviceName][field] = serviceConfig.schemaOverrideFeilds[field];//set other overriden fields config                     
+                     });
+                  }
+               }
+            });
+         }       
+
          let roleBasedSchemas = {};
          Object.keys(fSchema).forEach((field) => {               
             self.processField(self, field, fSchema[field], dbSchema, roleBasedSchemas);
          });
          //store these role based schemas into cache and return them via apis    
          cache.updateSchemaStore(roleBasedSchemas);
+         if (self.serviceSchemas && Object.keys(self.serviceSchemas).length > 0) {
+            Object.keys(self.serviceSchemas).forEach((serviceKey) => {
+                let parts = serviceKey.split(constants.CONFIG_KEY_SEPERATOR);
+               //parts[parts.length - 1] = serviceName 
+               self.serviceConfig[parts[parts.length - 1]].prepare(serviceKey, self.serviceSchemas[serviceKey], self.serviceConfigs(parts[parts.length - 1]));
+            });
+         }
+         console.log(JSON.stringify(self.serviceSchemas['TRIPS_TRUCKS#ADMIN#TRIPS#FORM#addTrip']));
          return dbSchema;
-      }; 
+      };            
       this.setFieldDetails = (self, field, fieldData, schemaObject) => {
          if (field.indexOf('.') > 0) {
             let fieldPathParts = field.split('.');
@@ -70,6 +117,7 @@ export default class BaseSchema {
             }                      
             return;  
          }
+         // console.log('field', field);
 
          let fieldParts = field.split('.');
 
@@ -153,17 +201,17 @@ export default class BaseSchema {
                utils.cloneObject(stringifiedFieldSchema, fieldFormData);//attach the common props                
                if (htmlOnly && Object.keys(htmlOnly).length > 0) {
                   utils.cloneObject(htmlOnly, fieldFormData);//attach the html specific
-               }
+               }               
                if (currentRoleHtmlOnlyAttrs) {
                   //customization exists for this app, role & field combination 
                   utils.cloneObject(currentRoleHtmlOnlyAttrs, fieldFormData);
                }
-               self.setFieldDetails(self, field, fieldFormData, roleBasedSchemas[formKey]);
+               self.setFieldDetails(self, field, fieldFormData, roleBasedSchemas[formKey]);               
 
-               //2. process grid attributes                     
+               //2. process grid attributes    
+               let fieldGridData = {};                 
                if (options.gridAttributes && options.gridAttributes.length > 0) {//collect the grid attributes
-                  // roleBasedSchemas[gridKey][field] = {};
-                  let fieldGridData = {};
+                  // roleBasedSchemas[gridKey][field] = {};                  
                   options.gridAttributes.forEach((attr) => {
                      if (currentRoleHtmlOnlyAttrs && currentRoleHtmlOnlyAttrs[attr]) {//get from role based html specific
                         fieldGridData[attr] = currentRoleHtmlOnlyAttrs[attr];
@@ -175,6 +223,43 @@ export default class BaseSchema {
                   });
                   self.setFieldDetails(self, field, fieldGridData, roleBasedSchemas[gridKey]);
                }
+
+               let matchingServiceField;
+               if (self.fieldServiceMap[field] && self.fieldServiceMap[field].length > 0) {// if this field exists in any service
+                  matchingServiceField = field;
+               } else if (field.indexOf('.') > 0) { //to support normal & nested fields
+                  let nestedPath = '';
+                  for (let i = 0; i < fieldParts.length; i++) {
+                     nestedPath += ((i > 0) ? '.' : '') + fieldParts[i].replace('[', '').replace(']', '');
+                     if (self.fieldServiceMap[nestedPath] && self.fieldServiceMap[nestedPath].length > 0) {
+                        matchingServiceField = nestedPath;
+                        break;
+                     }
+                  }
+               }
+               
+               if (matchingServiceField && self.fieldServiceMap[matchingServiceField] && self.fieldServiceMap[matchingServiceField].length > 0) {// if this field exists in any service
+                  self.fieldServiceMap[matchingServiceField].forEach((serviceName) => { //get all the services which include this field
+                     let serviceFieldConfig = {};
+                     let serviceRoleBasedKey;
+                     if (self.serviceConfigs[serviceName].type === 'grid' && fieldGridData && Object.keys(fieldGridData).length > 0) {       
+                        serviceRoleBasedKey = gridKey + constants.CONFIG_KEY_SEPERATOR + serviceName;    
+                        utils.cloneObject(fieldGridData, serviceFieldConfig); //if grid, copy field data of grid 
+                     } else if (self.serviceConfigs[serviceName].type === 'form') {
+                        serviceRoleBasedKey = formKey + constants.CONFIG_KEY_SEPERATOR + serviceName; 
+                        utils.cloneObject(fieldFormData, serviceFieldConfig); //if form, copy field data of form                         
+                     } 
+
+                     if (self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField] && Object.keys(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField]).length > 0) {// override customizations of the field defined at service level
+                        utils.cloneObject(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField], serviceFieldConfig);
+                     }
+                     if (!self.serviceSchemas[serviceRoleBasedKey]) {
+                        self.serviceSchemas[serviceRoleBasedKey] = {};
+                     }
+                     self.setFieldDetails(self, field, serviceFieldConfig, self.serviceSchemas[serviceRoleBasedKey]);                    
+                  });
+               } 
+
                //3. process role based dbschema into cache which can be used for validations on every form submits etc to validate data      
                let fieldRoleDBData = {};     
                utils.cloneObject(stringifiedFieldSchema, fieldRoleDBData);//attach the common props first       
@@ -253,7 +338,7 @@ export default class BaseSchema {
          };
       };
 
-      this.schema = new mongoose.Schema(this.filterSchema());  
+      this.schema = new mongoose.Schema(this.filterSchema());   
       this.attachHooks();
       this.attachMethods();
       this.attachStatics();
