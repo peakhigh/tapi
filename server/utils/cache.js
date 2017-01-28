@@ -102,7 +102,7 @@ class Cache {
       }      
    };   
   }
-  updateSchemaStore(roleBasedSchemas) {     
+  updateSchemaStore(schemas) {     
      if (!this.SCHEMA_STORE) { //schema store contains all the schemas per html(form, grid) per db per role per app per collection like a key value 
         this.SCHEMA_STORE = {};
      }
@@ -110,10 +110,15 @@ class Cache {
      //for form => appKey + sep + role.Code + sep + collection_name + sep + CONFIG_KEY_FORM_SUFFIX
      //for grid => appKey + sep + role.Code + sep + collection_name + sep + CONFIG_KEY_GRID_SUFFIX
      //for db => appKey + sep + role.Code + sep + collection_name + sep + CONFIG_KEY_DB_SUFFIX
-     utils.cloneObject(roleBasedSchemas, this.SCHEMA_STORE);
+     //for services => appKey#role.Code#collection_name#serviceType#addTrip'     
+     utils.cloneObject(schemas, this.SCHEMA_STORE);
   }
   getRequestSchema(req) {
       let key = this.getKey(req);
+      return key ? this.SCHEMA_STORE[key] : {};
+  }
+  getRequestServiceSchema(req) {
+      let key = this.getServiceKey(req);
       return key ? this.SCHEMA_STORE[key] : {};
   }
   getKey(req) {
@@ -122,6 +127,15 @@ class Cache {
         let urlParts = req.originalUrl.replace('/', '').split('?')[0].split('#')[0].split('/');
         //app + role + collection + key_type(form/grid/db)
         return (tokenDetails.app + constants.CONFIG_KEY_SEPERATOR + tokenDetails.role + constants.CONFIG_KEY_SEPERATOR + urlParts[1] + constants.CONFIG_KEY_SEPERATOR + urlParts[2]).toUpperCase();
+     }
+  }
+  getServiceKey(req) {
+     let tokenDetails = authUtils.decodeToken(req.headers);
+     if (tokenDetails) {
+        let urlParts = req.originalUrl.replace('/', '').split('?')[0].split('#')[0].split('/');
+        //app + role + collection + service_type (form/grid/db) + servicename(uppercase)
+        //console.log((tokenDetails.app + constants.CONFIG_KEY_SEPERATOR + tokenDetails.role + constants.CONFIG_KEY_SEPERATOR + urlParts[1] + constants.CONFIG_KEY_SEPERATOR + constants.CONFIG_KEY_SERVICE_SUFFIX + constants.CONFIG_KEY_SEPERATOR).toUpperCase() + urlParts[3]);
+        return (tokenDetails.app + constants.CONFIG_KEY_SEPERATOR + tokenDetails.role + constants.CONFIG_KEY_SEPERATOR + urlParts[1] + constants.CONFIG_KEY_SEPERATOR + constants.CONFIG_KEY_SERVICE_SUFFIX + constants.CONFIG_KEY_SEPERATOR).toUpperCase() + urlParts[3];
      }
   }
 }

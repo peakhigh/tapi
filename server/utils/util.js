@@ -1,5 +1,8 @@
 import globals from './globals';
 import config from '../../config/env';
+//let rootDir = require('path').dirname(require.main.filename);
+const fs = require('fs');
+const path = require('path');
 
 export default { 
    cloneObject: function (source, destination) {
@@ -51,5 +54,21 @@ export default {
          return config.defaultapp;
       }
       return retVal;
+   },
+   getServiceConfigs: function (collection) {
+      let serviceConfigs = {};
+      let servicesPath = path.resolve(`server/services/${collection.toLowerCase()}`);      
+      if (fs.existsSync(servicesPath)) {//prepare for computing services schema      
+         // console.log('servicesPath', servicesPath);   
+         let services = fs.readdirSync(servicesPath); // store service configs  
+         services.forEach((serviceFileName) => {//for each schema
+            // console.log('serviceFileName', serviceFileName);
+            let serviceName = serviceFileName.replace('.js', '');
+            let serviceConfig = require(`${servicesPath}/${serviceFileName}`);               
+            serviceConfigs[serviceName] = serviceConfig;
+         });
+      }
+      // console.log('serviceConfigs', serviceConfigs);
+      return serviceConfigs;
    }
 };
