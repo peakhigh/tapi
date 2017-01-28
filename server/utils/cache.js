@@ -71,7 +71,7 @@ class Cache {
                }, {
                   title: 'Trucks',
                   icon: 'fa-table',
-                  page: 'managetrucks',
+                  page: 'managetrucks',                  
                   Menu: [{
                         title: 'Add New',
                         icon: 'fa-table',
@@ -85,15 +85,18 @@ class Cache {
                }, {
                   title: 'Trips',
                   icon: 'fa-table',
-                  page: 'managetrips',
+                  page: 'manageTrip',                  
+                  service: 'trips/service/manageTrip',
                   Menu: [{
                         title: 'Add New',
                         icon: 'fa-table',
-                        page: 'newtrips'
+                        page: 'addTrip',
+                        service: 'trips/service/addTrip'
                      }, {
                         title: 'Manage',
                         icon: 'fa-table',
-                        page: 'managetrips'
+                        page: 'manageTrip',
+                        service: 'trips/service/manageTrip',
                      }
                   ]
                }]
