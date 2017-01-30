@@ -1,6 +1,14 @@
 let Schema = require('mongoose').Schema;
 
 export default { 
+   formatHtmlSchema: function (schema) {            
+      return {//this is designed to work for alpaca plugin
+         schema: {
+            type: 'object',
+            properties: schema
+         }
+      };
+   },
    address: function (isArray) {
       let obj = {
          address: {

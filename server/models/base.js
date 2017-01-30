@@ -64,11 +64,27 @@ export default class BaseSchema {
                 }
             });
             // console.log('serviceSchemas', self.serviceSchemas);
-            cache.updateSchemaStore(self.serviceSchemas);
+            cache.updateServiceSchemaStore(self.serviceSchemas, self.serviceConfigs);
          }
          return dbSchema;
       };            
-      this.setFieldDetails = (self, field, fieldData, schemaObject) => {
+      this.getFieldTitle = (field) => {    
+         let fieldParts = field.split('.');
+         //camelcase to uppercase. step 1)insert a space before all caps. step 2)uppercase the first character
+         if (fieldParts.length > 0) { //if parent path exists
+            return fieldParts[fieldParts.length - 1].replace(/([A-Z])/g, ' $1').replace(/^./, (str) => { return str.toUpperCase(); });
+         }
+         return field.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => { return str.toUpperCase(); });
+      };
+      this.setHtmlArrayField = (fieldData) => {//this is designed to work for alpaca plugin
+         let type = fieldData.type[0];
+         fieldData.type = 'array';
+         fieldData.items = {
+            type: type
+         };
+      };
+      this.setFieldDetails = (self, field, fieldData, schemaObject, schemaType) => {
+         // console.log(field, schemaType);
          if (field.indexOf('.') > 0) {
             let fieldPathParts = field.split('.');
             let projection = schemaObject;
@@ -76,19 +92,61 @@ export default class BaseSchema {
                if (fieldPathParts[i].indexOf('[') === 0) { //array of objects
                   fieldPathParts[i] = fieldPathParts[i].replace('[', '').replace(']', '');                   
                   if (!projection[fieldPathParts[i]]) {
-                     projection[fieldPathParts[i]] = [{}];
+                     if (schemaType === 'form') {//this is designed to work for alpaca plugin
+                         projection[fieldPathParts[i]] = {
+                            title: self.getFieldTitle(fieldPathParts[i]),
+                            type: 'array',
+                            items: {
+                               type: 'object',
+                               properties: {}
+                            }
+                         };                         
+                      } else {
+                         projection[fieldPathParts[i]] = [{}];
+                      }                     
                   }
-                  projection = projection[fieldPathParts[i]][0];
+                  if (schemaType === 'form') {
+                     projection = projection[fieldPathParts[i]].items.properties;
+                  } else {
+                     projection = projection[fieldPathParts[i]][0];
+                  }                  
                } else { 
                    if (!projection[fieldPathParts[i]]) {
-                     projection[fieldPathParts[i]] = {};
+                      if (schemaType === 'form') {//this is designed to work for alpaca plugin
+                         projection[fieldPathParts[i]] = {
+                            title: self.getFieldTitle(field),
+                            type: 'object',
+                            properties: {}
+                         };                         
+                      } else {
+                         projection[fieldPathParts[i]] = {};
+                      }                     
                   }  
-                  projection = projection[fieldPathParts[i]];
+                  if (schemaType === 'form') {
+                     projection = projection[fieldPathParts[i]].properties;
+                  } else {
+                     projection = projection[fieldPathParts[i]];
+                  }                  
                }                                           
-            } 
-            projection[fieldPathParts[fieldPathParts.length - 1]] = fieldData;            
+            }             
+            projection[fieldPathParts[fieldPathParts.length - 1]] = fieldData; 
+            if (schemaType === 'form' && projection[fieldPathParts[fieldPathParts.length - 1]].type) {//this is designed to work for alpaca plugin
+               if (typeof projection[fieldPathParts[fieldPathParts.length - 1]].type === 'string') {
+                  projection[fieldPathParts[fieldPathParts.length - 1]].type = projection[fieldPathParts[fieldPathParts.length - 1]].type.toLowerCase();
+               } else if (Array.isArray(projection[fieldPathParts[fieldPathParts.length - 1]].type)) {
+                  self.setHtmlArrayField(projection[fieldPathParts[fieldPathParts.length - 1]]);
+               }
+            }           
          } else {
             schemaObject[field] = fieldData;
+            // console.log(typeof fieldData.type);
+            if (schemaType === 'form' && schemaObject[field].type) {//this is designed to work for alpaca plugin
+               if (typeof schemaObject[field].type === 'string') {
+                  schemaObject[field].type = schemaObject[field].type.toLowerCase();
+               } else if (Array.isArray(schemaObject[field].type)) {
+                  self.setHtmlArrayField(schemaObject[field]);
+               }      
+            } 
          }
       };      
       this.processField = (self, field, fieldData, dbSchema, roleBasedSchemas) => {   
@@ -116,13 +174,8 @@ export default class BaseSchema {
 
          //set title if not exists
          if (typeof fieldData.title === 'undefined') {
-            //camelcase to uppercase. step 1)insert a space before all caps. step 2)uppercase the first character
-            if (fieldParts.length > 0) { //if parent path exists
-               fieldData.title = fieldParts[fieldParts.length - 1].replace(/([A-Z])/g, ' $1').replace(/^./, (str) => { return str.toUpperCase(); });
-            } else {
-               fieldData.title = field.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => { return str.toUpperCase(); });
-            }                                  
-         }
+            fieldData.title = self.getFieldTitle(field);
+         }         
       
          let htmlOnly = fieldData.html;
          delete fieldData.html;
@@ -200,7 +253,7 @@ export default class BaseSchema {
                   //customization exists for this app, role & field combination 
                   utils.cloneObject(currentRoleHtmlOnlyAttrs, fieldFormData);
                }
-               self.setFieldDetails(self, field, fieldFormData, roleBasedSchemas[formKey]);               
+               self.setFieldDetails(self, field, fieldFormData, roleBasedSchemas[formKey], 'form');               
 
                //2. process grid attributes    
                let fieldGridData = {};                 
@@ -250,16 +303,17 @@ export default class BaseSchema {
                         if (!self.serviceSchemas[serviceRoleBasedKey]) {
                            self.serviceSchemas[serviceRoleBasedKey] = {};
                         }
-                        self.setFieldDetails(self, field, serviceFieldConfig, self.serviceSchemas[serviceRoleBasedKey]); 
+                        self.setFieldDetails(self, field, serviceFieldConfig, self.serviceSchemas[serviceRoleBasedKey], 'form'); 
                      }                                        
                   });
                } 
 
                //3. process role based dbschema into cache which can be used for validations on every form submits etc to validate data      
                let fieldRoleDBData = {};     
-               utils.cloneObject(stringifiedFieldSchema, fieldRoleDBData);//attach the common props first       
-               if (dbOnly && Object.keys(dbOnly).length > 0) {
+               utils.cloneObject(stringifiedFieldSchema, fieldRoleDBData);//attach the common props first                      
+               if (dbOnly && Object.keys(dbOnly).length > 0) {                  
                   utils.cloneObject(dbOnly, fieldRoleDBData);//now override db specific
+                  console.log(fieldRoleDBData);
                }
                if (currentRoleDBOnlyAttrs) {
                   //customization exists for this app, role & field combination 
@@ -324,12 +378,12 @@ export default class BaseSchema {
       };
       this.getDateColumns = (schema) => {
          schema.createdAt = {
-            type: Date,
-            default: Date.now      
+            type: Date,      
+            default: Date.now 
          };
          schema.updatedAt = {
             type: Date,
-            default: Date.now
+            default: Date.now           
          };
       };
 

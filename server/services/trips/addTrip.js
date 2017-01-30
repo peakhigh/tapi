@@ -1,7 +1,7 @@
 module.exports = {
    type: 'form',
    requestType: 'get',
-   schemaFields: ['totalWeight', 'pickup', 'drop', 'comments', 'vehicleRequirements'], // pick fields configuration from default schema
+   schemaFields: ['pickup', 'drop', 'vehicleRequirements', 'comments', 'totalWeight'], // pick fields configuration from default schema
    schemaOverrideFeilds: {}, //override above listed schema fields         
    defaults: {
       status : 'new'
