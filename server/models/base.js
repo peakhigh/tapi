@@ -80,7 +80,7 @@ export default class BaseSchema {
          let type = fieldData.type[0];
          fieldData.type = 'array';
          fieldData.items = {
-            type: type
+            type: type.toLowerCase()
          };
       };
       this.setFieldDetails = (self, field, fieldData, schemaObject, schemaType) => {

@@ -105,7 +105,7 @@ const CurrentSchema = new BaseSchemaFactory({
          address: schemaUtils.address(),                         
          contact: schemaUtils.contact(true),
          itemsToDrop: {
-            type: [String] //pickup.material.name array
+            type: [String] //pickup.material.name array         
          },
          formalities: schemaUtils.tripFormality()         
       }],

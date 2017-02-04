@@ -39,15 +39,15 @@ class Cache {
                }, {
                   title: 'Trips',
                   icon: 'fa-table',
-                  page: 'managetrips',
+                  page: 'manageTrip',
                   Menu: [{
                         title: 'Add New',
                         icon: 'fa-table',
-                        page: 'newtrips'
+                        page: 'addTrip'
                      }, {
                         title: 'Manage',
                         icon: 'fa-table',
-                        page: 'managetrips'
+                        page: 'manageTrip'
                      }
                   ]
                }]
@@ -68,19 +68,19 @@ class Cache {
                SideMenu: [{
                   title: 'Dashboard',
                   icon: 'fa-dashboard',
-                  page: 'dashboard'
+                  page: 'home'
                }, {
                   title: 'Trucks',
                   icon: 'fa-table',
-                  page: 'managetrucks',                  
+                  page: 'manageTruck',                  
                   Menu: [{
                         title: 'Add New',
                         icon: 'fa-table',
-                        page: 'newtrucks'
+                        page: 'addTruck'
                      }, {
                         title: 'Manage',
                         icon: 'fa-table',
-                        page: 'managetrucks'
+                        page: 'manageTruck'
                      }
                   ]
                }, {
