@@ -72,7 +72,10 @@ const CurrentSchema = new BaseSchemaFactory({
       spends: schemaUtils.spend(true), 
       pickup: [{
          date: {
-            type: Date     
+            type: Date,
+            html: {
+               format: 'datetime'
+            }   
          },         
          address: schemaUtils.address(),                                 
          contact: schemaUtils.contact(true),
@@ -100,7 +103,10 @@ const CurrentSchema = new BaseSchemaFactory({
       }],
       drop: [{
          date: {
-            type: Date     
+            type: Date,
+            html: {
+               format: 'datetime'
+            }  
          },        
          address: schemaUtils.address(),                         
          contact: schemaUtils.contact(true),
