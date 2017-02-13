@@ -71,12 +71,7 @@ const CurrentSchema = new BaseSchemaFactory({
       },
       spends: schemaUtils.spend(true), 
       pickup: [{
-         date: {
-            type: Date,
-            html: {
-               format: 'datetime'
-            }   
-         },         
+         date: schemaUtils.date(),         
          address: schemaUtils.address(),                                 
          contact: schemaUtils.contact(true),
          material: [{
@@ -87,7 +82,12 @@ const CurrentSchema = new BaseSchemaFactory({
                type: String     
             },
             description: {
-               type: String
+               type: String,
+               html: {
+                  form: {
+                     type: "textarea"
+                  }
+               }
             },
             weight: {
                type: Number
@@ -102,12 +102,7 @@ const CurrentSchema = new BaseSchemaFactory({
          formalities: schemaUtils.tripFormality()         
       }],
       drop: [{
-         date: {
-            type: Date,
-            html: {
-               format: 'datetime'
-            }  
-         },        
+         date: schemaUtils.date(),        
          address: schemaUtils.address(),                         
          contact: schemaUtils.contact(true),
          itemsToDrop: {

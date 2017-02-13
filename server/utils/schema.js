@@ -1,7 +1,18 @@
 let Schema = require('mongoose').Schema;
 
 export default { 
-   formatHtmlSchema: function (schema) {            
+   formatHtmlSchema: function (schema) {   
+      if(schema && Object.keys(schema).length > 0) {
+         Object.keys(schema).forEach((key) => {
+            if (schema[key].properties) {//object
+
+            } else if (schema[key].items) {//array of objects
+
+            } else {//
+
+            }
+         });
+      }         
       return {//this is designed to work for alpaca plugin
          schema: {
             type: 'object',
@@ -123,6 +134,15 @@ export default {
             required: false
          }
       };
+      return isArray ? [obj] : obj;
+   },
+   date: function(isArray) {
+      let obj = {
+            type: Date,
+         html: {
+            format: 'datetime'
+         }   
+      }
       return isArray ? [obj] : obj;
    }
 };
