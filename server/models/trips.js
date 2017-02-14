@@ -85,7 +85,7 @@ const CurrentSchema = new BaseSchemaFactory({
                type: String,
                html: {
                   form: {
-                     type: "textarea"
+                     type: 'textarea'
                   }
                }
             },

@@ -1,24 +1,46 @@
 let Schema = require('mongoose').Schema;
+import utils from './util';
+
+function setSchmeaFormOptions(schema, options) {
+   Object.keys(schema).forEach((key) => {      
+      if (schema[key].properties) {//object
+         if (!options[key]) {
+            options[key] = {fields:{}};
+         }         
+         setSchmeaFormOptions(schema[key].properties, options[key].fields);
+      } else if (schema[key].items && schema[key].items.properties) {//array of objects
+         if (!options[key]) {
+            options[key] = {items:{fields:{}}};
+         }         
+         setSchmeaFormOptions(schema[key].items.properties, options[key].items.fields);    
+      } else {//type=string/date/object/[string] etc   
+         if (!options[key]) {
+            options[key] = {};
+         }
+         if (schema[key].form && Object.keys(schema[key].form).length > 0) {//clone all form properties      
+            Object.keys(schema[key].form).forEach((prop) => {
+               options[key][prop] = schema[key].form[prop];
+            });          
+         }               
+      }
+   });
+}
 
 export default { 
-   formatHtmlSchema: function (schema) {   
-      if(schema && Object.keys(schema).length > 0) {
-         Object.keys(schema).forEach((key) => {
-            if (schema[key].properties) {//object
-
-            } else if (schema[key].items) {//array of objects
-
-            } else {//
-
-            }
-         });
-      }         
-      return {//this is designed to work for alpaca plugin
+   formatHtmlSchema: (schema) => {   
+      let formattedSchema = {//this is designed to work for alpaca plugin
          schema: {
             type: 'object',
             properties: schema
          }
       };
+      if (schema && Object.keys(schema).length > 0) {
+         formattedSchema.options = {
+            fields: {}
+         };
+         setSchmeaFormOptions(formattedSchema.schema.properties, formattedSchema.options.fields);
+      }         
+      return formattedSchema;
    },
    address: function (isArray) {
       let obj = {
@@ -136,13 +158,13 @@ export default {
       };
       return isArray ? [obj] : obj;
    },
-   date: function(isArray) {
+   date: function (isArray) {
       let obj = {
             type: Date,
          html: {
             format: 'datetime'
          }   
-      }
+      };
       return isArray ? [obj] : obj;
    }
 };

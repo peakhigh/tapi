@@ -4,7 +4,7 @@ import config from '../../config/env';
 const fs = require('fs');
 const path = require('path');
 
-export default { 
+export default {    
    cloneObject: function (source, destination) {
       for (let prop in source) {
          if (source.hasOwnProperty(prop)) {
