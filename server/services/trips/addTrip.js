@@ -1,6 +1,7 @@
 module.exports = {
    type: 'form',
    requestType: 'get',
+   allowPostData: true,
    schemaFields: ['pickup', 'drop', 'vehicleRequirements', 'comments', 'totalWeight'], // pick fields configuration from default schema
    schemaOverrideFeilds: {}, //override above listed schema fields         
    defaults: {
@@ -16,5 +17,7 @@ module.exports = {
    }, 
    init: (serviceConfig, req) => {}, //on init hook, will get executed on service request - init
    // pre: () => {}, //pre submit hook  - before serving the request - only for forms
-   callback: (schema, serviceConfig, req) => {return schema;} //callback hook  - after serving the request - forms & grid
+   callback: (schema, serviceConfig, req) => {return schema;}, //callback hook  - after serving the request - forms & grid
+   postValidate: (serviceConfig, req) => {}, //on postValidate, will get executed on POST service request
+   postCallback: (schema, serviceConfig, req) => {return {success: true};}//callback hook  for post request
 };

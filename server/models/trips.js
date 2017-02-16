@@ -57,7 +57,8 @@ const CurrentSchema = new BaseSchemaFactory({
       },
       vehicleRequirements: {
          vechicleType: {
-            type: String //enum needed -- closed Body, open body,trally, mini truck, auto
+            type: String, //enum needed -- closed Body, open body,trally, mini truck, auto
+            required: true
          },
          minRating: {
             type: Number
