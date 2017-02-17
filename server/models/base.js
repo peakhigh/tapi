@@ -22,6 +22,7 @@ export default class BaseSchema {
             self.getOwnerColumns(fSchema);
          }
 
+         //field to arrays of service names
          self.fieldServiceMap = {};//create a field to services map so that when processing a field, corresponding services schemas will be updated
          self.serviceSchemas = {};//temporary service schemas store (role & app based)
          self.serviceConfigs = utils.getServiceConfigs(options.collection);
@@ -33,19 +34,23 @@ export default class BaseSchema {
                      if (!self.fieldServiceMap[field]) {
                         self.fieldServiceMap[field] = [];
                      } 
-                     self.fieldServiceMap[field].push(serviceName);
+                     if (self.fieldServiceMap[field].indexOf(serviceName) < 0) {
+                        self.fieldServiceMap[field].push(serviceName);
+                     }                     
                   });
                   if (serviceConfig.schemaOverrideFeilds) {
                      Object.keys(serviceConfig.schemaOverrideFeilds).forEach((field) => {
                         if (!self.fieldServiceMap[field]) {
                            self.fieldServiceMap[field] = [];
+                        }                         
+                        if (self.fieldServiceMap[field].indexOf(serviceName) < 0) {
+                           self.fieldServiceMap[field].push(serviceName);
                         } 
-                        self.fieldServiceMap[field].push(serviceName);
                      });
                   }
                }
             });
-         }               
+         }     
 
          let roleBasedSchemas = {};
          Object.keys(fSchema).forEach((field) => {               
@@ -210,7 +215,7 @@ export default class BaseSchema {
             } else {
                stringifiedFieldSchema[key] = fieldData[key];
             }
-         });
+         });         
 
          Object.keys(cache.APP_CONFIG).forEach((appKey) => {// for each application
             Object.keys(cache.APP_CONFIG[appKey].ROLES).forEach((role) => {//for each role      
@@ -271,40 +276,42 @@ export default class BaseSchema {
                   self.setFieldDetails(self, field, fieldGridData, roleBasedSchemas[gridKey]);
                }
 
-               let matchingServiceField;
+               //process service fields/ override service config of fields
+               let matchingServiceFields = [];
                if (self.fieldServiceMap[field] && self.fieldServiceMap[field].length > 0) {// if this field exists in any service
-                  matchingServiceField = field;
+                  matchingServiceFields.push(field);
                } else if (field.indexOf('.') > 0) { //to support normal & nested fields
                   let nestedPath = '';
                   for (let i = 0; i < fieldParts.length; i++) {
-                     nestedPath += ((i > 0) ? '.' : '') + fieldParts[i].replace('[', '').replace(']', '');
+                     nestedPath += ((i > 0) ? '.' : '') + fieldParts[i].replace('[', '').replace(']', '');    
                      if (self.fieldServiceMap[nestedPath] && self.fieldServiceMap[nestedPath].length > 0) {
-                        matchingServiceField = nestedPath;
-                        break;
-                     }
-                  }
+                        matchingServiceFields.push(nestedPath);
+                     }       
+                  }                  
                }
                
-               if (matchingServiceField && self.fieldServiceMap[matchingServiceField] && self.fieldServiceMap[matchingServiceField].length > 0) {// if this field exists in any service
-                  self.fieldServiceMap[matchingServiceField].forEach((serviceName) => { //get all the services which include this field
-                     let serviceFieldConfig = {};
-                     let serviceRoleBasedKey = serviceKey + constants.CONFIG_KEY_SEPERATOR + serviceName;
-                     if (self.serviceConfigs[serviceName].type === 'grid' && fieldGridData && Object.keys(fieldGridData).length > 0) {       
-                        utils.cloneObject(fieldGridData, serviceFieldConfig); //if grid, copy field data of grid 
-                     } else { //if (self.serviceConfigs[serviceName].type === 'form') {
-                        utils.cloneObject(fieldFormData, serviceFieldConfig); //if form/custom, copy field data of form                         
-                     } 
+               if (matchingServiceFields && matchingServiceFields.length > 0) {// if this field exists in any service
+                  matchingServiceFields.forEach((matchingServiceField) => {
+                     self.fieldServiceMap[matchingServiceField].forEach((serviceName) => { //get all the services which include this field
+                        let serviceRoleBasedKey = serviceKey + constants.CONFIG_KEY_SEPERATOR + serviceName;
+                        let serviceFieldConfig = {};
+                        if (self.serviceConfigs[serviceName].type === 'grid' && fieldGridData && Object.keys(fieldGridData).length > 0) {       
+                           utils.cloneObject(fieldGridData, serviceFieldConfig); //if grid, copy field data of grid 
+                        } else { //if (self.serviceConfigs[serviceName].type === 'form') {
+                           utils.cloneObject(fieldFormData, serviceFieldConfig); //if form/custom, copy field data of form                         
+                        } 
 
-                     if (self.serviceConfigs[serviceName].schemaOverrideFeilds && self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField] && Object.keys(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField]).length > 0) {
-                        // override customizations of the field defined at service level
-                        utils.cloneObject(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField], serviceFieldConfig);
-                     }
-                     if (serviceRoleBasedKey) {
-                        if (!self.serviceSchemas[serviceRoleBasedKey]) {
-                           self.serviceSchemas[serviceRoleBasedKey] = {};
+                        if (self.serviceConfigs[serviceName].schemaOverrideFeilds && self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField] && Object.keys(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField]).length > 0) {
+                           // override customizations of the field defined at service level
+                           utils.cloneObject(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField], serviceFieldConfig);
                         }
-                        self.setFieldDetails(self, field, serviceFieldConfig, self.serviceSchemas[serviceRoleBasedKey], 'form'); 
-                     }                                        
+                        if (serviceRoleBasedKey) {
+                           if (!self.serviceSchemas[serviceRoleBasedKey]) {
+                              self.serviceSchemas[serviceRoleBasedKey] = {};
+                           }
+                           self.setFieldDetails(self, field, serviceFieldConfig, self.serviceSchemas[serviceRoleBasedKey], 'form'); 
+                        }                                                             
+                     });
                   });
                } 
 

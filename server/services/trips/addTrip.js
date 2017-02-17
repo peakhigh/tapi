@@ -4,6 +4,9 @@ module.exports = {
    allowPostData: true,
    schemaFields: ['pickup', 'drop', 'vehicleRequirements', 'comments', 'totalWeight'], // pick fields configuration from default schema
    schemaOverrideFeilds: {
+      'pickup.date' : {
+         required: true
+      },
       totalWeight: {
          required: true
       }
