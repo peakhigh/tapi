@@ -3,7 +3,11 @@ module.exports = {
    requestType: 'get',
    allowPostData: true,
    schemaFields: ['pickup', 'drop', 'vehicleRequirements', 'comments', 'totalWeight'], // pick fields configuration from default schema
-   schemaOverrideFeilds: {}, //override above listed schema fields         
+   schemaOverrideFeilds: {
+      totalWeight: {
+         required: true
+      }
+   }, //override above listed schema fields         
    defaults: {
       status : 'new'
    },
