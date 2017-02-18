@@ -40,12 +40,15 @@
     "cookie-parser": "^1.4.1",
     "cors": "^2.7.1",
     "debug": "^2.2.0",
+    "eslint-plugin-react": "^3.16.1",
     "express": "4.14.0",
     "express-jwt": "3.4.0",
     "express-validation": "1.0.0",
     "express-winston": "^1.2.0",
+    "extend": "^3.0.0",
     "helmet": "2.1.1",
     "http-status": "^0.2.0",
+    "jQuery": "^1.7.2",
     "joi": "8.4.2",
     "jsonwebtoken": "7.1.9",
     "method-override": "^2.3.5",
@@ -87,8 +90,7 @@
     "validate-commit-msg": "^2.6.1"
   },
   "license": "MIT",
-  "config": {   
-  },
+  "config": {},
   "babel": {
     "presets": [
       "es2015",

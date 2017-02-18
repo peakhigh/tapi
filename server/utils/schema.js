@@ -1,5 +1,7 @@
 let Schema = require('mongoose').Schema;
 import utils from './util';
+import schemaTypes from './schema-types';
+
 
 function setSchmeaFormOptions(schema, options) {
    Object.keys(schema).forEach((key) => {      
@@ -20,7 +22,8 @@ function setSchmeaFormOptions(schema, options) {
          if (schema[key].form && Object.keys(schema[key].form).length > 0) {//clone all form properties      
             Object.keys(schema[key].form).forEach((prop) => {
                options[key][prop] = schema[key].form[prop];
-            });          
+            });  
+            delete schema[key].form;       
          }               
       }
    });
@@ -44,21 +47,19 @@ export default {
    },
    address: function (isArray) {
       let obj = {
-         address: {
-            type: String
-         },
-         city: {
+         street: {
             type: String
          },
          state: {
             type: String
          },
-         zip: {
+         city: {
             type: String
-         },
-         country: {
-            type: String
-         }
+         },         
+         zip: schemaTypes.zip()
+         // country: { //enable this only when going out of india
+         //    type: String
+         // }
       };
       return isArray ? [obj] : obj;
    },
@@ -70,15 +71,9 @@ export default {
          lastName: {
             type: String
          },
-         email: {
-            type: String
-         }, 
-         mobile: {
-            type: Number
-         },
-         alternativePhone: {
-            type: Number
-         }
+         email: schemaTypes.email(), 
+         mobile: schemaTypes.mobile(),
+         alternativePhone: schemaTypes.mobile()
       };
       return isArray ? [obj] : obj;
    },
@@ -143,7 +138,7 @@ export default {
       };
       return isArray ? [obj] : obj;
    },
-   comment: function (isArray) {
+   comment: function (isArray) {//TODO - need to use this in the future for trips.comments etc
       let obj = {
          comment: {
             type: String
@@ -155,16 +150,7 @@ export default {
             type: Schema.Types.ObjectId,
             required: false
          }
-      };
+      };     
       return isArray ? [obj] : obj;
-   },
-   date: function (isArray) {
-      let obj = {
-            type: Date,
-         html: {
-            format: 'datetime'
-         }   
-      };
-      return isArray ? [obj] : obj;
-   }
+   }   
 };

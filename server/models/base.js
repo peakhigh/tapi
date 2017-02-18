@@ -119,7 +119,7 @@ export default class BaseSchema {
                    if (!projection[fieldPathParts[i]]) {
                       if (schemaType === 'form') {//this is designed to work for alpaca plugin
                          projection[fieldPathParts[i]] = {
-                            title: self.getFieldTitle(field),
+                            title: self.getFieldTitle(fieldPathParts[i]),
                             type: 'object',
                             properties: {}
                          };                         

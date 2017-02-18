@@ -67,6 +67,7 @@ export default class BaseRouter {
                });
 
                if (serviceConfig.allowPostData) {
+                  console.log(`mounting service --> /service/${serviceName} --> post`);
                   self.router.route(`/service/${serviceName}`).post(expressJwt({ secret: config.jwtSecret }), (req, res, next) => {
                      if (serviceConfig.postValidate) {//validate the request
                         let out = serviceConfig.postValidate(serviceConfig, req);

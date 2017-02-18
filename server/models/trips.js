@@ -4,6 +4,8 @@ import utils from '../utils/util';
 // import tripsTrucks from '../applicationsConfig/trips_trucks.js';
 import cache from '../utils/cache';
 import schemaUtils from '../utils/schema';
+import schemaTypeUtils from '../utils/schema-types';
+
 let Schema = require('mongoose').Schema;
 
 // console.log(cache.TRIPS_TRUCKS);
@@ -57,7 +59,13 @@ const CurrentSchema = new BaseSchemaFactory({
       },
       vehicleRequirements: {
          vechicleType: {
-            type: String //enum needed -- closed Body, open body,trally, mini truck, auto            
+            type: String, //enum needed -- closed Body, open body,trally, mini truck, auto     
+            enum: ['Open Body', 'Closed Body', 'Trally', 'Mini Truck', 'Auto'],
+            html: {               
+               form: {
+                  type: 'select'
+               }
+            }       
          },
          minRating: {
             type: Number
@@ -71,7 +79,9 @@ const CurrentSchema = new BaseSchemaFactory({
       },
       spends: schemaUtils.spend(true), 
       pickup: [{
-         date: schemaUtils.date(),         
+         date: schemaTypeUtils.date(false, {
+            title: 'Date & Time'
+         }),         
          address: schemaUtils.address(),                                 
          contact: schemaUtils.contact(true),
          material: [{
@@ -79,21 +89,29 @@ const CurrentSchema = new BaseSchemaFactory({
                type: String
             },
             materialType: {
-               type: String     
-            },
-            description: {
-               type: String,
-               html: {
+               type: String,               
+               enum: ['Normal', 'Brittle'],
+               html: {                 
                   form: {
-                     type: 'textarea'
+                     type: 'select'
                   }
-               }
+               }    
             },
+            description: schemaTypeUtils.description(),
             weight: {
                type: Number
             }, 
             weightUnit: {
-               type: Number
+               type: Number,
+               enum: ['Tons', 'Litres'],
+               default: 'Tons',
+               html: {                  
+                  sort: false,                 
+                  form: {
+                     type: 'select',
+                     removeDefaultNone: true
+                  }
+               }  
             },
             approximateCost: {
                type: Number
@@ -102,15 +120,22 @@ const CurrentSchema = new BaseSchemaFactory({
          formalities: schemaUtils.tripFormality()         
       }],
       drop: [{
-         date: schemaUtils.date(),        
+         date: schemaTypeUtils.date(false, {
+            title: 'Date & Time'
+         }),        
          address: schemaUtils.address(),                         
          contact: schemaUtils.contact(true),
          itemsToDrop: {
-            type: [String] //pickup.material.name array         
+            type: [String] //pickup.material.name array                     
          },
          formalities: schemaUtils.tripFormality()         
       }],
-      comments: schemaUtils.comment(true),
+      comments: {
+         type: [String]         
+      },
+      // comments: schemaTypeUtils.description(false, {
+      //    type: [String]
+      // }), //schemaUtils.comment(true),
       otherDocs: schemaUtils.tripDoc(true)     
    },
    gridAttributes: ['title']
