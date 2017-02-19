@@ -1,8 +1,8 @@
-import express from 'express';
-import userRoutes from './user';
-import authRoutes from './auth';
-import tripsRoutes from './trips';
-import trucksRoutes from './trucks';
+const express = require('express');
+const userRoutes = require('./user');
+const authRoutes = require('./auth');
+const tripsRoutes = require('./trips');
+const trucksRoutes = require('./trucks');
 
 const router = express.Router();	// eslint-disable-line new-cap
 
@@ -23,4 +23,4 @@ router.use('/trucks', trucksRoutes);
 // mount auth routes at /auth
 router.use('/auth', authRoutes);
 
-export default router;
+module.exports = router;

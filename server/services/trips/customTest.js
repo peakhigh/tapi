@@ -6,7 +6,10 @@ let Schema = require('mongoose').Schema;
 module.exports = {
    type: 'custom',
    // schemaFields: [], // optional
-   callback: (schema, serviceConfig, req) => {
-      return {test: 123};
-   } //callback hook 
+   get: {
+      callback: (schema, serviceConfig, req, options, cb) => {
+         console.log('get callback');
+         cb(null, {test: 123});
+      } //callback hook 
+   }
 };

@@ -13,10 +13,11 @@
 //TODO:: use singleton class and load all appconfigs only once
 //TODO:: load app configs from the applicationConfig directory 
 //automate it in the constructor
-import utils from './util';
-import authUtils from './auth';
-import constants from '../config/constants';
-import schemaUtils from './schema';
+const utils = require('./util');
+const authUtils = require('./auth');
+const constants = require('../config/constants');
+const schemaUtils = require('./schema');
+const extend = require('extend');
 
 class Cache {
   constructor() {
@@ -140,11 +141,11 @@ class Cache {
 
   getRequestSchema(req) {
       let key = this.getKey(req);
-      return key ? this.SCHEMA_STORE[key] : {};
+      return key ? extend(true, {}, this.SCHEMA_STORE[key]) : {};
   }
   getRequestServiceSchema(req) {
       let key = this.getServiceKey(req);
-      return key ? this.SCHEMA_STORE[key] : {};
+      return key ? extend(true, {}, this.SCHEMA_STORE[key]) : {};
   }
   getKey(req) {
      let tokenDetails = authUtils.decodeToken(req.headers);
@@ -165,4 +166,4 @@ class Cache {
   }
 }
 
-export default (new Cache);
+module.exports = (new Cache);

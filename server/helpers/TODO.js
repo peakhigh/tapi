@@ -44,3 +44,23 @@
  * 6) website
  * 7) website design, content, domain, seo etc
  */
+
+
+/**
+ * Server:
+ * Do required validatins at server side by geting request.body json
+ * Do rest of validatiosns by mongoose by default (no need to do anything fancy at save but need to define valtaions at schema level)
+ * set unique, email, phone etc validations by match property
+ * set createdAt, createdBy such feilds in service before save
+ * insert/edit service with edit data population
+ * basic get service 
+ * link columns
+ * advaned get service
+ * deprecated mongoose libarary
+ * after insert - return id, after edit return id in responses
+ * Attach Pre-save, post save hooks
+ * addOrEdit - set owner columns (using setonInsert & set from request token, firstly send userid in the token)
+ * 
+ * UI:
+ * grid control
+ */

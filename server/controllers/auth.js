@@ -1,9 +1,8 @@
-import jwt from 'jsonwebtoken';
-import httpStatus from 'http-status';
-import APIError from '../helpers/APIError';
-import utils from '../utils/util';
-import cache from '../utils/cache';
-
+const jwt = require('jsonwebtoken');
+const httpStatus = require('http-status');
+const APIError = require('../helpers/APIError');
+const utils = require('../utils/util');
+let cache = require('../utils/cache');
 const config = require('../../config/env');
 
 // sample user, used for authentication
@@ -61,4 +60,4 @@ function login(req, res, next) {
   return next(err);
 }
 
-export default { login };
+module.exports = { login };

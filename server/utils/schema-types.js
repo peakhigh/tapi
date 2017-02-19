@@ -1,6 +1,6 @@
-import utils from './util';
+const utils = require('./util');
 
-export default {
+module.exports = {
    date: function (isArray, options) {
       return utils.getSchemaTypeObject({
          type: Date,

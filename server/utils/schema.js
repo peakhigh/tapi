@@ -1,6 +1,6 @@
 let Schema = require('mongoose').Schema;
-import utils from './util';
-import schemaTypes from './schema-types';
+const utils = require('./util');
+const schemaTypes = require('./schema-types');
 
 
 function setSchmeaFormOptions(schema, options) {
@@ -29,7 +29,7 @@ function setSchmeaFormOptions(schema, options) {
    });
 }
 
-export default { 
+module.exports = { 
    formatHtmlSchema: (schema) => {   
       let formattedSchema = {//this is designed to work for alpaca plugin
          schema: {

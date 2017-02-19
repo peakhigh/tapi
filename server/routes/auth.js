@@ -1,9 +1,9 @@
-import express from 'express';
-import validate from 'express-validation';
-import expressJwt from 'express-jwt';
-import paramValidation from '../../config/param-validation';
-import authCtrl from '../controllers/auth';
-import config from '../../config/env';
+const express = require('express');
+const validate = require('express-validation');
+const expressJwt = require('express-jwt');
+const paramValidation = require('../../config/param-validation');
+let authCtrl = require('../controllers/auth');
+const config = require('../../config/env');
 
 const router = express.Router();	// eslint-disable-line new-cap
 
@@ -11,4 +11,4 @@ const router = express.Router();	// eslint-disable-line new-cap
 router.route('/login')
   .post(validate(paramValidation.login), authCtrl.login);
 
-export default router;
+module.exports = router;

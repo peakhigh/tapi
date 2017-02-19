@@ -1,4 +1,4 @@
-import utils from '../utils/util';
+const utils = require('../utils/util');
 utils.defineAppConfig('TRIPS_TRUCKS', {
    ROLES: {
       ADMIN: {

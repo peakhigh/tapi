@@ -1,7 +1,7 @@
-import model from '../models/trips';
+let model = require('../models/trips');
 
-import BaseCtrlFactory from './base';
+let BaseCtrlFactory = require('./base');
 
 let currentModel = new BaseCtrlFactory({ model: model });
 
-export default { currentModel };
+module.exports = { currentModel };

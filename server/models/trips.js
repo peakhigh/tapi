@@ -1,10 +1,11 @@
-import BaseSchemaFactory from './base';
+let BaseSchemaFactory = require('./base');
 // import globals from '../utils/globals';
-import utils from '../utils/util';
+const utils = require('../utils/util');
 // import tripsTrucks from '../applicationsConfig/trips_trucks.js';
-import cache from '../utils/cache';
-import schemaUtils from '../utils/schema';
-import schemaTypeUtils from '../utils/schema-types';
+let cache = require('../utils/cache');
+const schemaUtils = require('../utils/schema');
+const schemaTypeUtils = require('../utils/schema-types');
+const uiTypes = require('../utils/ui-types');
 
 let Schema = require('mongoose').Schema;
 
@@ -13,7 +14,9 @@ const CurrentSchema = new BaseSchemaFactory({
    collection: 'Trips',   
    schema: {
       status: {
-         type: String //enum new, pending, ..
+         type: String, //enum new, pending, ..
+         enum: ['New', 'Process', 'Running', 'Fail', 'Close'],
+         default: 'new'
       },
       expectedTripCost: {
          type: Number
@@ -70,13 +73,15 @@ const CurrentSchema = new BaseSchemaFactory({
          minRating: {
             type: Number
          },
-         minCapacity: {
+         requiredCapacity: {
             type: Number
-         }         
+         },
+         capacityUnit: uiTypes.weightUnit()
       },    
       totalWeight: {
          type: Number
       },
+      totalWeightUnit: uiTypes.weightUnit(),
       spends: schemaUtils.spend(true), 
       pickup: [{
          date: schemaTypeUtils.date(false, {
@@ -88,31 +93,12 @@ const CurrentSchema = new BaseSchemaFactory({
             name: {
                type: String
             },
-            materialType: {
-               type: String,               
-               enum: ['Normal', 'Brittle'],
-               html: {                 
-                  form: {
-                     type: 'select'
-                  }
-               }    
-            },
+            materialType: uiTypes.materialType(),
             description: schemaTypeUtils.description(),
             weight: {
                type: Number
             }, 
-            weightUnit: {
-               type: Number,
-               enum: ['Tons', 'Litres'],
-               default: 'Tons',
-               html: {                  
-                  sort: false,                 
-                  form: {
-                     type: 'select',
-                     removeDefaultNone: true
-                  }
-               }  
-            },
+            weightUnit: uiTypes.weightUnit(),
             approximateCost: {
                type: Number
             }
@@ -141,4 +127,4 @@ const CurrentSchema = new BaseSchemaFactory({
    gridAttributes: ['title']
 }); 
 // console.log(utils.setObjectProperty('name', {key: 1}).setObjectProperty('age', 20));
-export default CurrentSchema.getSchema();
+module.exports = CurrentSchema.getSchema();

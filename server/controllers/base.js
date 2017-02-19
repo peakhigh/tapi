@@ -1,4 +1,4 @@
-export default class BaseModel {
+module.exports = class BaseModel {
   constructor(options) { 
     this.Model = options.model;
 
@@ -17,4 +17,4 @@ export default class BaseModel {
          .error((e) => next(e));
    };
   }  
-}
+};

@@ -1,6 +1,6 @@
-import controller from '../controllers/trips';
-import BaseRoute from './base';
+const controller = require('../controllers/trips');
+const BaseRoute = require('./base');
 
 const baseRoute = new BaseRoute({ controller: controller, collection: 'Trips'});
 
-export default baseRoute.router;
+module.exports = baseRoute.router;

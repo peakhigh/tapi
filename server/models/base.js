@@ -1,13 +1,15 @@
-import Promise from 'bluebird';
-import mongoose from 'mongoose';
-import httpStatus from 'http-status';
-import APIError from '../helpers/APIError';
-import globals from '../utils/globals';
-import utils from '../utils/util';
-import cache from '../utils/cache';
-import constants from '../config/constants';
+const Promise = require('bluebird');
+const mongoose = require('mongoose');
+const httpStatus = require('http-status');
+const APIError = require('../helpers/APIError');
+let globals = require('../utils/globals');
+const utils = require('../utils/util');
+let cache = require('../utils/cache');
+const constants = require('../config/constants');
+let ObjectID = require('mongodb').ObjectID;
+let Schema = require('mongoose').Schema;
 
-export default class BaseSchema {
+module.exports = class BaseSchema {
    constructor(options) {     
       let computedFieldSchemas = {};       
       this.filterSchema = () => {
@@ -15,9 +17,9 @@ export default class BaseSchema {
          let self = this;
          /** ID - is it coming default after add/edit */
          let dbSchema = {};
-         if (!options.excludeDates) {
-            self.getDateColumns(fSchema);
-         }
+         // if (!options.excludeDates) {
+         //    self.getDateColumns(fSchema);
+         // }
          if (!options.excludeOwner) {
             self.getOwnerColumns(fSchema);
          }
@@ -337,6 +339,14 @@ export default class BaseSchema {
          * - validations
          * - virtuals
          */
+        this.schema.pre('update', (next) => {//for all schemas           
+            console.log('....pre update');                    
+            next();
+         });
+         this.schema.pre('insert', (next) => {//for all schemas           
+            console.log('....pre insert');                    
+            next();
+         });
       };
       this.attachMethods = () => {
          /**
@@ -369,36 +379,113 @@ export default class BaseSchema {
             * @param {number} limit - Limit number of users to be returned.
             * @returns {Promise<User[]>}
             */
-            list({ skip = 0, limit = 50 } = {}) {
-               return this.find()
-                  .sort({ createdAt: -1 })
-                  .skip(skip)
-                  .limit(limit)
-                  .execAsync();
+            listFields(req, extraOptions, cb) {//select few fields only
+               if (!extraOptions.selectFields) {
+                  extraOptions.selectFields = [];
+               }
+               if (extraOptions.selectFields.indexOf('_id') < 0) {
+                  extraOptions.selectFields.push('_id');
+               }
+               console.log(req.query);
+               this.find(req.query.where || {}, extraOptions.selectFields.join(' '))
+                  .sort(req.query.sort || { createdAt: -1 })
+                  .skip(req.query.skip || 0)
+                  .limit(req.query.limit || constants.DEFAULT_PAGE_SIZE)
+                  .execAsync().then((data) => {
+                     if (data) {
+                        if (extraOptions.response) {
+                           extraOptions.response.data = data;
+                           return cb(null, extraOptions.response);
+                        }
+                        return cb(null, data);
+                     }   
+                     return cb(null, data);              
+                  });
+            },  
+            list(req, extraOptions, cb) {//all fields               
+               this.find(req.query.where || {})
+                  .sort(req.query.sort || { createdAt: -1 })
+                  .skip(req.query.skip || 0)
+                  .limit(req.query.limit || constants.DEFAULT_PAGE_SIZE)
+                  .execAsync().then((data) => {
+                     if (data) {
+                        if (extraOptions.response) {
+                           extraOptions.response.data = data;
+                           return cb(null, extraOptions.response);
+                        }
+                        return cb(null, data);
+                     }   
+                     return cb(null, data);     
+                  });
+            },            
+            addOrEdit(req, extraOptions, cb) {
+               console.log('addOrEditByRequest callback');
+               let _id = req.body._id || new ObjectID();
+               delete req.body._id;
+               this.update({_id: _id}, { $set: req.bod}, { upsert: true }, (err, result) => { 
+                  console.log(err, result);
+                  if (result.n && result.upserted && result.upserted.length > 0 && result.upserted[0]._id) {//inserted
+                     return cb(err, {success: true, _id: result.upserted[0]._id}); 
+                  } else if (result.nModified) {//updated
+                     return cb(err, {success: true, _id: req.body._id});
+                  }                                 
+                  return cb(err, {success: false, _id: req.body._id});              
+               });  
+            },
+            getById(req, extraOptions, cb) {
+               console.log('getById callback');
+               // this.findById(req.params.id).lean().exec((err, doc) => {
+               //    if (err) {
+               //       return cb(err, null);
+               //    }
+               //    if (extraOptions.response) {
+               //       extraOptions.response.data = doc;
+               //       return cb(null, extraOptions.response);
+               //    } 
+               //    return cb(null, doc);
+               // });              
+                this.findById(req.params.id)
+                  .lean().execAsync().then((record) => {
+                     if (record) {
+                        if (extraOptions.response) {
+                           extraOptions.response.data = record;
+                           return cb(null, extraOptions.response);
+                        }
+                        return cb(null, record);
+                     }
+                     const err = new APIError('No such record exists!', httpStatus.NOT_FOUND);
+                     return cb(err, null);
+               });  
             }
          };
       };
       this.getOwnerColumns = (schema) => {
          schema.createdBy = {
-            type: String
+            type: Schema.Types.ObjectId
+         };
+         schema.updatedBy = {
+            type: Schema.Types.ObjectId
          };
       };
-      this.getDateColumns = (schema) => {
-         schema.createdAt = {
-            type: Date,      
-            default: Date.now 
-         };
-         schema.updatedAt = {
-            type: Date,
-            default: Date.now           
-         };
-      };
+      // this.getDateColumns = (schema) => {
+      //    schema.createdAt = {
+      //       type: Date,  
+      //       required: true,    
+      //       default: Date.now 
+      //    };
+      //    schema.updatedAt = {
+      //       type: Date,
+      //       required: true,
+      //       default: Date.now           
+      //    };
+      // };
 
-      this.schema = new mongoose.Schema(this.filterSchema());   
+      this.schema = new mongoose.Schema(this.filterSchema(), {timestamps: !options.excludeDates});   
       this.attachHooks();
       this.attachMethods();
       this.attachStatics();
 
-      this.getSchema = () => mongoose.model(options.collection, this.schema);      
+      console.log('Creating model', options.collection);
+      this.getSchema = () => {return mongoose.model(options.collection, this.schema);};      
    }
-}
+};

@@ -1,6 +1,6 @@
-import BaseSchemaFactory from './base';
-import utils from '../utils/util';
-import cache from '../utils/cache';
+const BaseSchemaFactory = require('./base');
+const utils = require('../utils/util');
+let cache = require('../utils/cache');
 let Schema = require('mongoose').Schema;
 
 const CurrentSchema = new BaseSchemaFactory({ 
@@ -98,4 +98,4 @@ const CurrentSchema = new BaseSchemaFactory({
    },
    gridAttributes: ['title']   
 }); 
-export default CurrentSchema.getSchema();
+module.exports = CurrentSchema.getSchema();

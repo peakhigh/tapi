@@ -1,13 +1,59 @@
-import expressJwt from 'express-jwt';
-import utils from '../utils/util';
-import cache from '../utils/cache';
-import httpUtils from '../utils/http';
-import config from '../../config/env';
-import express from 'express';
+const expressJwt = require('express-jwt');
+const utils = require('../utils/util');
+let cache = require('../utils/cache');
+const httpUtils = require('../utils/http');
+const config = require('../../config/env');
+const express = require('express');
 const fs = require('fs');
 const path = require('path');
 
-export default class BaseRouter {
+function processServiceRequestCallback(req, res, next, serviceConfig, httpMethod, options, validateOutput) {
+   let schema;
+   if (httpMethod === 'get') {
+      schema = cache.getRequestServiceSchema(req);
+   }
+   if (serviceConfig[httpMethod] && serviceConfig[httpMethod].callback) {//on validate success, if callback present
+      // let schema = cache.getRequestServiceSchema(req);
+      let args = [serviceConfig, req, options, (err, out) => {
+         if (err) {
+            if (out) {//if out present on error, return ouput considering it as json response
+               return res.json(out);
+            }
+            return res.json(httpUtils.httpError(req, (err && err.message) ? err.message : 'Invalid Request'));
+         }
+         //send response
+         return res.json(out);
+      }];
+      if (httpMethod === 'get') {
+         args.unshift(schema);
+      }
+      serviceConfig[httpMethod].callback.apply(this, args);
+   } else {
+      return res.json(schema || { success: true });//callback not defined  
+   }
+}
+
+function processServiceRequest(req, res, next, serviceConfig, httpMethod, options) {
+   if (serviceConfig[httpMethod] && serviceConfig[httpMethod].preValidate) {//validate the request
+      let args = [serviceConfig, req, options, (err, out) => {
+         if (err) {//on error                              
+            if (out) {//if out present on error, return ouput considering it as json response
+               return res.json(out);
+            }
+            return res.json(httpUtils.httpError(req, (err && err.message) ? err.message : 'Invalid Request'));
+         }
+         processServiceRequestCallback(req, res, next, serviceConfig, httpMethod, options, out);//process callback         
+      }];
+      // if (httpMethod === 'get') {
+      //    args.unshift(cache.getRequestServiceSchema(req));
+      // }
+      serviceConfig[httpMethod].preValidate.apply(this, args);
+   } else {
+      processServiceRequestCallback(req, res, next, serviceConfig, httpMethod, options, null); //process callback                    
+   }
+}
+
+module.exports = class BaseRouter {
    constructor(options) {
       let self = this;
       this.router = express.Router();
@@ -45,54 +91,22 @@ export default class BaseRouter {
                console.log(`mounting service --> /service/${serviceName}`);
                let serviceConfig = serviceConfigs[serviceName];
                self.router.route(`/service/${serviceName}`)[serviceConfig.requestType ? serviceConfig.requestType.toLowerCase() : 'get'](expressJwt({ secret: config.jwtSecret }), (req, res, next) => {
-                  if (serviceConfig.init) {//validate the request
-                     let out = serviceConfig.init(serviceConfig, req);
-                     if (typeof out !== 'undefined' && out !== null) {
-                        if (out.result === false) {
-                           return res.json(httpUtils.httpError(req, out.message || 'Invalid Request'));
-                        }
-                        if (out.response) {
-                           return res.json(out.response);
-                        }
-                     }
-                  }
-                  let response = cache.getRequestServiceSchema(req);
-                  if (serviceConfig.callback) {
-                     let out = serviceConfig.callback(response, serviceConfig, req);
-                     if (out) {
-                        response = out;
-                     }
-                  }
-                  return res.json(response);
+                  processServiceRequest(req, res, next, serviceConfig, 'get');
                });
-
-               if (serviceConfig.allowPostData) {
-                  console.log(`mounting service --> /service/${serviceName} --> post`);
-                  self.router.route(`/service/${serviceName}`).post(expressJwt({ secret: config.jwtSecret }), (req, res, next) => {
-                     if (serviceConfig.postValidate) {//validate the request
-                        let out = serviceConfig.postValidate(serviceConfig, req);
-                        if (typeof out !== 'undefined' && out !== null) {
-                           if (out.result === false) {
-                              return res.json(httpUtils.httpError(req, out.message || 'Invalid Request'));
-                           }
-                           if (out.response) {
-                              return res.json(out.response);
-                           }
-                        }
-                     }
-                     let response = cache.getRequestServiceSchema(req);
-                     if (serviceConfig.postCallback) {
-                        console.log(req);
-                        let out = serviceConfig.postCallback(response, serviceConfig, req);
-                        if (out) {
-                           response = out;
-                        }
-                     }
-                     return res.json(response);
+               if (serviceConfig.type === 'form') {
+                  console.log(`mounting service --> /service/${serviceName}/:id`);
+                  self.router.route(`/service/${serviceName}/:id`)[serviceConfig.requestType ? serviceConfig.requestType.toLowerCase() : 'get'](expressJwt({ secret: config.jwtSecret }), (req, res, next) => {
+                     processServiceRequest(req, res, next, serviceConfig, 'get');
                   });
+                  if (serviceConfig.post) {
+                     console.log(`mounting service --> /service/${serviceName} --> post`);
+                     self.router.route(`/service/${serviceName}`).post(expressJwt({ secret: config.jwtSecret }), (req, res, next) => {
+                        processServiceRequest(req, res, next, serviceConfig, 'post');
+                     });
+                  }
                }
             });
          }
       }
    }
-}
+};

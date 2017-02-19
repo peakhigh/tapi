@@ -42,4 +42,4 @@ function defineGlobal(name, value, writable, configurable) {
 //    }   
 // });
 
-export default { defineGlobal, globals };
+module.exports = { defineGlobal, globals };

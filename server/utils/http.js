@@ -1,4 +1,4 @@
-export default { 
+module.exports = { 
    httpError: function (req, msg) {
       let out = {
          success: false

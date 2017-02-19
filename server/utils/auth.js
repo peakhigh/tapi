@@ -1,7 +1,7 @@
-import config from '../../config/env';
-import jwt from 'jsonwebtoken';
+const config = require('../../config/env');
+const jwt = require('jsonwebtoken');
 
-export default { 
+module.exports = { 
    decodeToken: function (requestHeaders) {//returns token details 
       if (requestHeaders && requestHeaders.authorization) {
          let tokenParts = requestHeaders.authorization.toString().trim().split(' ');
