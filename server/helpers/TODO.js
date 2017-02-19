@@ -60,6 +60,9 @@
  * after insert - return id, after edit return id in responses
  * Attach Pre save/update/insert etc, post save/update/insert hooks
  * addOrEdit - set owner columns (using setonInsert & set from request token, firstly send userid in the token)
+ * send extra info related to grid like (sort: true, filter: true etc)
+ * 
+ * 
  * 
  * UI:
  * grid control
