@@ -7,11 +7,11 @@ const utils = require('../utils/util');
 let cache = require('../utils/cache');
 const constants = require('../config/constants');
 let ObjectID = require('mongodb').ObjectID;
-let Schema = require('mongoose').Schema;
+let Schema = mongoose.Schema;
 
 module.exports = class BaseSchema {
-   constructor(options) {     
-      let computedFieldSchemas = {};       
+   constructor(options) {
+      let computedFieldSchemas = {};
       this.filterSchema = () => {
          let fSchema = options.schema;
          let self = this;
@@ -35,27 +35,27 @@ module.exports = class BaseSchema {
                   serviceConfig.schemaFields.forEach((field) => {
                      if (!self.fieldServiceMap[field]) {
                         self.fieldServiceMap[field] = [];
-                     } 
+                     }
                      if (self.fieldServiceMap[field].indexOf(serviceName) < 0) {
                         self.fieldServiceMap[field].push(serviceName);
-                     }                     
+                     }
                   });
                   if (serviceConfig.schemaOverrideFeilds) {
                      Object.keys(serviceConfig.schemaOverrideFeilds).forEach((field) => {
                         if (!self.fieldServiceMap[field]) {
                            self.fieldServiceMap[field] = [];
-                        }                         
+                        }
                         if (self.fieldServiceMap[field].indexOf(serviceName) < 0) {
                            self.fieldServiceMap[field].push(serviceName);
-                        } 
+                        }
                      });
                   }
                }
             });
-         }     
+         }
 
          let roleBasedSchemas = {};
-         Object.keys(fSchema).forEach((field) => {               
+         Object.keys(fSchema).forEach((field) => {
             self.processField(self, field, fSchema[field], dbSchema, roleBasedSchemas);
          });
          //store these role based schemas into cache and return them via apis    
@@ -65,17 +65,17 @@ module.exports = class BaseSchema {
             //if services are present, execute prepare method
             Object.keys(self.serviceSchemas).forEach((serviceKey) => {
                //  console.log('serviceKey', serviceKey);
-                let parts = serviceKey.split(constants.CONFIG_KEY_SEPERATOR);
-                if (self.serviceConfigs[parts[parts.length - 1]].prepare) {
+               let parts = serviceKey.split(constants.CONFIG_KEY_SEPERATOR);
+               if (self.serviceConfigs[parts[parts.length - 1]].prepare) {
                   self.serviceConfigs[parts[parts.length - 1]].prepare(serviceKey, self.serviceSchemas[serviceKey], self.serviceConfigs[parts[parts.length - 1]]);
-                }
+               }
             });
             // console.log('serviceSchemas', self.serviceSchemas);
             cache.updateServiceSchemaStore(self.serviceSchemas, self.serviceConfigs);
          }
          return dbSchema;
-      };            
-      this.getFieldTitle = (field) => {    
+      };
+      this.getFieldTitle = (field) => {
          let fieldParts = field.split('.');
          //camelcase to uppercase. step 1)insert a space before all caps. step 2)uppercase the first character
          if (fieldParts.length > 0) { //if parent path exists
@@ -97,53 +97,53 @@ module.exports = class BaseSchema {
             let projection = schemaObject;
             for (let i = 0; i < fieldPathParts.length - 1; i++) {
                if (fieldPathParts[i].indexOf('[') === 0) { //array of objects
-                  fieldPathParts[i] = fieldPathParts[i].replace('[', '').replace(']', '');                   
+                  fieldPathParts[i] = fieldPathParts[i].replace('[', '').replace(']', '');
                   if (!projection[fieldPathParts[i]]) {
                      if (schemaType === 'form') {//this is designed to work for alpaca plugin
-                         projection[fieldPathParts[i]] = {
-                            title: self.getFieldTitle(fieldPathParts[i]),
-                            type: 'array',
-                            items: {
-                               type: 'object',
-                               properties: {}
-                            }
-                         };                         
-                      } else {
-                         projection[fieldPathParts[i]] = [{}];
-                      }                     
+                        projection[fieldPathParts[i]] = {
+                           title: self.getFieldTitle(fieldPathParts[i]),
+                           type: 'array',
+                           items: {
+                              type: 'object',
+                              properties: {}
+                           }
+                        };
+                     } else {
+                        projection[fieldPathParts[i]] = [{}];
+                     }
                   }
                   if (schemaType === 'form') {
                      projection = projection[fieldPathParts[i]].items.properties;
                   } else {
                      projection = projection[fieldPathParts[i]][0];
-                  }                  
-               } else { 
-                   if (!projection[fieldPathParts[i]]) {
-                      if (schemaType === 'form') {//this is designed to work for alpaca plugin
-                         projection[fieldPathParts[i]] = {
-                            title: self.getFieldTitle(fieldPathParts[i]),
-                            type: 'object',
-                            properties: {}
-                         };                         
-                      } else {
-                         projection[fieldPathParts[i]] = {};
-                      }                     
-                  }  
+                  }
+               } else {
+                  if (!projection[fieldPathParts[i]]) {
+                     if (schemaType === 'form') {//this is designed to work for alpaca plugin
+                        projection[fieldPathParts[i]] = {
+                           title: self.getFieldTitle(fieldPathParts[i]),
+                           type: 'object',
+                           properties: {}
+                        };
+                     } else {
+                        projection[fieldPathParts[i]] = {};
+                     }
+                  }
                   if (schemaType === 'form') {
                      projection = projection[fieldPathParts[i]].properties;
                   } else {
                      projection = projection[fieldPathParts[i]];
-                  }                  
-               }                                           
-            }             
-            projection[fieldPathParts[fieldPathParts.length - 1]] = fieldData; 
+                  }
+               }
+            }
+            projection[fieldPathParts[fieldPathParts.length - 1]] = fieldData;
             if (schemaType === 'form' && projection[fieldPathParts[fieldPathParts.length - 1]].type) {//this is designed to work for alpaca plugin
                if (typeof projection[fieldPathParts[fieldPathParts.length - 1]].type === 'string') {
                   projection[fieldPathParts[fieldPathParts.length - 1]].type = projection[fieldPathParts[fieldPathParts.length - 1]].type.toLowerCase();
                } else if (Array.isArray(projection[fieldPathParts[fieldPathParts.length - 1]].type)) {
                   self.setHtmlArrayField(projection[fieldPathParts[fieldPathParts.length - 1]]);
                }
-            }           
+            }
          } else {
             schemaObject[field] = fieldData;
             // console.log(typeof fieldData.type);
@@ -152,28 +152,28 @@ module.exports = class BaseSchema {
                   schemaObject[field].type = schemaObject[field].type.toLowerCase();
                } else if (Array.isArray(schemaObject[field].type)) {
                   self.setHtmlArrayField(schemaObject[field]);
-               }      
-            } 
+               }
+            }
          }
-      };      
-      this.processField = (self, field, fieldData, dbSchema, roleBasedSchemas) => {   
+      };
+      this.processField = (self, field, fieldData, dbSchema, roleBasedSchemas) => {
          // console.log('field', field);
          if ((fieldData instanceof Array) || (typeof fieldData === 'object' && typeof fieldData.type === 'undefined')) { //indicates a nested field
             if (fieldData instanceof Array) {
-               Object.keys(fieldData[0]).forEach((nestedField) => {   
+               Object.keys(fieldData[0]).forEach((nestedField) => {
                   //for processing nested arrays
                   let parts = field.split('.');
                   parts[parts.length - 1] = `[${parts[parts.length - 1]}]`;
                   let formattedField = parts.join('.');
 
                   self.processField(self, `${formattedField}.${nestedField}`, fieldData[0][nestedField], dbSchema, roleBasedSchemas);
-               });          
+               });
             } else {
-               Object.keys(fieldData).forEach((nestedField) => {   
+               Object.keys(fieldData).forEach((nestedField) => {
                   self.processField(self, `${field}.${nestedField}`, fieldData[nestedField], dbSchema, roleBasedSchemas);
                });
-            }                      
-            return;  
+            }
+            return;
          }
          // console.log('field', field);
 
@@ -182,8 +182,8 @@ module.exports = class BaseSchema {
          //set title if not exists
          if (typeof fieldData.title === 'undefined') {
             fieldData.title = self.getFieldTitle(field);
-         }         
-      
+         }
+
          let htmlOnly = fieldData.html;
          delete fieldData.html;
          let dbOnly = fieldData.db;
@@ -200,24 +200,24 @@ module.exports = class BaseSchema {
             utils.cloneObject(dbOnly, fieldDBData);//attach the db specific
          }
          self.setFieldDetails(self, field, fieldDBData, dbSchema);
-                  
+
          let stringifiedFieldSchema = {}; //stringified types, default values etc
          Object.keys(fieldData).forEach((key) => {
             if (typeof fieldData[key] === 'function') {
                stringifiedFieldSchema[key] = fieldData[key].name;
             } else if (fieldData[key] instanceof Array && fieldData[key].length > 0) {//type = [String] or Arrays  
-                  stringifiedFieldSchema[key] = [];
-                  fieldData[key].forEach((subEle) => {
-                     if (typeof subEle === 'function') {
-                        stringifiedFieldSchema[key].push(subEle.name);
-                     } else {
-                        stringifiedFieldSchema[key].push(subEle);
-                     }
-                  });                                               
+               stringifiedFieldSchema[key] = [];
+               fieldData[key].forEach((subEle) => {
+                  if (typeof subEle === 'function') {
+                     stringifiedFieldSchema[key].push(subEle.name);
+                  } else {
+                     stringifiedFieldSchema[key].push(subEle);
+                  }
+               });
             } else {
                stringifiedFieldSchema[key] = fieldData[key];
             }
-         });         
+         });
 
          Object.keys(cache.APP_CONFIG).forEach((appKey) => {// for each application
             Object.keys(cache.APP_CONFIG[appKey].ROLES).forEach((role) => {//for each role      
@@ -249,21 +249,21 @@ module.exports = class BaseSchema {
                if (config && Object.keys(config).length > 0 && config[appKey] && config[appKey].db && config[appKey].db.roles_config && config[appKey].db.roles_config[cache.APP_CONFIG[appKey].ROLES[role].Code]) {
                   currentRoleDBOnlyAttrs = config[appKey].db.roles_config[cache.APP_CONFIG[appKey].ROLES[role].Code];
                }
-               
+
                //1. process form attributes
                let fieldFormData = {};
                utils.cloneObject(stringifiedFieldSchema, fieldFormData);//attach the common props                
                if (htmlOnly && Object.keys(htmlOnly).length > 0) {
                   utils.cloneObject(htmlOnly, fieldFormData);//attach the html specific
-               }               
+               }
                if (currentRoleHtmlOnlyAttrs) {
                   //customization exists for this app, role & field combination 
                   utils.cloneObject(currentRoleHtmlOnlyAttrs, fieldFormData);
                }
-               self.setFieldDetails(self, field, fieldFormData, roleBasedSchemas[formKey], 'form');               
+               self.setFieldDetails(self, field, fieldFormData, roleBasedSchemas[formKey], 'form');
 
                //2. process grid attributes    
-               let fieldGridData = {};                 
+               let fieldGridData = {};
                if (options.gridAttributes && options.gridAttributes.length > 0) {//collect the grid attributes
                   // roleBasedSchemas[gridKey][field] = {};                  
                   options.gridAttributes.forEach((attr) => {
@@ -273,7 +273,7 @@ module.exports = class BaseSchema {
                         fieldGridData[attr] = htmlOnly[attr];
                      } else {//get from common attributes
                         fieldGridData[attr] = stringifiedFieldSchema[attr];
-                     }                           
+                     }
                   });
                   self.setFieldDetails(self, field, fieldGridData, roleBasedSchemas[gridKey]);
                }
@@ -285,23 +285,23 @@ module.exports = class BaseSchema {
                } else if (field.indexOf('.') > 0) { //to support normal & nested fields
                   let nestedPath = '';
                   for (let i = 0; i < fieldParts.length; i++) {
-                     nestedPath += ((i > 0) ? '.' : '') + fieldParts[i].replace('[', '').replace(']', '');    
+                     nestedPath += ((i > 0) ? '.' : '') + fieldParts[i].replace('[', '').replace(']', '');
                      if (self.fieldServiceMap[nestedPath] && self.fieldServiceMap[nestedPath].length > 0) {
                         matchingServiceFields.push(nestedPath);
-                     }       
-                  }                  
+                     }
+                  }
                }
-               
+
                if (matchingServiceFields && matchingServiceFields.length > 0) {// if this field exists in any service
                   matchingServiceFields.forEach((matchingServiceField) => {
                      self.fieldServiceMap[matchingServiceField].forEach((serviceName) => { //get all the services which include this field
                         let serviceRoleBasedKey = serviceKey + constants.CONFIG_KEY_SEPERATOR + serviceName;
                         let serviceFieldConfig = {};
-                        if (self.serviceConfigs[serviceName].type === 'grid' && fieldGridData && Object.keys(fieldGridData).length > 0) {       
+                        if (self.serviceConfigs[serviceName].type === 'grid' && fieldGridData && Object.keys(fieldGridData).length > 0) {
                            utils.cloneObject(fieldGridData, serviceFieldConfig); //if grid, copy field data of grid 
                         } else { //if (self.serviceConfigs[serviceName].type === 'form') {
                            utils.cloneObject(fieldFormData, serviceFieldConfig); //if form/custom, copy field data of form                         
-                        } 
+                        }
 
                         if (self.serviceConfigs[serviceName].schemaOverrideFeilds && self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField] && Object.keys(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField]).length > 0) {
                            // override customizations of the field defined at service level
@@ -311,27 +311,27 @@ module.exports = class BaseSchema {
                            if (!self.serviceSchemas[serviceRoleBasedKey]) {
                               self.serviceSchemas[serviceRoleBasedKey] = {};
                            }
-                           self.setFieldDetails(self, field, serviceFieldConfig, self.serviceSchemas[serviceRoleBasedKey], 'form'); 
-                        }                                                             
+                           self.setFieldDetails(self, field, serviceFieldConfig, self.serviceSchemas[serviceRoleBasedKey], 'form');
+                        }
                      });
                   });
-               } 
+               }
 
                //3. process role based dbschema into cache which can be used for validations on every form submits etc to validate data      
-               let fieldRoleDBData = {};     
+               let fieldRoleDBData = {};
                utils.cloneObject(stringifiedFieldSchema, fieldRoleDBData);//attach the common props first                      
-               if (dbOnly && Object.keys(dbOnly).length > 0) {                  
+               if (dbOnly && Object.keys(dbOnly).length > 0) {
                   utils.cloneObject(dbOnly, fieldRoleDBData);//now override db specific
                   console.log(fieldRoleDBData);
                }
                if (currentRoleDBOnlyAttrs) {
                   //customization exists for this app, role & field combination 
                   utils.cloneObject(currentRoleDBOnlyAttrs, fieldRoleDBData);
-               }     
-               self.setFieldDetails(self, field, fieldRoleDBData, roleBasedSchemas[dbKey]);                                    
+               }
+               self.setFieldDetails(self, field, fieldRoleDBData, roleBasedSchemas[dbKey]);
             });
          });
-      };            
+      };
       this.attachHooks = () => {
          /**
          * Add your
@@ -339,12 +339,12 @@ module.exports = class BaseSchema {
          * - validations
          * - virtuals
          */
-        this.schema.pre('update', (next) => {//for all schemas           
-            console.log('....pre update');                    
+         this.schema.pre('update', (next) => {//for all schemas           
+            console.log('....pre update');
             next();
          });
          this.schema.pre('insert', (next) => {//for all schemas           
-            console.log('....pre insert');                    
+            console.log('....pre insert');
             next();
          });
       };
@@ -398,10 +398,10 @@ module.exports = class BaseSchema {
                            return cb(null, extraOptions.response);
                         }
                         return cb(null, data);
-                     }   
-                     return cb(null, data);              
+                     }
+                     return cb(null, data);
                   });
-            },  
+            },
             list(req, extraOptions, cb) {//all fields               
                this.find(req.query.where || {})
                   .sort(req.query.sort || { createdAt: -1 })
@@ -414,23 +414,109 @@ module.exports = class BaseSchema {
                            return cb(null, extraOptions.response);
                         }
                         return cb(null, data);
-                     }   
-                     return cb(null, data);     
+                     }
+                     return cb(null, data);
                   });
-            },            
+            },
             addOrEdit(req, extraOptions, cb) {
                console.log('addOrEditByRequest callback');
+               let model = this;
+               // if (req.body._id) {//update
+                  // this.findById(req.body._id)
+                  // .lean().execAsync().then((record) => {
+                  //    if (record) {
+                  //       let doc = new model(record);
+                  //       doc.isNew = false;
+                  //       return doc.save(req.body, (err) => {
+                  //          if (err) {
+                  //             console.log(err);
+                  //             return cb(err, { success: false, _id: req.body._id, err: err });
+                  //          }
+                  //          return cb(err, { success: true, _id: req.body._id });
+                  //       });
+                  //    }
+                  //    const err = new APIError('No such record exists!', httpStatus.NOT_FOUND);
+                  //    return cb(err, { success: false, _id: req.body._id, err: err });
+                  // });
+
+                  // let instance = new this();
+                  // instance.init(req.body, {}, (e) => {
+                  //    console.log(e);
+                  //    instance.save((err) => { 
+                  //       if (err) {
+                  //          console.log(err);
+                  //          return cb(err, { success: false, _id: req.body._id, err: err });
+                  //       }
+                  //       return cb(err, { success: true, _id: req.body._id });
+                  //    });
+                  // });
+
+
+                  // req.body._id = mongoose.Types.ObjectId(req.body._id);
+                  // // console.log(req.body);
+                  // let doc = new this({_id: req.body._id});
+                  // // delete req.body._id;
+                  // // doc._id = mongoose.Types.ObjectId(req.body._id);
+                  // doc.isNew = false;
+                  // doc.save(req.body, (err) => {
+                  //    if (err) {
+                  //       console.log(err);
+                  //       return cb(err, { success: false, _id: req.body._id, err: err });
+                  //    }
+                  //    return cb(err, { success: true, _id: req.body._id });
+                  // });
+               // } else {//insert
+               //    let doc = new this(req.body);
+               //    doc.save((err) => {
+               //       if (err) {
+               //          console.log(err);
+               //          return cb(err, { success: false, _id: req.body._id, err: err });
+               //       }
+               //       return cb(err, { success: true, _id: req.body._id });
+               //    });
+               // }
+
+               // let _id = req.body._id || new ObjectID();
+               // if (!req.body._id) {
+               //    req.body._id = new ObjectID();
+               // }
+               // console.log();
+               // let doc = new this(req.body);
+               // doc.save((err) => {
+               //    if (err) {
+               //       return cb(err, { success: false, _id: req.body._id, err: err });
+               //    }
+               //    return cb(err, { success: true, _id: req.body._id });
+               // });
+
+               // let _id = req.body._id || new ObjectID();
+               // delete req.body._id;
+               // // console.log(req.body);
+               // // this.update({_id: _id}, { $set: req.body}, { upsert: true }, (err, result) => { 
+               // this.update({_id: _id}, req.body, { upsert: true }, (err, result) => { 
+               //    console.log(err, result);
+               //    if (result.n && result.upserted && result.upserted.length > 0 && result.upserted[0]._id) {//inserted
+               //       return cb(err, {success: true, _id: result.upserted[0]._id}); 
+               //    } else if (result.nModified) {//updated
+               //       return cb(err, {success: true, _id: _id});
+               //    }                                 
+               //    return cb(err, {success: false, _id: req.body._id, error: err});              
+               // });  
                let _id = req.body._id || new ObjectID();
                delete req.body._id;
-               this.update({_id: _id}, { $set: req.bod}, { upsert: true }, (err, result) => { 
+               this.findOneAndUpdate({_id: _id}, req.body, {upsert: true, fields: {_id: 1}, new: true, runValidators: true}, (err, result) => { 
                   console.log(err, result);
-                  if (result.n && result.upserted && result.upserted.length > 0 && result.upserted[0]._id) {//inserted
-                     return cb(err, {success: true, _id: result.upserted[0]._id}); 
-                  } else if (result.nModified) {//updated
-                     return cb(err, {success: true, _id: req.body._id});
-                  }                                 
-                  return cb(err, {success: false, _id: req.body._id});              
-               });  
+                  if (err) {
+                     return cb(err, {success: false, _id: req.body._id, error: err});
+                  }
+                  return cb(err, {success: true, _id: result._id});
+         
+                  // if (result.n && result.upserted && result.upserted.length > 0 && result.upserted[0]._id) {//inserted
+                  //    return cb(err, {success: true, _id: result.upserted[0]._id}); 
+                  // } else if (result.nModified) {//updated
+                  // }                                 
+                  //   
+               });
             },
             getById(req, extraOptions, cb) {
                console.log('getById callback');
@@ -444,7 +530,7 @@ module.exports = class BaseSchema {
                //    } 
                //    return cb(null, doc);
                // });              
-                this.findById(req.params.id)
+               this.findById(req.params.id)
                   .lean().execAsync().then((record) => {
                      if (record) {
                         if (extraOptions.response) {
@@ -455,7 +541,7 @@ module.exports = class BaseSchema {
                      }
                      const err = new APIError('No such record exists!', httpStatus.NOT_FOUND);
                      return cb(err, null);
-               });  
+                  });
             }
          };
       };
@@ -480,12 +566,12 @@ module.exports = class BaseSchema {
       //    };
       // };
 
-      this.schema = new mongoose.Schema(this.filterSchema(), {timestamps: !options.excludeDates});   
+      this.schema = new mongoose.Schema(this.filterSchema(), { timestamps: !options.excludeDates });
       this.attachHooks();
       this.attachMethods();
       this.attachStatics();
 
       console.log('Creating model', options.collection);
-      this.getSchema = () => {return mongoose.model(options.collection, this.schema);};      
+      this.getSchema = () => { return mongoose.model(options.collection, this.schema); };
    }
 };
