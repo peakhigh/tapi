@@ -387,21 +387,35 @@ module.exports = class BaseSchema {
                   extraOptions.selectFields.push('_id');
                }
                console.log(req.query);
-               this.find(req.query.where || {}, extraOptions.selectFields.join(' '))
+               this.count(req.query.where || {}).execAsync().then((total) => {
+                  if (total === 0) {
+                     if (extraOptions.response) {
+                        extraOptions.response.data = [];
+                        extraOptions.response.total = 0;
+                        return cb(null, extraOptions.response);
+                     }
+                     return cb(null, {
+                        data: [],
+                        total: 0
+                     }); 
+                  }
+                  this.find(req.query.where || {}, extraOptions.selectFields.join(' '))
                   .sort(req.query.sort || { createdAt: -1 })
                   .skip(req.query.skip || 0)
                   .limit(req.query.limit || constants.DEFAULT_PAGE_SIZE)
                   .execAsync().then((data) => {
-                     if (data) {
-                        if (extraOptions.response) {
-                           extraOptions.response.data = data;
-                           return cb(null, extraOptions.response);
-                        }
-                        return cb(null, data);
+                     if (extraOptions.response) {
+                        extraOptions.response.data = data;
+                        extraOptions.response.total = total;
+                        return cb(null, extraOptions.response);
                      }
-                     return cb(null, data);
+                     return cb(null, {
+                        data: data,
+                        total: total
+                     });              
                   });
-            },
+               });               
+            },  
             list(req, extraOptions, cb) {//all fields               
                this.find(req.query.where || {})
                   .sort(req.query.sort || { createdAt: -1 })
