@@ -399,10 +399,10 @@ module.exports = class BaseSchema {
                         total: 0
                      }); 
                   }
-                  this.find(req.query.where || {}, extraOptions.selectFields.join(' '))
-                  .sort(req.query.sort || { createdAt: -1 })
-                  .skip(req.query.skip || 0)
-                  .limit(req.query.limit || constants.DEFAULT_PAGE_SIZE)
+                  this.find(req.query.where ? JSON.parse(req.query.where) : {}, extraOptions.selectFields.join(' '))
+                  .sort((req.query.sort ? JSON.parse(req.query.sort) : { createdAt: -1 }))
+                  .skip((req.query.skip ? parseInt(req.query.skip, 10) : 0))
+                  .limit((req.query.limit ? parseInt(req.query.limit, 10) : constants.DEFAULT_PAGE_SIZE))
                   .execAsync().then((data) => {
                      if (extraOptions.response) {
                         extraOptions.response.data = data;
@@ -417,10 +417,10 @@ module.exports = class BaseSchema {
                });               
             },  
             list(req, extraOptions, cb) {//all fields               
-               this.find(req.query.where || {})
-                  .sort(req.query.sort || { createdAt: -1 })
-                  .skip(req.query.skip || 0)
-                  .limit(req.query.limit || constants.DEFAULT_PAGE_SIZE)
+               this.find(req.query.where ? JSON.parse(req.query.where) : {})
+                  .sort((req.query.sort ? JSON.parse(req.query.sort) : { createdAt: -1 }))
+                  .skip((req.query.skip ? parseInt(req.query.skip, 10) : 0))
+                  .limit((req.query.limit ? parseInt(req.query.limit, 10) : constants.DEFAULT_PAGE_SIZE))
                   .execAsync().then((data) => {
                      if (data) {
                         if (extraOptions.response) {
