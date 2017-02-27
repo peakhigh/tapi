@@ -400,7 +400,7 @@ module.exports = class BaseSchema {
                      }); 
                   }
                   this.find(req.query.where ? JSON.parse(req.query.where) : {}, extraOptions.selectFields.join(' '))
-                  .sort((req.query.sort ? JSON.parse(req.query.sort) : { createdAt: -1 }))
+                  .sort(((req.query.sort && Object.keys(req.query.sort).length > 0) ? req.query.sort : { createdAt: -1 }))
                   .skip((req.query.skip ? parseInt(req.query.skip, 10) : 0))
                   .limit((req.query.limit ? parseInt(req.query.limit, 10) : constants.DEFAULT_PAGE_SIZE))
                   .execAsync().then((data) => {
