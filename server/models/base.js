@@ -432,6 +432,20 @@ module.exports = class BaseSchema {
                      return cb(null, data);
                   });
             },
+            editById(data, extraOptions, cb) {
+               console.log('update callback');
+               let model = this;
+               let _id = data._id;
+               console.log(JSON.stringify(data));
+               delete data._id;               
+               this.update({_id: _id}, data, (err, result) => { 
+                  console.log(err, result);
+                  if (err) {
+                     return cb(err, {success: false, _id: data._id, error: err});
+                  }
+                  return cb(err, {success: true, _id: result._id});
+               });
+            },
             addOrEdit(data, extraOptions, cb) {
                console.log('addOrEditByRequest callback');
                let model = this;

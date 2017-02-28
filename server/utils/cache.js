@@ -105,6 +105,13 @@ class Cache {
                         page: 'setQuote',
                         service: 'trips/service/setQuote',
                         hide: true
+                     }, 
+                     {
+                        title: 'Add Comments',
+                        icon: 'fa-table',
+                        page: 'addComments',
+                        service: 'trips/service/addComments',
+                        hide: true
                      }
                   ]
                }]
