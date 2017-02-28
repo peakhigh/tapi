@@ -6,7 +6,7 @@ class Constants {
     this.CONFIG_KEY_GRID_SUFFIX = 'Grid';
     this.CONFIG_KEY_DB_SUFFIX = 'DB';
     this.CONFIG_KEY_SERVICE_SUFFIX = 'Service';
-    this.DEFAULT_PAGE_SIZE = 2;
+    this.DEFAULT_PAGE_SIZE = 5;
   }
 }
 
