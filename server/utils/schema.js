@@ -47,7 +47,13 @@ module.exports = {
    },
    address: function (isArray) {
       let obj = {
+         organisationOrName: {
+            type: String
+         },         
          street: {
+            type: String
+         },
+         location: {
             type: String
          },
          state: {

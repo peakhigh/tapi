@@ -14,7 +14,13 @@ module.exports = {
       'pickup.date': {
          required: true
       },
+      'pickup.address.organisationOrName': {
+         required: true
+      },
       'pickup.address.street': {
+         required: true
+      },
+      'pickup.address.location': {
          required: true
       },
       'pickup.address.city': {
@@ -39,7 +45,13 @@ module.exports = {
       'drop.date': {
          required: true
       },
+      'drop.address.organisationOrName ': {
+         required: true
+      },
       'drop.address.street': {
+         required: true
+      },
+      'drop.address.location': {
          required: true
       },
       'drop.address.city': {
