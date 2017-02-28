@@ -379,15 +379,15 @@ module.exports = class BaseSchema {
             * @param {number} limit - Limit number of users to be returned.
             * @returns {Promise<User[]>}
             */
-            listFields(req, extraOptions, cb) {//select few fields only
+            listFields(query, extraOptions, cb) {//select few fields only
                if (!extraOptions.selectFields) {
                   extraOptions.selectFields = [];
                }
                if (extraOptions.selectFields.indexOf('_id') < 0) {
                   extraOptions.selectFields.push('_id');
                }
-               console.log(req.query);
-               this.count(req.query.where || {}).execAsync().then((total) => {
+               console.log(query);
+               this.count(query.where || {}).execAsync().then((total) => {
                   if (total === 0) {
                      if (extraOptions.response) {
                         extraOptions.response.data = [];
@@ -399,10 +399,10 @@ module.exports = class BaseSchema {
                         total: 0
                      }); 
                   }
-                  this.find(req.query.where ? JSON.parse(req.query.where) : {}, extraOptions.selectFields.join(' '))
-                  .sort(((req.query.sort && Object.keys(req.query.sort).length > 0) ? req.query.sort : { createdAt: -1 }))
-                  .skip((req.query.skip ? parseInt(req.query.skip, 10) : 0))
-                  .limit((req.query.limit ? parseInt(req.query.limit, 10) : constants.DEFAULT_PAGE_SIZE))
+                  this.find(query.where ? JSON.parse(query.where) : {}, extraOptions.selectFields.join(' '))
+                  .sort(((query.sort && Object.keys(query.sort).length > 0) ? query.sort : { createdAt: -1 }))
+                  .skip((query.skip ? parseInt(query.skip, 10) : 0))
+                  .limit((query.limit ? parseInt(query.limit, 10) : constants.DEFAULT_PAGE_SIZE))
                   .execAsync().then((data) => {
                      if (extraOptions.response) {
                         extraOptions.response.data = data;
@@ -416,11 +416,11 @@ module.exports = class BaseSchema {
                   });
                });               
             },  
-            list(req, extraOptions, cb) {//all fields               
-               this.find(req.query.where ? JSON.parse(req.query.where) : {})
-                  .sort((req.query.sort ? JSON.parse(req.query.sort) : { createdAt: -1 }))
-                  .skip((req.query.skip ? parseInt(req.query.skip, 10) : 0))
-                  .limit((req.query.limit ? parseInt(req.query.limit, 10) : constants.DEFAULT_PAGE_SIZE))
+            list(query, extraOptions, cb) {//all fields               
+               this.find(query.where ? JSON.parse(query.where) : {})
+                  .sort((query.sort ? JSON.parse(query.sort) : { createdAt: -1 }))
+                  .skip((query.skip ? parseInt(query.skip, 10) : 0))
+                  .limit((query.limit ? parseInt(query.limit, 10) : constants.DEFAULT_PAGE_SIZE))
                   .execAsync().then((data) => {
                      if (data) {
                         if (extraOptions.response) {
@@ -432,7 +432,7 @@ module.exports = class BaseSchema {
                      return cb(null, data);
                   });
             },
-            addOrEdit(req, extraOptions, cb) {
+            addOrEdit(data, extraOptions, cb) {
                console.log('addOrEditByRequest callback');
                let model = this;
                // if (req.body._id) {//update
@@ -516,12 +516,13 @@ module.exports = class BaseSchema {
                //    }                                 
                //    return cb(err, {success: false, _id: req.body._id, error: err});              
                // });  
-               let _id = req.body._id || new ObjectID();
-               delete req.body._id;
-               this.findOneAndUpdate({_id: _id}, req.body, {upsert: true, fields: {_id: 1}, new: true, runValidators: true}, (err, result) => { 
+               let _id = data._id || new ObjectID();
+               delete data._id;
+               console.log(data);
+               this.findOneAndUpdate({_id: _id}, data, {upsert: true, fields: {_id: 1}, new: true, runValidators: true}, (err, result) => { 
                   console.log(err, result);
                   if (err) {
-                     return cb(err, {success: false, _id: req.body._id, error: err});
+                     return cb(err, {success: false, _id: data._id, error: err});
                   }
                   return cb(err, {success: true, _id: result._id});
          
@@ -532,7 +533,7 @@ module.exports = class BaseSchema {
                   //   
                });
             },
-            getById(req, extraOptions, cb) {
+            getById(params, extraOptions, cb) {
                console.log('getById callback');
                // this.findById(req.params.id).lean().exec((err, doc) => {
                //    if (err) {
@@ -544,7 +545,21 @@ module.exports = class BaseSchema {
                //    } 
                //    return cb(null, doc);
                // });              
-               this.findById(req.params.id)
+               this.findById(params.id)
+                  .lean().execAsync().then((record) => {
+                     if (record) {
+                        if (extraOptions.response) {
+                           extraOptions.response.data = record;
+                           return cb(null, extraOptions.response);
+                        }
+                        return cb(null, record);
+                     }
+                     const err = new APIError('No such record exists!', httpStatus.NOT_FOUND);
+                     return cb(err, null);
+                  });
+            },
+            getByIdWithFields(params, extraOptions, cb) {              
+               this.findById(params.id).select(extraOptions.fields)
                   .lean().execAsync().then((record) => {
                      if (record) {
                         if (extraOptions.response) {

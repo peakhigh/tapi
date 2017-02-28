@@ -82,7 +82,7 @@ module.exports = {
          console.log('get callback', req.params.id);
          const model = require('mongoose').model(collection);
          if (req.params.id) {
-            model.getById(req, {
+            model.getById(req.params, {
                response: schema
             }, cb);
          } else {
@@ -98,7 +98,7 @@ module.exports = {
       callback: (serviceConfig, req, options, cb) => { //callback hook  for post request
          console.log('post callback');
          const model = require('mongoose').model(collection);
-         model.addOrEdit(req, null, cb);
+         model.addOrEdit(req.body, null, cb);
       }
    }
 };

@@ -56,9 +56,7 @@ const CurrentSchema = new BaseSchemaFactory({
          userRole: {
             type: String
          },
-         comment: {
-            type: String
-         }
+         comment: schemaTypeUtils.description()
       },
       vehicleRequirements: {
          vechicleType: {

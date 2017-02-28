@@ -98,7 +98,13 @@ class Cache {
                         title: 'Manage',
                         icon: 'fa-table',
                         page: 'manageTrip',
-                        service: 'trips/service/manageTrip',
+                        service: 'trips/service/manageTrip'
+                     }, {
+                        title: 'Set Quote',
+                        icon: 'fa-table',
+                        page: 'setQuote',
+                        service: 'trips/service/setQuote',
+                        hide: true
                      }
                   ]
                }]
