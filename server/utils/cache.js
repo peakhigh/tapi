@@ -114,7 +114,25 @@ class Cache {
                         hide: true
                      }
                   ]
-               }]
+               }, {
+                  title: 'Drivers',
+                  icon: 'fa-table',
+                  page: 'manageDriver',                  
+                  service: 'drivers/service/manageDriver',
+                  Menu: [{
+                        title: 'Add New',
+                        icon: 'fa-table',
+                        page: 'addDriver',
+                        service: 'drivers/service/addDriver'
+                     }, {
+                        title: 'Manage',
+                        icon: 'fa-table',
+                        page: 'manageDriver',
+                        service: 'drivers/service/manageDriver'
+                     },
+                  ]
+               }
+               ]
             }
          }
       }      

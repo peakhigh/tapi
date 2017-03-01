@@ -3,6 +3,7 @@ const userRoutes = require('./user');
 const authRoutes = require('./auth');
 const tripsRoutes = require('./trips');
 const trucksRoutes = require('./trucks');
+const drivers = require('./drivers');
 
 const router = express.Router();	// eslint-disable-line new-cap
 
@@ -22,5 +23,8 @@ router.use('/trucks', trucksRoutes);
 
 // mount auth routes at /auth
 router.use('/auth', authRoutes);
+
+// mount drivers routes at /drivers
+router.use('/drivers', drivers);
 
 module.exports = router;

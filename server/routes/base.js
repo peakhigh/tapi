@@ -82,6 +82,7 @@ module.exports = class BaseRouter {
          return res.json(cache.getRequestSchema(req));
       });
 
+      
       if (options.collection) {
          let serviceConfigs = utils.getServiceConfigs(options.collection);
          if (serviceConfigs && Object.keys(serviceConfigs).length > 0) {
