@@ -47,7 +47,7 @@ module.exports = {
    },
    address: function (isArray) {
       let obj = {
-         organisationOrName: {
+         organisation: {
             type: String
          },         
          street: {
