@@ -22,7 +22,9 @@ module.exports = {
          const model = require('mongoose').model(collection);
          if (req.params.id) {
              model.getById(req.params, {
-               response: schema
+               response: {
+                  schema: schema
+               }
             }, cb);
             //cb(null, schema);
          } else {
