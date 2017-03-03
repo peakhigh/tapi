@@ -84,11 +84,14 @@ module.exports = class BaseSchema {
          return field.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => { return str.toUpperCase(); });
       };
       this.setHtmlArrayField = (fieldData) => {//this is designed to work for alpaca plugin
+         // let type = fieldData.type[0];
+         // fieldData.type = 'array';
+         // fieldData.items = {
+         //    type: type.toLowerCase()
+         // };
          let type = fieldData.type[0];
-         fieldData.type = 'array';
-         fieldData.items = {
-            type: type.toLowerCase()
-         };
+         fieldData.type = [type];
+         return fieldData;
       };
       this.setFieldDetails = (self, field, fieldData, schemaObject, schemaType) => {
          // console.log(field, schemaType);
@@ -99,41 +102,41 @@ module.exports = class BaseSchema {
                if (fieldPathParts[i].indexOf('[') === 0) { //array of objects
                   fieldPathParts[i] = fieldPathParts[i].replace('[', '').replace(']', '');
                   if (!projection[fieldPathParts[i]]) {
-                     if (schemaType === 'form') {//this is designed to work for alpaca plugin
-                        projection[fieldPathParts[i]] = {
-                           title: self.getFieldTitle(fieldPathParts[i]),
-                           type: 'array',
-                           items: {
-                              type: 'object',
-                              properties: {}
-                           }
-                        };
-                     } else {
+                     // if (schemaType === 'form') {//this is designed to work for alpaca plugin
+                     //    projection[fieldPathParts[i]] = {
+                     //       title: self.getFieldTitle(fieldPathParts[i]),
+                     //       type: 'array',
+                     //       items: {
+                     //          type: 'object',
+                     //          properties: {}
+                     //       }
+                     //    };
+                     // } else {
                         projection[fieldPathParts[i]] = [{}];
-                     }
+                     // }
                   }
-                  if (schemaType === 'form') {
-                     projection = projection[fieldPathParts[i]].items.properties;
-                  } else {
+                  // if (schemaType === 'form') {
+                  //    projection = projection[fieldPathParts[i]].items.properties;
+                  // } else {
                      projection = projection[fieldPathParts[i]][0];
-                  }
+                  // }
                } else {
                   if (!projection[fieldPathParts[i]]) {
-                     if (schemaType === 'form') {//this is designed to work for alpaca plugin
-                        projection[fieldPathParts[i]] = {
-                           title: self.getFieldTitle(fieldPathParts[i]),
-                           type: 'object',
-                           properties: {}
-                        };
-                     } else {
+                     // if (schemaType === 'form') {//this is designed to work for alpaca plugin
+                     //    projection[fieldPathParts[i]] = {
+                     //       title: self.getFieldTitle(fieldPathParts[i]),
+                     //       type: 'object',
+                     //       properties: {}
+                     //    };
+                     // } else {
                         projection[fieldPathParts[i]] = {};
-                     }
+                     // }
                   }
-                  if (schemaType === 'form') {
-                     projection = projection[fieldPathParts[i]].properties;
-                  } else {
+                  // if (schemaType === 'form') {
+                  //    projection = projection[fieldPathParts[i]].properties;
+                  // } else {
                      projection = projection[fieldPathParts[i]];
-                  }
+                  // }
                }
             }
             projection[fieldPathParts[fieldPathParts.length - 1]] = fieldData;

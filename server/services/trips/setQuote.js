@@ -24,7 +24,9 @@ module.exports = {
          const model = require('mongoose').model(collection);
          if (req.params.id) {
             model.getByIdWithFields(req.params, {
-               response: schema,
+               response: {
+                  schema: schema
+               },
                fields: serviceConfig.schemaFields
             }, cb);
          } else {

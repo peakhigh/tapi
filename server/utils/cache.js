@@ -147,11 +147,11 @@ class Cache {
      //for grid => appKey + sep + role.Code + sep + collection_name + sep + CONFIG_KEY_GRID_SUFFIX
      //for db => appKey + sep + role.Code + sep + collection_name + sep + CONFIG_KEY_DB_SUFFIX
 
-     Object.keys(schemas).forEach((key) => {//this is designed to work for alpaca plugin
-        if (key.indexOf(constants.CONFIG_KEY_SEPERATOR + constants.CONFIG_KEY_FORM_SUFFIX.toUpperCase()) > 0) {
-           schemas[key] = schemaUtils.formatHtmlSchema(schemas[key]);
-        }
-     });
+   //   Object.keys(schemas).forEach((key) => {//this is designed to work for alpaca plugin
+   //      if (key.indexOf(constants.CONFIG_KEY_SEPERATOR + constants.CONFIG_KEY_FORM_SUFFIX.toUpperCase()) > 0) {
+   //         schemas[key] = schemaUtils.formatHtmlSchema(schemas[key]);
+   //      }
+   //   });
      utils.cloneObject(schemas, this.SCHEMA_STORE);
   }
   updateServiceSchemaStore(schemas, serviceConfigs) {     
@@ -160,12 +160,12 @@ class Cache {
      }
      //key structure   
      //for services => appKey#role.Code#collection_name#serviceType#addTrip'    
-     Object.keys(schemas).forEach((key) => {//this is designed to work for alpaca plugin
-        let keyParts = key.split(constants.CONFIG_KEY_SEPERATOR);
-        if (serviceConfigs[keyParts[keyParts.length - 1]] && serviceConfigs[keyParts[keyParts.length - 1]].type === 'form') {
-           schemas[key] = schemaUtils.formatHtmlSchema(schemas[key]);
-        }       
-     });
+   //   Object.keys(schemas).forEach((key) => {//this is designed to work for alpaca plugin
+   //      let keyParts = key.split(constants.CONFIG_KEY_SEPERATOR);
+   //      if (serviceConfigs[keyParts[keyParts.length - 1]] && serviceConfigs[keyParts[keyParts.length - 1]].type === 'form') {
+   //         schemas[key] = schemaUtils.formatHtmlSchema(schemas[key]);
+   //      }       
+   //   });
      utils.cloneObject(schemas, this.SCHEMA_STORE);
   }
 

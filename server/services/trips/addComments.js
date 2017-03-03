@@ -23,11 +23,13 @@ module.exports = {
          console.log('get callback', req.params.id);
          const model = require('mongoose').model(collection);
          if (req.params.id) {
-            schema.data = {
-               _id: req.params.id,
-               comments: ' '
-            };
-            cb(null, schema);
+            cb(null, {
+               data:  {
+                  _id: req.params.id,
+                  comments: ' '
+               },
+               schema: schema
+            });
          } else {
             cb(null, schema);
          }

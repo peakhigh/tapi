@@ -30,10 +30,12 @@ module.exports = {
       return utils.getSchemaTypeObject({
          type: String,
          html: {
-            form: {
-               type: 'zipcode',
-               format: 'five'
-            }
+            minLength: 5,
+            maxLength: 6
+            // form: {
+               // type: 'zipcode'
+               // format: 'six'
+            // }
          } 
       }, isArray, options);
    },

@@ -58,7 +58,7 @@ const CurrentSchema = new BaseSchemaFactory({
          },
          comment: schemaTypeUtils.description()
       },
-      vehicleRequirements: {
+      vehicleRequirements: [{
          vechicleType: {
             type: String, //enum needed -- closed Body, open body,trally, mini truck, auto     
             enum: ['Open Body', 'Closed Body', 'Trally', 'Mini Truck', 'Auto'],
@@ -67,15 +67,15 @@ const CurrentSchema = new BaseSchemaFactory({
                   type: 'select'
                }
             }       
-         },
-         minRating: {
-            type: Number
-         },
+         },         
          requiredCapacity: {
             type: Number
          },
-         capacityUnit: uiTypes.weightUnit()
-      },    
+         capacityUnit: uiTypes.weightUnit(),
+         minRating: {
+            type: Number
+         }
+      }],    
       totalWeight: {
          type: Number
       },
@@ -115,7 +115,14 @@ const CurrentSchema = new BaseSchemaFactory({
          formalities: schemaUtils.tripFormality()         
       }],
       comments: {
-         type: [String]         
+         type: [String],
+         html: {
+            form: {
+               items: {
+                  type: 'textarea'
+               }               
+            }
+         }      
       },
       // comments: schemaTypeUtils.description(false, {
       //    type: [String]
