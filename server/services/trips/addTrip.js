@@ -96,7 +96,7 @@ module.exports = {
          if (req.params.id || req.query.id) {
             let params = {
                id: req.params.id || req.query.id
-            }
+            };
             model.getById(params, {
                response: {
                   schema: schema
