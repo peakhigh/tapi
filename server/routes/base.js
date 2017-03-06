@@ -6,6 +6,7 @@ const config = require('../../config/env');
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const mongoose = require('mongoose');
 
 function processServiceRequestCallback(req, res, next, serviceConfig, httpMethod, options, validateOutput) {
    let schema;
@@ -58,23 +59,74 @@ module.exports = class BaseRouter {
       let self = this;
       this.router = express.Router();
 
-      this.router.route('/')
-         /** GET - Get list of current collection documents */
-         .get(expressJwt({ secret: config.jwtSecret }), options.controller.currentModel.list)
+      // this.router.route('/')
+      //    /** GET - Get list of current collection documents */
+      //    .get(expressJwt({ secret: config.jwtSecret }), options.controller.currentModel.list)
 
-         /** POST - Create new document of current collection */
-         .post(expressJwt({ secret: config.jwtSecret }), options.controller.currentModel.create);
+      //    /** POST - Create new document of current collection */
+      //    .post(expressJwt({ secret: config.jwtSecret }), options.controller.currentModel.create);
 
       /** TODO: complete add/edit/delete/search */
 
       /** get /form - return form schema of current collection */
       this.router.route('/form').get(expressJwt({ secret: config.jwtSecret }), (req, res, next) => {
-         return res.json(cache.getRequestSchema(req));
+         if (req.params.id || req.query.id) {
+            const model = mongoose.model(options.collection);
+            let params = {
+               id: req.params.id || req.query.id
+            };
+            model.getById(params, {
+               response: {
+                  schema: cache.getRequestSchema(req)
+               }
+            }, (err, out) => {
+               if (err) {
+                  if (out) {//if out present on error, return ouput considering it as json response
+                     return res.json(out);
+                  }
+                  return res.json(httpUtils.httpError(req, (err && err.message) ? err.message : 'Invalid Request'));
+               }
+               //send response
+               return res.json(out);
+            });
+         } else {
+            return res.json(cache.getRequestSchema(req));
+         }         
+      });
+
+      /** post /form - save the data into current collection */
+      this.router.route('/form').post(expressJwt({ secret: config.jwtSecret }), (req, res, next) => {
+         const model = mongoose.model(options.collection);         
+         model.addOrEdit(req.body, null, (err, out) => {
+            if (err) {
+               if (out) {//if out present on error, return ouput considering it as json response
+                  return res.json(out);
+               }
+               return res.json(httpUtils.httpError(req, (err && err.message) ? err.message : 'Invalid Request'));
+            }
+            //send response
+            return res.json(out);
+         });
       });
 
       /** get /grid - return grid schema of current collection */
       this.router.route('/grid').get(expressJwt({ secret: config.jwtSecret }), (req, res, next) => {
-         return res.json(cache.getRequestSchema(req));
+         // return res.json(cache.getRequestSchema(req));
+         const model = mongoose.model(options.collection);
+         model.list(req.query, {            
+            response: {
+               schema: cache.getRequestSchema(req)
+            }
+         }, (err, out) => {
+            if (err) {
+               if (out) {//if out present on error, return ouput considering it as json response
+                  return res.json(out);
+               }
+               return res.json(httpUtils.httpError(req, (err && err.message) ? err.message : 'Invalid Request'));
+            }
+            //send response
+            return res.json(out);
+         });
       });
 
       /** get /db - return db schema of current collection -- only testing purpose */

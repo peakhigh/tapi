@@ -29,9 +29,21 @@ class Cache {
             Id: 1,
             Code: 'ADMIN'
          },
-         TRUCK_USER: {
+         TRUCK_ADMIN: {
             Id: 2,
-            Code: 'TRUCK_USER',
+            Code: 'TRUCK_ADMIN'
+         },
+         TRUCK_USER: {
+            Id: 3,
+            Code: 'TRUCK_USER'
+         },
+         TRIP_ADMIN: {
+            Id: 4,
+            Code: 'TRIP_ADMIN'
+         },
+         TRIP_USER: {
+            Id: 5,
+            Code: 'TRIP_USER',
             Menu: {
                SideMenu: [{
                   title: 'Dashboard',
@@ -53,17 +65,17 @@ class Cache {
                   ]
                }]
             }
+         },         
+         REPRESENTATIVE: {
+            Id: 6,
+            Code: 'REPRESENTATIVE'
          },
-         TRUCK_OWNER: {
-            Id: 3,
-            Code: 'TRUCK_OWNER'
-         },
-         BROKER: {
-            Id: 4,
-            Code: 'BROKER'
+         DRIVER: {
+            Id: 7,
+            Code: 'DRIVER'
          },
          CALL_CENTER_USER: {
-            Id: 5,
+            Id: 8,
             Code: 'CALL_CENTER_USER',
             Menu: {
                SideMenu: [{
@@ -115,26 +127,45 @@ class Cache {
                      }
                   ]
                }, {
-                  title: 'Drivers',
+                  title: 'Users',
                   icon: 'fa-table',
-                  page: 'manageDriver',                  
-                  service: 'drivers/service/manageDriver',
+                  page: 'manageUsers',                  
+                  service: 'users/grid',
                   Menu: [{
-                        title: 'Add New',
+                        title: 'Add User',
                         icon: 'fa-table',
-                        page: 'addDriver',
-                        service: 'drivers/service/addDriver'
+                        page: 'addUser',
+                        service: 'users/form'
                      }, {
                         title: 'Manage',
                         icon: 'fa-table',
-                        page: 'manageDriver',
-                        service: 'drivers/service/manageDriver'
-                     },
+                        page: 'manageUsers',
+                        service: 'users/grid'
+                     }
                   ]
-               }
+               } 
+
+               // {
+               //    title: 'Drivers',
+               //    icon: 'fa-table',
+               //    page: 'manageDriver',                  
+               //    service: 'drivers/service/manageDriver',
+               //    Menu: [{
+               //          title: 'Add New',
+               //          icon: 'fa-table',
+               //          page: 'addDriver',
+               //          service: 'drivers/service/addDriver'
+               //       }, {
+               //          title: 'Manage',
+               //          icon: 'fa-table',
+               //          page: 'manageDriver',
+               //          service: 'drivers/service/manageDriver'
+               //       },
+               //    ]
+               // }
                ]
             }
-         }
+         }         
       }      
    };   
   }

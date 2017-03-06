@@ -91,9 +91,9 @@ module.exports = {
          cb();//if error, return as first argument
       },
       callback: (schema, serviceConfig, req, options, cb) => {//callback hook  - after serving the request - forms & grid
-         console.log('get callback', req.params.id);
-         const model = require('mongoose').model(collection);
+         console.log('get callback', req.params.id);         
          if (req.params.id || req.query.id) {
+            const model = require('mongoose').model(collection);
             let params = {
                id: req.params.id || req.query.id
             };
