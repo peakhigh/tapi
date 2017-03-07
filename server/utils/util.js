@@ -7,14 +7,18 @@ const path = require('path');
 const extend = require('extend');
 
 module.exports = {
-   cloneObject: function (source, destination) {
+   cloneObject: function (source, destination, extraOptions) {
       // for (let prop in source) {
       //    if (source.hasOwnProperty(prop)) {
       //       destination[prop] = source[prop];
       //    }
       // }
       // return destination;
-      return extend(true, destination, source);
+      let deep = true;
+      if (extraOptions && extraOptions.dontCloneDeep) {
+         deep = extraOptions.dontCloneDeep
+      }
+      return extend(deep, destination, source);
    },
    setRoleDetails: function (key, value) {
       let obj = {};

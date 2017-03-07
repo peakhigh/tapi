@@ -40,6 +40,7 @@ const CurrentSchema = new BaseSchemaFactory({
             type: String,
             html: {
                form: {
+                  type: 'select',
                   dataSource: [{
                      value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code,
                      text: 'Trip Admin'

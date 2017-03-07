@@ -75,6 +75,38 @@ module.exports = class BaseSchema {
          }
          return dbSchema;
       };
+      this.cloneHtmlAttributes = (source, destination, options) => {
+         //in html, clone only one level. first clone form props, secondly clone grid props and finally clone the whole object
+         if (source) {
+            let sourceCopy = {};
+            utils.cloneObject(source, sourceCopy);
+            if (options.isForm && sourceCopy.form && !options.onlyGrid) {
+               if (!destination.form) {
+                  destination.form = {};
+               }
+               utils.cloneObject(sourceCopy.form, destination.form, {
+                  dontCloneDeep: true
+               });
+               delete sourceCopy.form;
+            }
+
+            if (options.isGrid && sourceCopy.grid) {
+               if (!destination.grid) {
+                  destination.grid = {};
+               }
+               utils.cloneObject(sourceCopy.grid, destination.grid, {
+                  dontCloneDeep: true
+               });
+               delete sourceCopy.grid;
+            }
+
+            if (!options.onlyGrid) {
+               utils.cloneObject(sourceCopy, destination, {
+                  dontCloneDeep: true
+               });
+            }
+         }
+      }      
       this.getFieldTitle = (field) => {
          let fieldParts = field.split('.');
          //camelcase to uppercase. step 1)insert a space before all caps. step 2)uppercase the first character
@@ -273,17 +305,22 @@ module.exports = class BaseSchema {
                      exposeInGrid = false;
                   }
                }        
+               if(fieldPath === 'profile.userType') {
+                  console.log('hu ha');
+               }
 
                //1. process form attributes               
                let fieldFormData = {};
                if (exposeInForm) {
                   utils.cloneObject(stringifiedFieldSchema, fieldFormData);//attach the common props                
-                  if (htmlOnly && Object.keys(htmlOnly).length > 0) {
-                     utils.cloneObject(htmlOnly, fieldFormData);//attach the html specific
+                  if (htmlOnly && Object.keys(htmlOnly).length > 0) {                     
+                     // utils.cloneObject(htmlOnly, fieldFormData);//attach the html specific
+                     self.cloneHtmlAttributes(htmlOnly, fieldFormData, {isForm: true});
                   }
                   if (currentRoleHtmlOnlyAttrs) {
                      //customization exists for this app, role & field combination 
-                     utils.cloneObject(currentRoleHtmlOnlyAttrs, fieldFormData);
+                     // utils.cloneObject(currentRoleHtmlOnlyAttrs, fieldFormData);
+                     self.cloneHtmlAttributes(currentRoleHtmlOnlyAttrs, fieldFormData, {isForm: true});
                   }
                   self.setFieldDetails(self, field, fieldFormData, roleBasedSchemas[formKey], 'form');      
                }               
@@ -300,6 +337,11 @@ module.exports = class BaseSchema {
                         fieldGridData[attr] = stringifiedFieldSchema[attr];
                      }
                   });
+                  //clone html.grid properties
+                  self.cloneHtmlAttributes(stringifiedFieldSchema, fieldGridData, {isGrid: true, onlyGrid: true});
+                  self.cloneHtmlAttributes(htmlOnly, fieldGridData, {isGrid: true, onlyGrid: true});
+                  self.cloneHtmlAttributes(currentRoleHtmlOnlyAttrs, fieldGridData, {isGrid: true, onlyGrid: true});    
+
                   self.setFieldDetails(self, field, fieldGridData, roleBasedSchemas[gridKey]);
                }
 
@@ -336,7 +378,8 @@ module.exports = class BaseSchema {
 
                         if (self.serviceConfigs[serviceName].schemaOverrideFeilds && self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField] && Object.keys(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField]).length > 0) {
                            // override customizations of the field defined at service level
-                           utils.cloneObject(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField], serviceFieldConfig);
+                           // utils.cloneObject(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField], serviceFieldConfig);
+                           self.cloneHtmlAttributes(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField], serviceFieldConfig, {isGrid: true, isForm: true});
                         }
                         if (serviceRoleBasedKey) {
                            if (!self.serviceSchemas[serviceRoleBasedKey]) {
