@@ -115,6 +115,7 @@ module.exports = {
       callback: (serviceConfig, req, options, cb) => { //callback hook  for post request
          console.log('post callback');
          const model = require('mongoose').model(collection);
+         /** TODO: if date searches not working on pickupdate & dropdates, change them to dates instead of strings while saving */
          model.addOrEdit(req.body, null, cb);
       }
    }

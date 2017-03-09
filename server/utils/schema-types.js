@@ -9,7 +9,7 @@ module.exports = {
          }   
       }, isArray, options);
    },
-   email: function (isArray, options) {   
+   email: function (isArray, options) {  
       return utils.getSchemaTypeObject({
          type: String,
          html: {

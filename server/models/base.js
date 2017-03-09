@@ -605,7 +605,7 @@ module.exports = class BaseSchema {
                //    return cb(err, {success: false, _id: req.body._id, error: err});              
                // });  
                let _id = data._id || new ObjectID();
-               delete data._id;
+               delete data._id;                              
                console.log(data);
                this.findOneAndUpdate({_id: _id}, data, {upsert: true, fields: {_id: 1}, new: true, runValidators: true}, (err, result) => { 
                   console.log(err, result);

@@ -69,6 +69,35 @@ module.exports = {
       };
       return isArray ? [obj] : obj;
    },
+   addressRequired: function (isArray) {
+      let obj = {
+         organisation: {
+            type: String,
+            required: true
+         },         
+         street: {
+            type: String,
+            required: true
+         },
+         location: {
+            type: String,
+            required: true
+         },
+         state: {
+            type: String,
+            required: true
+         },
+         city: {
+            type: String,
+            required: true
+         },         
+         zip: schemaTypes.zip(false, {required: true})
+         // country: { //enable this only when going out of india
+         //    type: String
+         // }
+      };
+      return isArray ? [obj] : obj;
+   },
    contact: function (isArray) {
       let obj = {
          firstName: {

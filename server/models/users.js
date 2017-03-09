@@ -28,8 +28,10 @@ const CurrentSchema = new BaseSchemaFactory({
          enum: ['Male', 'Female'],
          default: 'Male'
       },
-      contact: schemaUtils.contact(true),
-      organisationAddress: schemaUtils.address(), 
+      email: schemaTypeUtils.email(false, {required: true}), 
+      mobile: schemaTypeUtils.mobile(false, {required: true}),
+      alternativePhone: schemaTypeUtils.mobile(),
+      organisationAddress: schemaUtils.addressRequired(),      
       status: {
          type: String,
          enum: ['Active', 'Inactive'],
@@ -38,6 +40,7 @@ const CurrentSchema = new BaseSchemaFactory({
       profile: {
          userType: {
             type: String,
+            required: true,
             html: {
                form: {
                   type: 'select',
@@ -73,7 +76,22 @@ const CurrentSchema = new BaseSchemaFactory({
                   /*TODO roles based restrition
                      check role_config working or not
                   */
-                  roles: [cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.ADMIN.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_ADMIN.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.REPRESENTATIVE.Code],
+                  // roles: [cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.ADMIN.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_ADMIN.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.REPRESENTATIVE.Code],
+                  permissions: utils.setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.ADMIN.Code, {                  
+                       view: true,
+                       create: true,
+                       edit: true
+                  }).setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code, {                  
+                       view: true,
+                       create: true,
+                       edit: true
+                  }).setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code, {                  
+                       view: true
+                  }).setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_USER.Code, {                  
+                       view: true
+                  }).setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.REPRESENTATIVE.Code, {                  
+                       view: true
+                  }),
                   roles_config: utils.setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code, {
                         html: {
                            form: {
@@ -127,7 +145,8 @@ const CurrentSchema = new BaseSchemaFactory({
                            form: {
                               dataSource: [{
                                  value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code,
-                                 text: 'Trip Admin'
+                                 text: 'Trip Admin',
+                                 selected: true
                               }, {
                                  value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_USER.Code,
                                  text: 'Trip User'
@@ -153,8 +172,19 @@ const CurrentSchema = new BaseSchemaFactory({
          balance: {
             type: Number,
             config: {
-               TRIPS_TRUCKS: {
-                  roles: [cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_ADMIN.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_USER.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_USER.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.REPRESENTATIVE.Code]
+               TRIPS_TRUCKS: {                  
+                  // roles: [cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_ADMIN.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_USER.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_USER.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.REPRESENTATIVE.Code]
+                  permissions: utils.setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_ADMIN.Code, {                  
+                       view: true
+                  }).setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_USER.Code, {                  
+                       view: true
+                  }).setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code, {                  
+                       view: true
+                  }).setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_USER.Code, {                  
+                       view: true
+                  }).setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.REPRESENTATIVE.Code, {                  
+                       view: true
+                  })
                }
             }
          },
@@ -162,7 +192,12 @@ const CurrentSchema = new BaseSchemaFactory({
             type: Number, 
             config: {
                TRIPS_TRUCKS: {
-                  roles: [cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code]
+                  permissions: utils.setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code, {
+                       create: false,
+                       edit: true,
+                       view: true
+                  })
+                  // roles: [cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code]
                }
             }
          },
@@ -170,7 +205,12 @@ const CurrentSchema = new BaseSchemaFactory({
             type: Number, 
             config: {
                TRIPS_TRUCKS: {
-                  roles: [cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code]
+                  // roles: [cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code]
+                  permissions: utils.setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code, {
+                       create: false,
+                       edit: true,
+                       view: true
+                  })
                }
             }
          }
@@ -178,7 +218,10 @@ const CurrentSchema = new BaseSchemaFactory({
       services: {
          password: {
             type: String,
-            required: true
+            required: true,
+            html: {
+               format: 'password'
+            }
          },
          lastLoginTokens: {
             type: [String]

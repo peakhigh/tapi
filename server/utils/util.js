@@ -16,7 +16,7 @@ module.exports = {
       // return destination;
       let deep = true;
       if (extraOptions && extraOptions.dontCloneDeep) {
-         deep = extraOptions.dontCloneDeep
+         deep = false;
       }
       return extend(deep, destination, source);
    },
@@ -86,6 +86,9 @@ module.exports = {
          }
          if (overrideObj.type) {
             obj.type = overrideObj.type;
+         }
+         if (overrideObj.required) {
+            obj.required = overrideObj.required;
          }
       }
       return isArray ? [obj] : obj;
