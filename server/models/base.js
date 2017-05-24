@@ -75,12 +75,12 @@ module.exports = class BaseSchema {
          }
          return dbSchema;
       };
-      this.cloneHtmlAttributes = (source, destination, options) => {
+      this.cloneHtmlAttributes = (source, destination, args) => {
          //in html, clone only one level. first clone form props, secondly clone grid props and finally clone the whole object
          if (source) {
             let sourceCopy = {};
             utils.cloneObject(source, sourceCopy);
-            if (options.isForm && sourceCopy.form && !options.onlyGrid) {
+            if (args.isForm && sourceCopy.form && !args.onlyGrid) {
                if (!destination.form) {
                   destination.form = {};
                }
@@ -90,7 +90,7 @@ module.exports = class BaseSchema {
                delete sourceCopy.form;
             }
 
-            if (options.isGrid && sourceCopy.grid) {
+            if (args.isGrid && sourceCopy.grid) {
                if (!destination.grid) {
                   destination.grid = {};
                }
@@ -100,13 +100,13 @@ module.exports = class BaseSchema {
                delete sourceCopy.grid;
             }
 
-            if (!options.onlyGrid) {
+            if (!args.onlyGrid) {
                utils.cloneObject(sourceCopy, destination, {
                   dontCloneDeep: true
                });
             }
          }
-      }      
+      };      
       this.getFieldTitle = (field) => {
          let fieldParts = field.split('.');
          //camelcase to uppercase. step 1)insert a space before all caps. step 2)uppercase the first character
@@ -305,7 +305,7 @@ module.exports = class BaseSchema {
                      exposeInGrid = false;
                   }
                }        
-               if(fieldPath === 'profile.userType') {
+               if (fieldPath === 'profile.userType') {
                   console.log('hu ha');
                }
 
