@@ -85,15 +85,18 @@ class Cache {
                }, {
                   title: 'Trucks',
                   icon: 'fa-table',
-                  page: 'manageTruck',                  
+                  page: 'manageTruck',      
+                  service: 'trucks/service/manageTruck',            
                   Menu: [{
                         title: 'Add New',
                         icon: 'fa-table',
-                        page: 'addTruck'
+                        page: 'addTruck',
+                        service: 'trucks/service/addTruck'
                      }, {
                         title: 'Manage',
                         icon: 'fa-table',
-                        page: 'manageTruck'
+                        page: 'manageTruck',
+                        service: 'trucks/service/manageTruck'
                      }
                   ]
                }, {

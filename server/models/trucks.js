@@ -44,7 +44,7 @@ const CurrentSchema = new BaseSchemaFactory({
             required: true
          },
          expiryDate: {
-            type: Number,
+            type: Date,
             required: true
          },
          coverDetails: {
