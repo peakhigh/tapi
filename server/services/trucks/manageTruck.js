@@ -8,7 +8,7 @@ module.exports = {
    requestType: 'get',
    schemaFields: ['plateNumber', 'licenseNumber', 'model', 'engineNumber', 'truckType',
                       'capacity', 'capacityUnits', 'insurance.startDate', 'insurance.expiryDate', 
-                        'material.Type', 'description','status'], // pick fields configuration from default schema
+                        'material.Type', 'description', 'status'], // pick fields configuration from default schema
    
    get: {
        callback: (schema, serviceConfig, req, options, cb) => {//callback hook  - after serving the request - forms & grid
