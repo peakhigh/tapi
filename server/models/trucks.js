@@ -41,10 +41,12 @@ const CurrentSchema = new BaseSchemaFactory({
       insurance: {
          startDate: {
             type: Date,
+            setmin: false,
             required: true
          },
          expiryDate: {
             type: Date,
+            setmin: false,
             required: true
          },
          coverDetails: {
