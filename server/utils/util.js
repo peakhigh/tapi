@@ -57,7 +57,7 @@ module.exports = {
          }
       }
       let retVal = url.trim().substring(startIndex, endIndex);
-      if (retVal === 'localhost') {
+      if (retVal === 'localhost' || retVal === '127.0.0.1') {
          return config.defaultapp;
       }
       return retVal;

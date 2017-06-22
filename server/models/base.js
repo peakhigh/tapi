@@ -239,13 +239,13 @@ module.exports = class BaseSchema {
 
          let stringifiedFieldSchema = {}; //stringified types, default values etc
          Object.keys(fieldData).forEach((key) => {
-            if (typeof fieldData[key] === 'function') {
-               stringifiedFieldSchema[key] = fieldData[key].name;
+            if (typeof fieldData[key] === 'function') {//for types
+               stringifiedFieldSchema[key] = fieldData[key].name.replace('Schema','');              
             } else if (fieldData[key] instanceof Array && fieldData[key].length > 0) {//type = [String] or Arrays  
                stringifiedFieldSchema[key] = [];
                fieldData[key].forEach((subEle) => {
                   if (typeof subEle === 'function') {
-                     stringifiedFieldSchema[key].push(subEle.name);
+                     stringifiedFieldSchema[key].push(subEle.name.replace('Schema',''));
                   } else {
                      stringifiedFieldSchema[key].push(subEle);
                   }
@@ -305,10 +305,6 @@ module.exports = class BaseSchema {
                      exposeInGrid = false;
                   }
                }        
-               if (fieldPath === 'profile.userType') {
-                  console.log('hu ha');
-               }
-
                //1. process form attributes               
                let fieldFormData = {};
                if (exposeInForm) {

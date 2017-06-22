@@ -1,9 +1,10 @@
 const utils = require('./util');
+let Schema = require('mongoose').Schema;
 
 module.exports = {
    date: function (isArray, options) {
       return utils.getSchemaTypeObject({
-         type: Date,
+         type: Schema.Types.Date,
          html: {
             format: 'datetime'
          }   
@@ -11,7 +12,7 @@ module.exports = {
    },
    email: function (isArray, options) {  
       return utils.getSchemaTypeObject({
-         type: String,
+         type: Schema.Types.String,
          html: {
             format: 'email'
          } 
@@ -19,7 +20,7 @@ module.exports = {
    },
    mobile: function (isArray, options) {  
       return utils.getSchemaTypeObject({            
-         type: Number,
+         type: Schema.Types.Number,
          html: {
             format: 'phone',
             type: 'string'  
@@ -28,7 +29,7 @@ module.exports = {
    },
    zip: function (isArray, options) {
       return utils.getSchemaTypeObject({
-         type: String,
+         type: Schema.Types.String,
          html: {
             minLength: 5,
             maxLength: 6
@@ -41,7 +42,7 @@ module.exports = {
    },
    description: function (isArray, options) {      
       return utils.getSchemaTypeObject({
-         type: String,
+         type: Schema.Types.String,
          html: {
             form: {
                type: 'textarea'

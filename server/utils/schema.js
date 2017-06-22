@@ -48,19 +48,19 @@ module.exports = {
    address: function (isArray) {
       let obj = {
          organisation: {
-            type: String
+            type: Schema.Types.String
          },         
          street: {
-            type: String
+            type: Schema.Types.String
          },
          location: {
-            type: String
+            type: Schema.Types.String
          },
          state: {
-            type: String
+            type: Schema.Types.String
          },
          city: {
-            type: String
+            type: Schema.Types.String
          },         
          zip: schemaTypes.zip()
          // country: { //enable this only when going out of india
@@ -72,23 +72,23 @@ module.exports = {
    addressRequired: function (isArray) {
       let obj = {
          organisation: {
-            type: String,
+            type: Schema.Types.String,
             required: true
          },         
          street: {
-            type: String,
+            type: Schema.Types.String,
             required: true
          },
          location: {
-            type: String,
+            type: Schema.Types.String,
             required: true
          },
          state: {
-            type: String,
+            type: Schema.Types.String,
             required: true
          },
          city: {
-            type: String,
+            type: Schema.Types.String,
             required: true
          },         
          zip: schemaTypes.zip(false, {required: true})
@@ -101,10 +101,10 @@ module.exports = {
    contact: function (isArray) {
       let obj = {
          firstName: {
-            type: String
+            type: Schema.Types.String
          },
          lastName: {
-            type: String
+            type: Schema.Types.String
          },
          email: schemaTypes.email(), 
          mobile: schemaTypes.mobile(),
@@ -115,20 +115,20 @@ module.exports = {
    spend: function (isArray) {
       let obj = {
          spendType: {
-            type: String //enum loading, unloading, frieght, driver
+            type: Schema.Types.String //enum loading, unloading, frieght, driver
          },
          amount: {
-            type: Number
+            type: Schema.Types.Number
          },
          mode: {
-            type: String //enum cash, online, etc
+            type: Schema.Types.String //enum cash, online, etc
          },
          to: {
-            type: String,
+            type: Schema.Types.String,
             required: false
          },
          comment: {
-            type: String
+            type: Schema.Types.String
          }
       };
       return isArray ? [obj] : obj;
@@ -136,19 +136,19 @@ module.exports = {
    payment: function (isArray) {
       let obj = {
          paymentType: {
-            type: String //enum loading, unloading, frieght, driver
+            type: Schema.Types.String //enum loading, unloading, frieght, driver
          },
          amount: {
-            type: Number
+            type: Schema.Types.Number
          },
          mode: {
-            type: String //enum cash, online, etc
+            type: Schema.Types.String //enum cash, online, etc
          },
          from: {
-            type: String
+            type: Schema.Types.String
          },
          comment: {
-            type: String
+            type: Schema.Types.String
          }
       };
       return isArray ? [obj] : obj;
@@ -156,10 +156,10 @@ module.exports = {
    tripDoc: function (isArray) {
       let obj = {
          doc: {
-            type: String// file upload
+            type: Schema.Types.String// file upload
          },
          description: {
-            type: String
+            type: Schema.Types.String
          }
       };
       return isArray ? [obj] : obj;
@@ -167,7 +167,7 @@ module.exports = {
    tripFormality: function (isArray) {
       let obj = {
          description: {
-            type: String
+            type: Schema.Types.String
          },
          docs: this.tripDoc(true)
       };
@@ -176,7 +176,7 @@ module.exports = {
    comment: function (isArray) {//TODO - need to use this in the future for trips.comments etc
       let obj = {
          comment: {
-            type: String
+            type: Schema.Types.String
          },
          commentBy: {
             type: Schema.Types.ObjectId

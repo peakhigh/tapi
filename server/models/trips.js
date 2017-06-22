@@ -14,53 +14,53 @@ const CurrentSchema = new BaseSchemaFactory({
    collection: 'Trips',   
    schema: {
       status: {
-         type: String, //enum new, pending, ..
+         type: Schema.Types.String, //enum new, pending, ..
          enum: ['New', 'Process', 'Running', 'Fail', 'Close'],
          default: 'new'
       },
       expectedTripCost: {
-         type: Number
+         type: Schema.Types.Number
       },
       maxTripCost: {
-         type: Number
+         type: Schema.Types.Number
       },
       receiverTinNumber: {
-         type: String
+         type: Schema.Types.String
       },
       senderTinNumber: {
-         type: String
+         type: Schema.Types.String
       },
       receiverServiceTaxNumber: {
          type: String
       },      
       senderServiceTaxNumber: {
-         type: String
+         type: Schema.Types.String
       },
       truckDetails: {
          type: Object //read only ( dump the truck details at the time of assignment)
       },
       currentPoint: {
-         type: String //location of truck if status is running
+         type: Schema.Types.String //location of truck if status is running
       },
       finalTripCost: {
-         type: Number
+         type: Schema.Types.Number
       },       
       paymentsReceived: schemaUtils.spend(true),        
       quotes: {
          cost: {
-            type: Number
+            type: Schema.Types.Number
          },
          userId: {
             type: Schema.Types.ObjectId
          },
          userRole: {
-            type: String
+            type: Schema.Types.String
          },
          comment: schemaTypeUtils.description()
       },
       vehicleRequirements: [{
          vechicleType: {
-            type: String, //enum needed -- closed Body, open body,trally, mini truck, auto     
+            type: Schema.Types.String, //enum needed -- closed Body, open body,trally, mini truck, auto     
             enum: ['Open Body', 'Closed Body', 'Trally', 'Mini Truck', 'Auto'],
             html: {               
                form: {
@@ -69,53 +69,53 @@ const CurrentSchema = new BaseSchemaFactory({
             }       
          },         
          requiredCapacity: {
-            type: Number
+            type: Schema.Types.Number
          },
          capacityUnit: uiTypes.weightUnit(),
          minRating: {
-            type: Number
+            type: Schema.Types.Number
          }
       }],    
       totalWeight: {
-         type: Number
+         type: Schema.Types.Number
       },
       totalWeightUnit: uiTypes.weightUnit(),
       spends: schemaUtils.spend(true), 
-      pickup: [{
+      pickup: [{                  
          date: schemaTypeUtils.date(false, {
             title: 'Date & Time'
-         }),         
-         address: schemaUtils.address(),                                 
+         }),
+         address: schemaUtils.address(),                                          
          contact: schemaUtils.contact(true),
          material: [{
             name: {
-               type: String
+               type: Schema.Types.String
             },
             materialType: uiTypes.materialType(),
             description: schemaTypeUtils.description(),
             weight: {
-               type: Number
+               type: Schema.Types.Number
             }, 
             weightUnit: uiTypes.weightUnit(),
             approximateCost: {
-               type: Number
+               type: Schema.Types.Number
             }
          }],
          formalities: schemaUtils.tripFormality()         
       }],
-      drop: [{
+      drop: [{                
          date: schemaTypeUtils.date(false, {
             title: 'Date & Time'
-         }),        
-         address: schemaUtils.address(),                         
+         }), 
+         address: schemaUtils.address(),                                  
          contact: schemaUtils.contact(true),
          itemsToDrop: {
-            type: [String] //pickup.material.name array                     
+            type: [Schema.Types.String] //pickup.material.name array                     
          },
          formalities: schemaUtils.tripFormality()         
       }],
       comments: {
-         type: [String],
+         type: [Schema.Types.String],
          html: {
             form: {
                items: {
