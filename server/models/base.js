@@ -17,12 +17,24 @@ module.exports = class BaseSchema {
          let self = this;
          /** ID - is it coming default after add/edit */
          let dbSchema = {};
+         let collectionSchemas = {};
          // if (!options.excludeDates) {
          //    self.getDateColumns(fSchema);
          // }
          if (!options.excludeOwner) {
             self.getOwnerColumns(fSchema);
          }
+         //application key + role + collection name
+         self.formKey = options.collection + constants.CONFIG_KEY_SEPERATOR + constants.CONFIG_KEY_FORM_SUFFIX;               
+         self.gridKey = options.collection + constants.CONFIG_KEY_SEPERATOR + constants.CONFIG_KEY_GRID_SUFFIX;
+         self.dbKey = options.collection + constants.CONFIG_KEY_SEPERATOR + constants.CONFIG_KEY_DB_SUFFIX;
+         self.serviceKey = (options.collection + constants.CONFIG_KEY_SEPERATOR + constants.CONFIG_KEY_SERVICE_SUFFIX).toUpperCase();
+         self.formKey = self.formKey.toUpperCase();
+         self.gridKey = self.gridKey.toUpperCase();
+         self.dbKey = self.dbKey.toUpperCase();
+         collectionSchemas[self.formKey] = {};
+         collectionSchemas[self.gridKey] = {};
+         collectionSchemas[self.dbKey] = {};
 
          //field to arrays of service names
          self.fieldServiceMap = {};//create a field to services map so that when processing a field, corresponding services schemas will be updated
@@ -54,27 +66,62 @@ module.exports = class BaseSchema {
             });
          }
 
-         let roleBasedSchemas = {};
          Object.keys(fSchema).forEach((field) => {
-            self.processField(self, field, fSchema[field], dbSchema, roleBasedSchemas);
+            self.processField(self, field, fSchema[field], dbSchema, collectionSchemas);
+         });
+
+         let roleBasedSchemas = {};
+         //for all collectionSchemas(grid, form, db) call prepare hooks (where we can update schemas based on app & role)
+         Object.keys(cache.APP_CONFIG).forEach((appKey) => {// for each application
+            Object.keys(cache.APP_CONFIG[appKey].ROLES).forEach((role) => {//for each role   
+               let appRoleKeyPrefix = appKey + constants.CONFIG_KEY_SEPERATOR + cache.APP_CONFIG[appKey].ROLES[role].Code + constants.CONFIG_KEY_SEPERATOR;
+               
+               //process app & role based form schema
+               self.invokePrepareHook(appRoleKeyPrefix + self.formKey, 'form', collectionSchemas[self.formKey], roleBasedSchemas);            
+               //process app & role based grid schema
+               self.invokePrepareHook(appRoleKeyPrefix + self.gridKey, 'grid', collectionSchemas[self.formKey], roleBasedSchemas);  
+               //process app & role based db schema          
+               self.invokePrepareHook(appRoleKeyPrefix + self.dbKey, 'db', collectionSchemas[self.formKey], roleBasedSchemas);            
+            });
          });
          //store these role based schemas into cache and return them via apis    
          cache.updateSchemaStore(roleBasedSchemas);
 
          if (self.serviceSchemas && Object.keys(self.serviceSchemas).length > 0) {
-            //if services are present, execute prepare method
+            let roleBasedServiceSchemas = {};
+            //for all serviceSchemas(grid, form, custom) call prepare hooks (where we can update schemas based on app & role)
             Object.keys(self.serviceSchemas).forEach((serviceKey) => {
-               //  console.log('serviceKey', serviceKey);
-               let parts = serviceKey.split(constants.CONFIG_KEY_SEPERATOR);
-               if (self.serviceConfigs[parts[parts.length - 1]].prepare) {
-                  self.serviceConfigs[parts[parts.length - 1]].prepare(serviceKey, self.serviceSchemas[serviceKey], self.serviceConfigs[parts[parts.length - 1]]);
-               }
+               Object.keys(cache.APP_CONFIG).forEach((appKey) => {// for each application
+                  Object.keys(cache.APP_CONFIG[appKey].ROLES).forEach((role) => {//for each role   
+                     let appRoleKeyPrefix = appKey + constants.CONFIG_KEY_SEPERATOR + cache.APP_CONFIG[appKey].ROLES[role].Code + constants.CONFIG_KEY_SEPERATOR;
+                     let currentKey = appRoleKeyPrefix + serviceKey;
+                     //process app & role based service schema
+                     roleBasedServiceSchemas[currentKey] = {};
+                     //cone the currently prepared schema in to role-based and modify the role-based one
+                     utils.cloneObject(self.serviceSchemas[serviceKey], roleBasedServiceSchemas[currentKey]);
+                     //call prepare hook so that it helps to change the service schema based on role & app  
+                     let parts = serviceKey.split(constants.CONFIG_KEY_SEPERATOR);
+                     let serviceName = parts[parts.length - 1];
+                     if (self.serviceConfigs[serviceName].prepare) {                  
+                        self.serviceConfigs[serviceName].prepare(currentKey, roleBasedServiceSchemas[currentKey], self.serviceConfigs[serviceName]);
+                     }
+                  });
+               });
             });
-            // console.log('serviceSchemas', self.serviceSchemas);
-            cache.updateServiceSchemaStore(self.serviceSchemas, self.serviceConfigs);
-         }
+            cache.updateServiceSchemaStore(roleBasedServiceSchemas, self.serviceConfigs);
+         }         
          return dbSchema;
       };
+      this.invokePrepareHook = (currentKey, schemaType, schema, roleBasedSchemas) => {
+         //process app & role based schema(based on schemaType =  form/grid/db)
+         roleBasedSchemas[currentKey] = {};
+         //cone the currently prepared schema in to role-based and modify the role-based one
+         utils.cloneObject(schema, roleBasedSchemas[currentKey]);
+         if (options.hooks && options.hooks[schemaType] && options.hooks[schemaType].prepare) {
+            //call prepare hook so that it helps to change the schema based on role & app 
+            options.hooks[schemaType].prepare(currentKey, roleBasedSchemas[currentKey], options);
+         }
+      }
       this.cloneHtmlAttributes = (source, destination, args) => {
          //in html, clone only one level. first clone form props, secondly clone grid props and finally clone the whole object
          if (source) {
@@ -191,7 +238,7 @@ module.exports = class BaseSchema {
             }
          }
       };
-      this.processField = (self, field, fieldData, dbSchema, roleBasedSchemas) => {
+      this.processField = (self, field, fieldData, dbSchema, collectionSchemas) => {
          // console.log('field', field);
          if ((fieldData instanceof Array) || (typeof fieldData === 'object' && typeof fieldData.type === 'undefined')) { //indicates a nested field
             if (fieldData instanceof Array) {
@@ -200,18 +247,15 @@ module.exports = class BaseSchema {
                   let parts = field.split('.');
                   parts[parts.length - 1] = `[${parts[parts.length - 1]}]`;
                   let formattedField = parts.join('.');
-
-                  self.processField(self, `${formattedField}.${nestedField}`, fieldData[0][nestedField], dbSchema, roleBasedSchemas);
+                  self.processField(self, `${formattedField}.${nestedField}`, fieldData[0][nestedField], dbSchema, collectionSchemas);
                });
             } else {
                Object.keys(fieldData).forEach((nestedField) => {
-                  self.processField(self, `${field}.${nestedField}`, fieldData[nestedField], dbSchema, roleBasedSchemas);
+                  self.processField(self, `${field}.${nestedField}`, fieldData[nestedField], dbSchema, collectionSchemas);
                });
             }
             return;
          }
-         // console.log('field', field);
-
          let fieldParts = field.split('.');
 
          //set title if not exists
@@ -223,11 +267,7 @@ module.exports = class BaseSchema {
          delete fieldData.html;
          let dbOnly = fieldData.db;
          delete fieldData.db;
-         let config = fieldData.config;
-         delete fieldData.config;
          let fieldPath = field.replace(/\[/g, '').replace(/\]/g, '');
-
-         //now fieldData contains the common properties for that field
 
          //set dbschema
          let fieldDBData = {};
@@ -254,153 +294,94 @@ module.exports = class BaseSchema {
                stringifiedFieldSchema[key] = fieldData[key];
             }
          });
-
-         Object.keys(cache.APP_CONFIG).forEach((appKey) => {// for each application
-            Object.keys(cache.APP_CONFIG[appKey].ROLES).forEach((role) => {//for each role      
-               //check if roles restriction is present on the field
-               if (config && Object.keys(config).length > 0 && config[appKey].roles && config[appKey].roles.length > 0) {
-                  if (config[appKey].roles.indexOf(role) < 0 && config[appKey].roles.indexOf('*') < 0) {
-                     //if permissions not present, skip this column for the role
-                     return;
-                  }
+         //create schemas for form & grid for this collection
+         let exposeInForm = true;
+         let exposeInGrid = true;
+         if (options.dontExpose && options.dontExpose.formFields && options.dontExpose.formFields.length > 0) {  
+            if (options.dontExpose.formFields.indexOf(fieldPath) >= 0) {
+               exposeInForm = false;
+            }
+            if (options.dontExpose.manageFields.indexOf(fieldPath) >= 0) {
+               exposeInGrid = false;
+            }
+         }        
+         //1. process form attributes               
+         let fieldFormData = {};
+         if (exposeInForm) {
+            utils.cloneObject(stringifiedFieldSchema, fieldFormData);//attach the common props                
+            if (htmlOnly && Object.keys(htmlOnly).length > 0) {                     
+               // utils.cloneObject(htmlOnly, fieldFormData);//attach the html specific
+               self.cloneHtmlAttributes(htmlOnly, fieldFormData, {isForm: true});
+            }
+            self.setFieldDetails(self, field, fieldFormData, collectionSchemas[self.formKey], 'form');      
+         }               
+         //2. process grid attributes    
+         let fieldGridData = {};
+         if (exposeInGrid && options.gridAttributes && options.gridAttributes.length > 0) {//collect the grid attributes
+            options.gridAttributes.forEach((attr) => {
+               if (htmlOnly && htmlOnly[attr]) {//get from general html specific
+                  fieldGridData[attr] = htmlOnly[attr];
+               } else {//get from common attributes
+                  fieldGridData[attr] = stringifiedFieldSchema[attr];
                }
-               //application key + role code + collection name
-               let cacheKey = appKey + constants.CONFIG_KEY_SEPERATOR + cache.APP_CONFIG[appKey].ROLES[role].Code + constants.CONFIG_KEY_SEPERATOR + options.collection;
-               let formKey = cacheKey + constants.CONFIG_KEY_SEPERATOR + constants.CONFIG_KEY_FORM_SUFFIX;
-               let gridKey = cacheKey + constants.CONFIG_KEY_SEPERATOR + constants.CONFIG_KEY_GRID_SUFFIX;
-               let dbKey = cacheKey + constants.CONFIG_KEY_SEPERATOR + constants.CONFIG_KEY_DB_SUFFIX;
-               let serviceKey = (cacheKey + constants.CONFIG_KEY_SEPERATOR + constants.CONFIG_KEY_SERVICE_SUFFIX).toUpperCase();
-               formKey = formKey.toUpperCase();
-               gridKey = gridKey.toUpperCase();
-               dbKey = dbKey.toUpperCase();
-               if (!roleBasedSchemas[formKey]) {//for first field, initialize
-                  roleBasedSchemas[formKey] = {};
-               }
-               if (!roleBasedSchemas[gridKey]) {//for first field, initialize
-                  roleBasedSchemas[gridKey] = {};
-               }
-               if (!roleBasedSchemas[dbKey]) {//for first field, initialize
-                  roleBasedSchemas[dbKey] = {};
-               }
-
-               //create schemas for form & grid for this collection
-               let currentRoleHtmlOnlyAttrs = null;
-               let currentRoleDBOnlyAttrs = null;
-               if (config && Object.keys(config).length > 0 && config[appKey] && config[appKey].roles_config && 
-                  config[appKey].roles_config[cache.APP_CONFIG[appKey].ROLES[role].Code] && config[appKey].roles_config[cache.APP_CONFIG[appKey].ROLES[role].Code].html) {
-                  currentRoleHtmlOnlyAttrs = config[appKey].roles_config[cache.APP_CONFIG[appKey].ROLES[role].Code].html;
-               }
-               if (config && Object.keys(config).length > 0 && config[appKey] && config[appKey].roles_config && 
-                  config[appKey].roles_config[cache.APP_CONFIG[appKey].ROLES[role].Code] && config[appKey].roles_config[cache.APP_CONFIG[appKey].ROLES[role].Code].db) {
-                  currentRoleDBOnlyAttrs = config[appKey].roles_config[cache.APP_CONFIG[appKey].ROLES[role].Code].db;
-               }   
-
-               let exposeInForm = true;
-               let exposeInGrid = true;
-               if (options.dontExpose && options.dontExpose.formFields && options.dontExpose.formFields.length > 0) {  
-                  if (options.dontExpose.formFields.indexOf(fieldPath) >= 0) {
-                     exposeInForm = false;
-                  }
-                  if (options.dontExpose.manageFields.indexOf(fieldPath) >= 0) {
-                     exposeInGrid = false;
-                  }
-               }        
-               //1. process form attributes               
-               let fieldFormData = {};
-               if (exposeInForm) {
-                  utils.cloneObject(stringifiedFieldSchema, fieldFormData);//attach the common props                
-                  if (htmlOnly && Object.keys(htmlOnly).length > 0) {                     
-                     // utils.cloneObject(htmlOnly, fieldFormData);//attach the html specific
-                     self.cloneHtmlAttributes(htmlOnly, fieldFormData, {isForm: true});
-                  }
-                  if (currentRoleHtmlOnlyAttrs) {
-                     //customization exists for this app, role & field combination 
-                     // utils.cloneObject(currentRoleHtmlOnlyAttrs, fieldFormData);
-                     self.cloneHtmlAttributes(currentRoleHtmlOnlyAttrs, fieldFormData, {isForm: true});
-                  }
-                  self.setFieldDetails(self, field, fieldFormData, roleBasedSchemas[formKey], 'form');      
-               }               
-               //2. process grid attributes    
-               let fieldGridData = {};
-               if (exposeInGrid && options.gridAttributes && options.gridAttributes.length > 0) {//collect the grid attributes
-                  // roleBasedSchemas[gridKey][field] = {};                  
-                  options.gridAttributes.forEach((attr) => {
-                     if (currentRoleHtmlOnlyAttrs && currentRoleHtmlOnlyAttrs[attr]) {//get from role based html specific
-                        fieldGridData[attr] = currentRoleHtmlOnlyAttrs[attr];
-                     } else if (htmlOnly && htmlOnly[attr]) {//get from general html specific
-                        fieldGridData[attr] = htmlOnly[attr];
-                     } else {//get from common attributes
-                        fieldGridData[attr] = stringifiedFieldSchema[attr];
-                     }
-                  });
-                  //clone html.grid properties
-                  self.cloneHtmlAttributes(stringifiedFieldSchema, fieldGridData, {isGrid: true, onlyGrid: true});
-                  self.cloneHtmlAttributes(htmlOnly, fieldGridData, {isGrid: true, onlyGrid: true});
-                  self.cloneHtmlAttributes(currentRoleHtmlOnlyAttrs, fieldGridData, {isGrid: true, onlyGrid: true});    
-
-                  self.setFieldDetails(self, field, fieldGridData, roleBasedSchemas[gridKey]);
-               }
-
-               //process service fields/ override service config of fields
-               let matchingServiceFields = [];
-               if (self.fieldServiceMap[field] && self.fieldServiceMap[field].length > 0) {// if this field exists in any service
-                  matchingServiceFields.push(field);
-               } else if (field.indexOf('.') > 0) { //to support normal & nested fields
-                  let nestedPath = '';
-                  for (let i = 0; i < fieldParts.length; i++) {
-                     nestedPath += ((i > 0) ? '.' : '') + fieldParts[i].replace('[', '').replace(']', '');
-                     if (self.fieldServiceMap[nestedPath] && self.fieldServiceMap[nestedPath].length > 0) {
-                        matchingServiceFields.push(nestedPath);
-                     }
-                  }
-               }
-
-               if (matchingServiceFields && matchingServiceFields.length > 0) {// if this field exists in any service
-                  matchingServiceFields.forEach((matchingServiceField) => {
-                     self.fieldServiceMap[matchingServiceField].forEach((serviceName) => { //get all the services which include this field
-                        if (self.serviceConfigs[serviceName].type === 'grid' && !exposeInGrid) {
-                           return; //respect the dontExpose setting at schema level
-                        }
-                        if (self.serviceConfigs[serviceName].type === 'form' && !exposeInForm) {
-                           return; //respect the dontExpose setting at schema level
-                        }
-                        let serviceRoleBasedKey = serviceKey + constants.CONFIG_KEY_SEPERATOR + serviceName;                        
-                        let serviceFieldConfig = {};
-                        if (self.serviceConfigs[serviceName].type === 'grid' && fieldGridData && Object.keys(fieldGridData).length > 0) {
-                           utils.cloneObject(fieldGridData, serviceFieldConfig); //if grid, copy field data of grid 
-                        } else { //if (self.serviceConfigs[serviceName].type === 'form') {
-                           utils.cloneObject(fieldFormData, serviceFieldConfig); //if form/custom, copy field data of form                         
-                        }
-
-                        if (self.serviceConfigs[serviceName].schemaOverrideFeilds && self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField] && Object.keys(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField]).length > 0) {
-                           // override customizations of the field defined at service level
-                           // utils.cloneObject(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField], serviceFieldConfig);
-                           self.cloneHtmlAttributes(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField], serviceFieldConfig, {isGrid: true, isForm: true});
-                        }
-                        if (serviceRoleBasedKey) {
-                           if (!self.serviceSchemas[serviceRoleBasedKey]) {
-                              self.serviceSchemas[serviceRoleBasedKey] = {};
-                           }
-                           self.setFieldDetails(self, field, serviceFieldConfig, self.serviceSchemas[serviceRoleBasedKey], 'form');
-                        }
-                     });
-                  });
-               }
-
-               //3. process role based dbschema into cache which can be used for validations on every form submits etc to validate data      
-               let fieldRoleDBData = {};
-               utils.cloneObject(stringifiedFieldSchema, fieldRoleDBData);//attach the common props first                      
-               if (dbOnly && Object.keys(dbOnly).length > 0) {
-                  utils.cloneObject(dbOnly, fieldRoleDBData);//now override db specific
-                  console.log(fieldRoleDBData);
-               }
-               if (currentRoleDBOnlyAttrs) {
-                  //customization exists for this app, role & field combination 
-                  utils.cloneObject(currentRoleDBOnlyAttrs, fieldRoleDBData);
-               }
-               self.setFieldDetails(self, field, fieldRoleDBData, roleBasedSchemas[dbKey]);
             });
-         });
+            //clone html.grid properties
+            self.cloneHtmlAttributes(stringifiedFieldSchema, fieldGridData, {isGrid: true, onlyGrid: true});
+            self.cloneHtmlAttributes(htmlOnly, fieldGridData, {isGrid: true, onlyGrid: true});
+
+            self.setFieldDetails(self, field, fieldGridData, collectionSchemas[self.gridKey]);
+         }
+
+         //process service fields/ override service config of fields
+         let matchingServiceFields = [];
+         if (self.fieldServiceMap[field] && self.fieldServiceMap[field].length > 0) {// if this field exists in any service
+            matchingServiceFields.push(field);
+         } else if (field.indexOf('.') > 0) { //to support normal & nested fields
+            let nestedPath = '';
+            for (let i = 0; i < fieldParts.length; i++) {
+               nestedPath += ((i > 0) ? '.' : '') + fieldParts[i].replace('[', '').replace(']', '');
+               if (self.fieldServiceMap[nestedPath] && self.fieldServiceMap[nestedPath].length > 0) {
+                  matchingServiceFields.push(nestedPath);
+               }
+            }
+         }
+
+         if (matchingServiceFields && matchingServiceFields.length > 0) {// if this field exists in any service
+            matchingServiceFields.forEach((matchingServiceField) => {
+               self.fieldServiceMap[matchingServiceField].forEach((serviceName) => { //get all the services which include this field
+                  if (self.serviceConfigs[serviceName].type === 'grid' && !exposeInGrid) {
+                     return; //respect the dontExpose setting at schema level
+                  }
+                  if (self.serviceConfigs[serviceName].type === 'form' && !exposeInForm) {
+                     return; //respect the dontExpose setting at schema level
+                  }
+                  let currentServiceKey = self.serviceKey + constants.CONFIG_KEY_SEPERATOR + serviceName;                        
+                  let serviceFieldConfig = {};
+                  if (self.serviceConfigs[serviceName].type === 'grid' && fieldGridData && Object.keys(fieldGridData).length > 0) {
+                     utils.cloneObject(fieldGridData, serviceFieldConfig); //if grid, copy field data of grid 
+                  } else { //if (self.serviceConfigs[serviceName].type === 'form') {
+                     utils.cloneObject(fieldFormData, serviceFieldConfig); //if form/custom, copy field data of form                         
+                  }
+
+                  if (self.serviceConfigs[serviceName].schemaOverrideFeilds && self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField] && Object.keys(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField]).length > 0) {
+                     // override customizations of the field defined at service level
+                     // utils.cloneObject(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField], serviceFieldConfig);
+                     self.cloneHtmlAttributes(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField], serviceFieldConfig, {isGrid: true, isForm: true});
+                  }
+                  if (!self.serviceSchemas[currentServiceKey]) {
+                     self.serviceSchemas[currentServiceKey] = {};
+                  }
+                  self.setFieldDetails(self, field, serviceFieldConfig, self.serviceSchemas[currentServiceKey], 'form');
+               });
+            });
+         }
+         //3. process role based dbschema into cache which can be used for validations on every form submits etc to validate data 
+         let fieldCacheDBData = {};//which we store in cache
+         utils.cloneObject(stringifiedFieldSchema, fieldCacheDBData);//attach the common props first  
+         if (dbOnly && Object.keys(dbOnly).length > 0) {
+            utils.cloneObject(dbOnly, fieldCacheDBData);//now override db specific
+         }  
+         self.setFieldDetails(self, field, fieldCacheDBData, collectionSchemas[self.dbKey]);
       };
       this.attachHooks = () => {
          /**

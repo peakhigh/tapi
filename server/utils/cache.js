@@ -138,12 +138,17 @@ class Cache {
                         title: 'Add User',
                         icon: 'fa-table',
                         page: 'addUser',
-                        service: 'users/form'
+                        service: 'users/service/addUser'
+                     }, {
+                        title: 'Update Profile',
+                        icon: 'fa-table',
+                        page: 'updateProfile',
+                        service: 'users/service/updateProfile'
                      }, {
                         title: 'Manage',
                         icon: 'fa-table',
                         page: 'manageUsers',
-                        service: 'users/grid'
+                        service: 'users/service/manageUsers'
                      }
                   ]
                } 

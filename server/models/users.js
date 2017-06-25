@@ -10,7 +10,7 @@ let Schema = require('mongoose').Schema;
 const CurrentSchema = new BaseSchemaFactory({ 
    collection: 'Users',   
    schema: {
-      username: {
+      userName: {
          type: String,
          required: true          
       },
@@ -35,7 +35,8 @@ const CurrentSchema = new BaseSchemaFactory({
       status: {
          type: String,
          enum: ['Active', 'Inactive'],
-         default: 'Active'
+         default: 'Active',
+         required: true
       },
       profile: {
          userType: {
@@ -44,6 +45,8 @@ const CurrentSchema = new BaseSchemaFactory({
             html: {
                form: {
                   type: 'select',
+                  noneLabel: '-- Select --',
+                  removeDefaultNone: false,
                   dataSource: [{
                      value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code,
                      text: 'Trip Admin'
@@ -70,152 +73,19 @@ const CurrentSchema = new BaseSchemaFactory({
                      text: 'Admin'
                   }]
                }
-            },
-            config: {
-               TRIPS_TRUCKS: {
-                  /*TODO roles based restrition
-                     check role_config working or not
-                  */
-                  // roles: [cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.ADMIN.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_ADMIN.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.REPRESENTATIVE.Code],
-                  permissions: utils.setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.ADMIN.Code, {                  
-                       view: true,
-                       create: true,
-                       edit: true
-                  }).setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code, {                  
-                       view: true,
-                       create: true,
-                       edit: true
-                  }).setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code, {                  
-                       view: true
-                  }).setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_USER.Code, {                  
-                       view: true
-                  }).setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.REPRESENTATIVE.Code, {                  
-                       view: true
-                  }),
-                  roles_config: utils.setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code, {
-                        html: {
-                           form: {
-                              dataSource: [{
-                                 value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code,
-                                 text: 'Trip Admin'
-                              }, {
-                                 value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_USER.Code,
-                                 text: 'Trip User'
-                              }]
-                           }
-                        }
-                     })
-                     .setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_ADMIN.Code, {
-                        html: {
-                           form: {
-                              dataSource: [{
-                                 value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_ADMIN.Code,
-                                 text: 'Truck Admin'
-                              }, {
-                                 value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_USER.Code,
-                                 text: 'Truck User'
-                              }]
-                           }
-                        }
-                     })
-                     .setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.REPRESENTATIVE.Code, {
-                        html : {
-                           form: {
-                              dataSource: [{
-                                 value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code,
-                                 text: 'Trip Admin'
-                              }, {
-                                 value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_USER.Code,
-                                 text: 'Trip User'
-                              }, {
-                                 value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_ADMIN.Code,
-                                 text: 'Truck Admin'
-                              }, {
-                                 value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_USER.Code,
-                                 text: 'Truck User'
-                              }, {
-                                 value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.DRIVER.Code,
-                                 text: 'Driver'
-                              }]
-                           }
-                        }
-                     })
-                     .setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code, {
-                        html: {
-                           form: {
-                              dataSource: [{
-                                 value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code,
-                                 text: 'Trip Admin',
-                                 selected: true
-                              }, {
-                                 value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_USER.Code,
-                                 text: 'Trip User'
-                              }, {
-                                 value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_ADMIN.Code,
-                                 text: 'Truck Admin'
-                              }, {
-                                 value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_USER.Code,
-                                 text: 'Truck User'
-                              }, {
-                                 value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.REPRESENTATIVE.Code,
-                                 text: 'Representative'
-                              }, {
-                                 value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.DRIVER.Code,
-                                 text: 'Driver'
-                              }]
-                        }
-                     }
-                  })                           
-               } //app based roles
-            }
+            },            
          },
          balance: {
-            type: Number,
-            config: {
-               TRIPS_TRUCKS: {                  
-                  // roles: [cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_ADMIN.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_USER.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_USER.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.REPRESENTATIVE.Code]
-                  permissions: utils.setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_ADMIN.Code, {                  
-                       view: true
-                  }).setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_USER.Code, {                  
-                       view: true
-                  }).setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code, {                  
-                       view: true
-                  }).setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_USER.Code, {                  
-                       view: true
-                  }).setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.REPRESENTATIVE.Code, {                  
-                       view: true
-                  })
-               }
-            }
+            type: Number
          },
          handsetNumber: {
-            type: Number, 
-            config: {
-               TRIPS_TRUCKS: {
-                  permissions: utils.setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code, {
-                       create: false,
-                       edit: true,
-                       view: true
-                  })
-                  // roles: [cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code]
-               }
-            }
+            type: Number
          },
          customerOverrideNumber: {
-            type: Number, 
-            config: {
-               TRIPS_TRUCKS: {
-                  // roles: [cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code]
-                  permissions: utils.setRoleDetails(cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code, {
-                       create: false,
-                       edit: true,
-                       view: true
-                  })
-               }
-            }
+            type: Number
          }
       },
-      services: {
+      security: {
          password: {
             type: String,
             required: true,
@@ -232,6 +102,32 @@ const CurrentSchema = new BaseSchemaFactory({
      manageFields: ['services'],
      formFields: ['createdBy', 'updatedBy', 'services.lastLoginTokens', 'status'] 
    },
-   gridAttributes: ['title']
+   gridAttributes: ['title'],
+   hooks: {
+      form: {
+          prepare: (cacheKey, schema, collectionConfig) => {
+            //add any extra fields which are not in schema etc, default values etc
+            //can do based on role, app etc by using the "cacheKey"
+            //cacheKey format 'TRIPS_TRUCKS#ADMIN#USERS#SERVICE#addUser'
+            // console.log(cacheKey);
+          }
+      },
+      grid: {
+         prepare: (cacheKey, schema, collectionConfig) => {
+            //add any extra fields which are not in schema etc, default values etc
+            //can do based on role, app etc by using the "cacheKey"
+            //cacheKey format 'TRIPS_TRUCKS#ADMIN#USERS#SERVICE#addUser'
+            // console.log(cacheKey);
+         }
+      },
+      db: {
+         prepare: (cacheKey, schema, collectionConfig) => {
+            //add any extra fields which are not in schema etc, default values etc
+            //can do based on role, app etc by using the "cacheKey"
+            //cacheKey format 'TRIPS_TRUCKS#ADMIN#USERS#SERVICE#addUser'
+            // console.log(cacheKey);
+         }
+      }
+   }
 }); 
 module.exports = CurrentSchema.getSchema();

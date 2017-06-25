@@ -5,6 +5,7 @@ let config = require('../../config/env');
 const fs = require('fs');
 const path = require('path');
 const extend = require('extend');
+const constants = require('../config/constants');
 
 module.exports = {
    cloneObject: function (source, destination, extraOptions) {
@@ -92,5 +93,15 @@ module.exports = {
          }
       }
       return isArray ? [obj] : obj;
+   },
+   getCacheKeyDetails: function (key) {
+      let keyParts = key.split(constants.CONFIG_KEY_SEPERATOR);
+      return {
+         app: keyParts[0],
+         role: keyParts[1],
+         collection: keyParts[2],
+         type: keyParts[3],
+         name: keyParts[4]
+      };
    }
 };

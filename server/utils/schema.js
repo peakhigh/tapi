@@ -50,18 +50,14 @@ module.exports = {
          organisation: {
             type: Schema.Types.String
          },         
-         street: {
-            type: Schema.Types.String
+         address: {
+            type: Schema.Types.String,
+            required: true
          },
          location: {
-            type: Schema.Types.String
-         },
-         state: {
-            type: Schema.Types.String
-         },
-         city: {
-            type: Schema.Types.String
-         },         
+            type: Schema.Types.String,
+            required: true
+         },        
          zip: schemaTypes.zip()
          // country: { //enable this only when going out of india
          //    type: String
@@ -75,22 +71,14 @@ module.exports = {
             type: Schema.Types.String,
             required: true
          },         
-         street: {
+         address: {
             type: Schema.Types.String,
             required: true
          },
          location: {
             type: Schema.Types.String,
             required: true
-         },
-         state: {
-            type: Schema.Types.String,
-            required: true
-         },
-         city: {
-            type: Schema.Types.String,
-            required: true
-         },         
+         },                 
          zip: schemaTypes.zip(false, {required: true})
          // country: { //enable this only when going out of india
          //    type: String
