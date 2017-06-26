@@ -3,7 +3,7 @@ let uiTypes = require('../../utils/ui-types');
 let utils = require('../../utils/util');
 let cache = require('../../utils/cache');
 
-const collection = 'Trips';
+const collection = 'Users';
 module.exports = {
    type: 'form',
    requestType: 'get',
@@ -47,10 +47,10 @@ module.exports = {
                      value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.DRIVER.Code,
                      text: 'Driver'
                   }
-                  // ,{
-                  //    value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code,
-                  //    text: 'Call Center User'
-                  // }
+                  ,{
+                     value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code,
+                     text: 'Call Center User'
+                  }
                   ];
               delete schema.profile.balance;   
             break;
@@ -88,6 +88,7 @@ module.exports = {
             let params = {
                id: req.params.id || req.query.id
             };
+            delete schema.security;
             model.getById(params, {
                response: {
                   schema: schema

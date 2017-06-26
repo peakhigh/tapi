@@ -148,7 +148,7 @@ class Cache {
                         title: 'Manage',
                         icon: 'fa-table',
                         page: 'manageUsers',
-                        service: 'users/service/manageUsers'
+                        service: 'users/service/manageUser'
                      }
                   ]
                } 

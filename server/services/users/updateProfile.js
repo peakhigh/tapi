@@ -3,7 +3,7 @@ let uiTypes = require('../../utils/ui-types');
 let utils = require('../../utils/util');
 let cache = require('../../utils/cache');
 
-const collection = 'Trips';
+const collection = 'Users';
 module.exports = {
    type: 'form',
    requestType: 'get',
