@@ -6,9 +6,9 @@ const collection = 'Trucks';
 module.exports = {
    type: 'form',
    requestType: 'get',
-   schemaFields: ['plateNumber', 'licenseNumber', 'model', 'engineNumber', 'truckType',
-                      'capacity', 'capacityUnits', 'insurance.startDate', 'insurance.expiryDate', 
-                        'material.materialType', 'description'], // pick fields configuration from default schema
+   schemaFields: ['plateNumber', 'model', 'truckType',
+                      'capacity', 'capacityUnits', 'insurance.startDate', 'insurance.expiryDate', 'status', 
+                        'material.materialType', 'description', 'currentPoint', 'nextAvailableAt', 'nextFreeDate'], // pick fields configuration from default schema
    schemaOverrideFeilds: {
    }, //override above listed schema fields         
    defaults: {

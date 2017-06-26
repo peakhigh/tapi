@@ -121,7 +121,7 @@ module.exports = class BaseSchema {
             //call prepare hook so that it helps to change the schema based on role & app 
             options.hooks[schemaType].prepare(currentKey, roleBasedSchemas[currentKey], options);
          }
-      }
+      };
       this.cloneHtmlAttributes = (source, destination, args) => {
          //in html, clone only one level. first clone form props, secondly clone grid props and finally clone the whole object
          if (source) {
@@ -280,12 +280,12 @@ module.exports = class BaseSchema {
          let stringifiedFieldSchema = {}; //stringified types, default values etc
          Object.keys(fieldData).forEach((key) => {
             if (typeof fieldData[key] === 'function') {//for types
-               stringifiedFieldSchema[key] = fieldData[key].name.replace('Schema','');              
+               stringifiedFieldSchema[key] = fieldData[key].name.replace('Schema', '');              
             } else if (fieldData[key] instanceof Array && fieldData[key].length > 0) {//type = [String] or Arrays  
                stringifiedFieldSchema[key] = [];
                fieldData[key].forEach((subEle) => {
                   if (typeof subEle === 'function') {
-                     stringifiedFieldSchema[key].push(subEle.name.replace('Schema',''));
+                     stringifiedFieldSchema[key].push(subEle.name.replace('Schema', ''));
                   } else {
                      stringifiedFieldSchema[key].push(subEle);
                   }

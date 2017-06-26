@@ -26,7 +26,7 @@ module.exports = {
          delete schema.profile.handsetNumber; 
          delete schema.profile.customerOverrideNumber; 
       }
-      switch(cacheKeyDetails.role) {
+      switch (cacheKeyDetails.role) {
          case cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code:
             schema.profile.userType.form.dataSource = [{
                      value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code,
@@ -46,8 +46,7 @@ module.exports = {
                   }, {
                      value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.DRIVER.Code,
                      text: 'Driver'
-                  }
-                  ,{
+                  }, {
                      value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code,
                      text: 'Call Center User'
                   }
@@ -55,13 +54,13 @@ module.exports = {
               delete schema.profile.balance;   
             break;
          case cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code:
-             schema.profile.userType.form.dataSource = [ {
+             schema.profile.userType.form.dataSource = [{
                   value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_USER.Code,
                   text: 'Trip User'
                }];                              
             break; 
          case cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_ADMIN.Code:
-             schema.profile.userType.form.dataSource = [ {
+             schema.profile.userType.form.dataSource = [{
                   value: cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRUCK_USER.Code,
                   text: 'Truck User'
                }, {

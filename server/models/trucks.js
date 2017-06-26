@@ -36,7 +36,14 @@ const CurrentSchema = new BaseSchemaFactory({
       },
       capacityUnits: {
          type: String,
-         required: true
+         required: true,
+         enum: ['Tons'],
+            html: {               
+               form: {
+                  type: 'select'
+               }
+         },
+         default: 'tons' 
       },
       insurance: {
          startDate: {
@@ -75,14 +82,20 @@ const CurrentSchema = new BaseSchemaFactory({
       status: {
          type: String,
          required: true,
-         default: 'Unassigned'
+         enum: ['free', 'busy'],
+         html: {               
+               form: {
+                  type: 'select'
+               }
+         },
+         default: 'free'
       },
       nextFreeDate: {
          type: Date,
          required: false
       },
       nextAvailableAt: {
-         type: Date,
+         type: String,
          required: false
       },
       rating: {
@@ -91,7 +104,7 @@ const CurrentSchema = new BaseSchemaFactory({
       },
       currentPoint: {
          type: String, //TODO: change to lat, long + string
-         required: false
+         required: false   
       },
       nextAssignedDate: {
          type: Date,

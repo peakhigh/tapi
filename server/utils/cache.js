@@ -31,7 +31,51 @@ class Cache {
          },
          TRUCK_ADMIN: {
             Id: 2,
-            Code: 'TRUCK_ADMIN'
+            Code: 'TRUCK_ADMIN',
+             Menu: {
+               SideMenu: [{
+                  title: 'Dashboard',
+                  icon: 'fa-dashboard',
+                  page: 'home'
+               }, {
+                  title: 'Trucks',
+                  icon: 'fa-table',
+                  page: 'manageTruck',      
+                  service: 'trucks/service/manageTruck',            
+                  Menu: [{
+                        title: 'Add New',
+                        icon: 'fa-table',
+                        page: 'addTruck',
+                        service: 'trucks/service/addTruck'
+                     }, {
+                        title: 'Manage',
+                        icon: 'fa-table',
+                        page: 'manageTruck',
+                        service: 'trucks/service/manageTruck'
+                     }
+                  ]
+               },
+                {
+                  title: 'Drivers',
+                  icon: 'fa-table',
+                  page: 'manageDriver',                  
+                  service: 'drivers/service/manageDriver',
+                  Menu: [{
+                        title: 'Add New',
+                        icon: 'fa-table',
+                        page: 'addDriver',
+                        service: 'drivers/service/addDriver'
+                     }, {
+                        title: 'Manage',
+                        icon: 'fa-table',
+                        page: 'manageDriver',
+                        service: 'drivers/service/manageDriver'
+                     },
+                  ]
+               }
+
+               ]
+             }
          },
          TRUCK_USER: {
             Id: 3,
@@ -39,7 +83,46 @@ class Cache {
          },
          TRIP_ADMIN: {
             Id: 4,
-            Code: 'TRIP_ADMIN'
+            Code: 'TRIP_ADMIN',
+             Menu: {
+               SideMenu: [{
+                  title: 'Dashboard',
+                  icon: 'fa-dashboard',
+                  page: 'home'
+               }, {
+                  title: 'Trips',
+                  icon: 'fa-table',
+                  page: 'manageTrip',                  
+                  service: 'trips/service/manageTrip',
+                  Menu: [{
+                        title: 'Add New',
+                        icon: 'fa-table',
+                        page: 'addTrip',
+                        service: 'trips/service/addTrip'
+                     }, {
+                        title: 'Manage',
+                        icon: 'fa-table',
+                        page: 'manageTrip',
+                        service: 'trips/service/manageTrip'
+                     }, {
+                        title: 'Set Quote',
+                        icon: 'fa-table',
+                        page: 'setQuote',
+                        service: 'trips/service/setQuote',
+                        hide: true
+                     }, 
+                     {
+                        title: 'Add Comments',
+                        icon: 'fa-table',
+                        page: 'addComments',
+                        service: 'trips/service/addComments',
+                        hide: true
+                     }
+                  ]
+               }
+
+               ]
+             }
          },
          TRIP_USER: {
             Id: 5,
@@ -63,7 +146,9 @@ class Cache {
                         page: 'manageTrip'
                      }
                   ]
-               }]
+               },
+
+               ]
             }
          },         
          REPRESENTATIVE: {
