@@ -104,7 +104,8 @@ class Cache {
                         icon: 'fa-table',
                         page: 'manageTrip',
                         service: 'trips/service/manageTrip'
-                     }, {
+                     },
+                     {
                         title: 'Set Quote',
                         icon: 'fa-table',
                         page: 'setQuote',

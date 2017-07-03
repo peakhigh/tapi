@@ -68,6 +68,7 @@ module.exports = class BaseRouter {
 
       /** TODO: complete add/edit/delete/search */
 
+
       /** get /form - return form schema of current collection */
       this.router.route('/form').get(expressJwt({ secret: config.jwtSecret }), (req, res, next) => {
          if (req.params.id || req.query.id) {
@@ -128,6 +129,7 @@ module.exports = class BaseRouter {
             return res.json(out);
          });
       });
+
 
       /** get /db - return db schema of current collection -- only testing purpose */
       this.router.route('/db').get(expressJwt({ secret: config.jwtSecret }), (req, res, next) => {

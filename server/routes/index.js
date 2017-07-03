@@ -4,6 +4,10 @@ const authRoutes = require('./auth');
 const tripsRoutes = require('./trips');
 const trucksRoutes = require('./trucks');
 const drivers = require('./drivers');
+const files = require('./files');
+
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' }).array('photos', 3);
 
 const router = express.Router();	// eslint-disable-line new-cap
 
@@ -26,5 +30,7 @@ router.use('/auth', authRoutes);
 
 // mount drivers routes at /drivers
 router.use('/drivers', drivers);
+
+router.use('/files', files);
 
 module.exports = router;
