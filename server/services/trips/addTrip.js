@@ -75,7 +75,7 @@ module.exports = {
       }
    }, //override above listed schema fields         
    defaults: {
-      status: 'new'
+      status: 'New'
    },
    prepare: (cacheKey, schema, serviceConfig) => { //on schema prepare - sync call
       //add any extra fields which are not in schema etc, default values etc

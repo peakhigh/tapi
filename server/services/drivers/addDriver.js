@@ -5,7 +5,7 @@ const collection = 'Drivers';
 module.exports = {
    type: 'form',
    requestType: 'get',
-   schemaFields: ['firstname', 'lastname', 'address', 'contact', 'photo', 'idproof'], // pick fields configuration from default schema
+   schemaFields: ['firstname', 'lastname', 'address', 'contact'], // pick fields configuration from default schema
    schemaOverrideFeilds: {
 
    },

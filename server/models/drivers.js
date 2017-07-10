@@ -20,14 +20,6 @@ const CurrentSchema = new BaseSchemaFactory({
       rating: {
          type: String,
          required: true
-      },
-      photo: {
-         type: String,
-         required: true
-      },
-      idproof: {
-         type: String,
-         required: true
       }
    } 
 }); 

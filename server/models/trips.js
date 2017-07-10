@@ -16,7 +16,7 @@ const CurrentSchema = new BaseSchemaFactory({
       status: {
          type: Schema.Types.String, //enum new, pending, ..
          enum: ['New', 'Process', 'Running', 'Fail', 'Close'],
-         default: 'new'
+         default: 'New'
       },
       expectedTripCost: {
          type: Schema.Types.Number

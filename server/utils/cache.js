@@ -52,6 +52,16 @@ class Cache {
                         icon: 'fa-table',
                         page: 'manageTruck',
                         service: 'trucks/service/manageTruck'
+                     }, {
+                        title: 'Running',
+                        icon: 'fa-table',
+                        page: 'manageTruck',
+                        service: 'trucks/service/manageTruck'
+                     }, {
+                        title: 'Pending',
+                        icon: 'fa-table',
+                        page: 'manageTruck',
+                        service: 'trucks/service/manageTruck'
                      }
                   ]
                },
@@ -105,6 +115,17 @@ class Cache {
                         page: 'manageTrip',
                         service: 'trips/service/manageTrip'
                      },
+                      {
+                        title: 'Running',
+                        icon: 'fa-table',
+                        page: 'runningTrips',
+                        service: 'trips/service/runningTrips'
+                     }, {
+                        title: 'Pending',
+                        icon: 'fa-table',
+                        page: 'pendingTrips',
+                        service: 'trips/service/pendingTrips'
+                     },
                      {
                         title: 'Set Quote',
                         icon: 'fa-table',
@@ -112,6 +133,13 @@ class Cache {
                         service: 'trips/service/setQuote',
                         hide: true
                      }, 
+                     {
+                        title: 'Upload file',
+                        icon: 'fa-table',
+                        page: 'uploadfiles',
+                        service: 'files/service/fileupload',
+                        hide: true
+                     },
                      {
                         title: 'Add Comments',
                         icon: 'fa-table',
