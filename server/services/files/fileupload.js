@@ -22,15 +22,20 @@ module.exports = {
          return cb();
       },
       callback: (schema, serviceConfig, req, options, cb) => {//callback hook  - after serving the request - forms & grid
-         console.log('get callback', schema);
+         //console.log('get callback', schema);
          const model = require('mongoose').model(collection);
          if (req.params.id) {
-             model.getById(req.params, {
-               response: {
-                  schema: schema
-               }
-            }, cb);
-            //cb(null, schema);
+         /*where: {recordid : req.params.id}*/
+            //console.log(JSON.parse());
+            model.listFields({where: JSON.stringify({recordid : req.params.id})}, {
+            selectFields: serviceConfig.schemaFields,
+            response: {
+               schema: schema
+            }
+         }, (error, data) => {
+                data.id = req.params.id;
+                return cb(null, data);
+            });
          } else {
             cb(null, schema);
          }
@@ -68,7 +73,7 @@ module.exports = {
                   }
                }
            
-            cb('OK');
+           // cb('OK');
          });
       }
    }
