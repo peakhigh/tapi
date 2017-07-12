@@ -4,6 +4,7 @@ let authUtils = require('../../utils/auth');
 
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' }).array('photos', 3);
+const fs = require('fs');
 
 const collection = 'files';
 module.exports = {
@@ -76,5 +77,42 @@ module.exports = {
            // cb('OK');
          });
       }
-   }
+   },
+    delete: {
+      preValidate: (serviceConfig, req, options, cb) => {//on init hook, will get executed on service request - init
+         console.log('delete prevalidate ');
+         if (!req.query.id) {
+            return cb('Invalid Request');//if error, return as first argument
+         }
+         return cb();
+      },
+      callback: (serviceConfig, req, options, cb) => {//callback hook  - after serving the request - forms & grid
+         console.log('delete callback');
+         const model = require('mongoose').model(collection);
+         if (req.query.id) {
+            //first remove from the database
+            model.removeById({id: req.query.id}, {fields: serviceConfig.schemaFields}, (error, data) => {
+                if (!error) {
+                  //delete file locally
+                   fs.stat(data.path, (err, stats) => {
+                  //   console.log(stats);//here we got all information of file in stats variable
+                     if (err) {
+                         return console.error(err);
+                     }
+                     fs.unlink(data.path, (err1) => {
+                          if (err1) return console.log(err1);
+                          console.log('file deleted successfully');
+                     });  
+                  });
+                 // console.log(data);
+                }
+                
+                data.id = req.query.id;
+                return cb(null, data);
+            });
+         } else {
+            cb('Invalid Request');
+         }
+      }
+   },
 };

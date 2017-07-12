@@ -159,6 +159,12 @@ module.exports = class BaseRouter {
                         processServiceRequest(req, res, next, serviceConfig, 'post');
                      });
                   }
+                  if (serviceConfig.delete) {
+                     console.log(`mounting service --> /service/${serviceName} --> delete`);
+                     self.router.route(`/service/${serviceName}`).delete(expressJwt({ secret: config.jwtSecret }), (req, res, next) => {
+                        processServiceRequest(req, res, next, serviceConfig, 'delete');
+                     });
+                  }
                }
             });
          }

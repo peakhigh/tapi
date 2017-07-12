@@ -437,7 +437,7 @@ module.exports = class BaseSchema {
                if (extraOptions.selectFields.indexOf('_id') < 0) {
                   extraOptions.selectFields.push('_id');
                }
-               console.log(query);
+               console.log(query.where);
                this.count(query.where || {}).execAsync().then((total) => {
                   if (total === 0) {
                      if (extraOptions.response) {
@@ -639,6 +639,20 @@ module.exports = class BaseSchema {
             },
             getByWhereWithFields(params, extraOptions, cb) {              
                this.findOne(params.where).select(extraOptions.fields)
+                  .lean().execAsync().then((record) => {
+                     if (record) {
+                        if (extraOptions.response) {
+                           extraOptions.response.data = record;
+                           return cb(null, extraOptions.response);
+                        }
+                        return cb(null, record);
+                     }
+                     const err = new APIError('No such record exists!', httpStatus.NOT_FOUND);
+                     return cb(err, null);
+                  });
+            },
+            removeById(params, extraOptions, cb) {
+               this.findByIdAndRemove(params.id).select(extraOptions.fields)
                   .lean().execAsync().then((record) => {
                      if (record) {
                         if (extraOptions.response) {
