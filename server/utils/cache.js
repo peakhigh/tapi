@@ -133,6 +133,13 @@ class Cache {
                         service: 'trips/service/setQuote',
                         hide: true
                      }, 
+                      {
+                        title: 'Set Status',
+                        icon: 'fa-table',
+                        page: 'setStatus',
+                        service: 'trips/service/setStatus',
+                        hide: true
+                     }, 
                      {
                         title: 'Upload file',
                         icon: 'fa-table',

@@ -1,4 +1,4 @@
-/* dont use imports, use require, because errors are coming when we are dynamically using services in the base model*/
+   /* dont use imports, use require, because errors are coming when we are dynamically using services in the base model*/
 let uiTypes = require('../../utils/ui-types');
 let authUtils = require('../../utils/auth');
 const collection = 'Trips';
