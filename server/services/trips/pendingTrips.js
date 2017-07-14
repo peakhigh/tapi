@@ -7,14 +7,12 @@ module.exports = {
        callback: (schema, serviceConfig, req, options, cb) => {//callback hook  - after serving the request - forms & grid
          console.log('get callback');
          const model = require('mongoose').model(collection);
-                 
-         model.listFields({where: {status: 'New'}}, {
+         model.listFields({where: JSON.stringify({status: 'New'})}, {
             selectFields: serviceConfig.schemaFields,
             response: {
                schema: schema
             }
          }, cb);
-         
       }
    }
 };

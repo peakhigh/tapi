@@ -437,7 +437,7 @@ module.exports = class BaseSchema {
                if (extraOptions.selectFields.indexOf('_id') < 0) {
                   extraOptions.selectFields.push('_id');
                }
-               console.log(query.where);
+             //  console.log(query.where);
                this.count(query.where || {}).execAsync().then((total) => {
                   if (total === 0) {
                      if (extraOptions.response) {

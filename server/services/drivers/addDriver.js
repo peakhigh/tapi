@@ -44,7 +44,6 @@ module.exports = {
          console.log('post callback');
          const model = require('mongoose').model(collection);
 
-         console.log(req.body);
           model.addOrEdit(req.body, null, cb);
          /*if (req.body._id) {
             let data = {

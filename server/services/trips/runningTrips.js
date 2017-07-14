@@ -8,7 +8,7 @@ module.exports = {
          console.log('get callback');
          const model = require('mongoose').model(collection);
 
-         model.listFields({where: {status: 'Running'}}, {
+         model.listFields({where: JSON.stringify({status: 'Running'})}, {
             selectFields: serviceConfig.schemaFields,
             response: {
                schema: schema
