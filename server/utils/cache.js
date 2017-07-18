@@ -55,14 +55,16 @@ class Cache {
                      }, {
                         title: 'Running',
                         icon: 'fa-table',
-                        page: 'manageTruck',
-                        service: 'trucks/service/manageTruck'
-                     }, {
-                        title: 'Pending',
+                        page: 'runningTrucks',
+                        service: 'trucks/service/runningTrucks'
+                     },
+                      {
+                        title: 'Set Driver',
                         icon: 'fa-table',
-                        page: 'manageTruck',
-                        service: 'trucks/service/manageTruck'
-                     }
+                        page: 'setDriver',
+                        service: 'trucks/service/setDriver',
+                        hide: true
+                     }, 
                   ]
                },
                 {

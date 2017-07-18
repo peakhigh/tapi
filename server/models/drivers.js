@@ -18,8 +18,7 @@ const CurrentSchema = new BaseSchemaFactory({
       address: schemaUtils.address(),
       contact: schemaUtils.contact(false),
       rating: {
-         type: String,
-         required: true
+         type: String
       }
    } 
 }); 

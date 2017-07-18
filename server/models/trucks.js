@@ -94,7 +94,7 @@ const CurrentSchema = new BaseSchemaFactory({
          type: Date,
          required: false
       },
-      nextAvailableAt: {
+      nextAvailableAt: {   //location
          type: String,
          required: false
       },
