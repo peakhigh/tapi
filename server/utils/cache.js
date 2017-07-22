@@ -65,6 +65,13 @@ class Cache {
                         service: 'trucks/service/setDriver',
                         hide: true
                      }, 
+                     {
+                        title: 'Search trips',
+                        icon: 'fa-table',
+                        page: 'searchTrips',
+                        service: 'trips/service/searchTrips',
+                        hide: true
+                     }, 
                   ]
                },
                 {
@@ -220,7 +227,20 @@ class Cache {
                         icon: 'fa-table',
                         page: 'manageTruck',
                         service: 'trucks/service/manageTruck'
-                     }
+                     },
+                     {
+                        title: 'Running',
+                        icon: 'fa-table',
+                        page: 'runningTrucks',
+                        service: 'trucks/service/runningTrucks'
+                     },
+                      {
+                        title: 'Set Driver',
+                        icon: 'fa-table',
+                        page: 'setDriver',
+                        service: 'trucks/service/setDriver',
+                        hide: true
+                     }, 
                   ]
                }, {
                   title: 'Trips',
@@ -237,7 +257,33 @@ class Cache {
                         icon: 'fa-table',
                         page: 'manageTrip',
                         service: 'trips/service/manageTrip'
+                     }, 
+                      {
+                        title: 'Running',
+                        icon: 'fa-table',
+                        page: 'runningTrips',
+                        service: 'trips/service/runningTrips'
                      }, {
+                        title: 'Pending',
+                        icon: 'fa-table',
+                        page: 'pendingTrips',
+                        service: 'trips/service/pendingTrips'
+                     },
+                     {
+                        title: 'Set Status',
+                        icon: 'fa-table',
+                        page: 'setStatus',
+                        service: 'trips/service/setStatus',
+                        hide: true
+                     }, 
+                     {
+                        title: 'Upload file',
+                        icon: 'fa-table',
+                        page: 'uploadfiles',
+                        service: 'files/service/fileupload',
+                        hide: true
+                     },
+                     {
                         title: 'Set Quote',
                         icon: 'fa-table',
                         page: 'setQuote',
