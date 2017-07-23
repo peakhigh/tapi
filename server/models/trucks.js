@@ -7,35 +7,35 @@ const CurrentSchema = new BaseSchemaFactory({
    collection: 'Trucks',   
    schema: {
       plateNumber: {
-         type: String,
+         type: Schema.Types.String,
          required: true
       },
       licenseNumber: {
-         type: String,
+         type: Schema.Types.String,
          required: true
       },
       model: {
-         type: String,
+         type: Schema.Types.String,
          required: true
       },
       engineNumber: {
-         type: String,
+         type: Schema.Types.String,
          required: true
       },
       description: {
-         type: String,
+         type: Schema.Types.String,
          required: true
       },
       truckType: {
-         type: String,
+         type: Schema.Types.String,
          required: true
       },
       capacity: {
-         type: String,
+         type: Schema.Types.String,
          required: true
       },
       capacityUnits: {
-         type: String,
+         type: Schema.Types.String,
          required: true,
          enum: ['Tons'],
             html: {               
@@ -67,11 +67,11 @@ const CurrentSchema = new BaseSchemaFactory({
       },
       material : {        
          materialType: {
-            type: String,
+            type: Schema.Types.String,
             required: true
          },
          description: {
-            type: String,
+            type: Schema.Types.String,
             required: false
          }
       },
@@ -80,7 +80,7 @@ const CurrentSchema = new BaseSchemaFactory({
          required: false
       },
       status: {
-         type: String,
+         type: Schema.Types.String,
          required: true,
          enum: ['free', 'busy'],
          html: {               
@@ -95,7 +95,7 @@ const CurrentSchema = new BaseSchemaFactory({
          required: false
       },
       nextAvailableAt: {   //location
-         type: String,
+         type: Schema.Types.String,
          required: false
       },
       rating: {
@@ -103,7 +103,7 @@ const CurrentSchema = new BaseSchemaFactory({
          required: false
       },
       currentPoint: {
-         type: String, //TODO: change to lat, long + string
+         type: Schema.Types.String, //TODO: change to lat, long + string
          required: false   
       },
       nextAssignedDate: {

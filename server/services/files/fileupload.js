@@ -53,7 +53,6 @@ module.exports = {
       callback: (serviceConfig, req, options, cb) => { //callback hook  for post request
          console.log('post callback');
          const model = require('mongoose').model(collection);
-        
          upload(req, cb, (err) => {
             if (err) {
                return cb('max 3 docs can upload'); 
@@ -67,7 +66,7 @@ module.exports = {
                         originalname: req.files[item].originalname,
                         mimetype: req.files[item].mimetype,
                         path: req.files[item].path,
-                        typeofdocument: 'not now'
+                        typeofdocument: req.query.type
                      };
                      model.addOrEdit(doc, null, cb);
                    //  console.log(req.files[item]);
