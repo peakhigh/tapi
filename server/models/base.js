@@ -5,6 +5,7 @@ const APIError = require('../helpers/APIError');
 let globals = require('../utils/globals');
 const utils = require('../utils/util');
 let cache = require('../utils/cache');
+const queryUtils = require('../utils/query');
 const constants = require('../config/constants');
 let ObjectID = require('mongodb').ObjectID;
 let Schema = mongoose.Schema;
@@ -437,8 +438,15 @@ module.exports = class BaseSchema {
                if (extraOptions.selectFields.indexOf('_id') < 0) {
                   extraOptions.selectFields.push('_id');
                }
-             //  console.log(query.where);
-               this.count(query.where || {}).execAsync().then((total) => {
+               let where;               
+               if (query.where) {
+                  where = JSON.parse(where);
+               } else if (query.queryStr && typeof query.queryStr === 'string' && extraOptions.queryFields) {
+                  where = queryUtils.getQuery(query.queryStr, extraOptions.queryType || 'or', extraOptions.queryFields);
+               }
+               where = where || {};
+               // console.log(where, query);
+               this.count(where).execAsync().then((total) => {
                   if (total === 0) {
                      if (extraOptions.response) {
                         extraOptions.response.data = [];
@@ -450,7 +458,7 @@ module.exports = class BaseSchema {
                         total: 0
                      }); 
                   }
-                  this.find(query.where ? JSON.parse(query.where) : {}, extraOptions.selectFields.join(' '))
+                  this.find(where, extraOptions.selectFields.join(' '))
                   .sort(((query.sort && Object.keys(query.sort).length > 0) ? query.sort : { createdAt: -1 }))
                   .skip((query.skip ? parseInt(query.skip, 10) : 0))
                   .limit((query.limit ? parseInt(query.limit, 10) : constants.DEFAULT_PAGE_SIZE))
