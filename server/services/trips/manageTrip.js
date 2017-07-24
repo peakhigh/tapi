@@ -4,8 +4,8 @@ module.exports = {
    type: 'grid',
    schemaFields: ['totalWeight', 'totalWeightUnit', 'pickup', 'drop', 'comments', 'vehicleRequirements', 'quotes', 'status'], // pick fields configuration from default schema   
    defaultFilterFields: {
-      'status': { op: '^' }, 
-      'currentPoint': { op: '^' }, 
+      status: { op: '^' }, 
+      currentPoint: { op: '^' }, 
       'vehicleRequirements.vechicleType': { op: '^' }, 
       'pickup.address.organisation': { op: '%' }, 
       'pickup.address.address': { op: '%' }, 
