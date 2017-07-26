@@ -36,7 +36,13 @@ class Cache {
                SideMenu: [{
                   title: 'Dashboard',
                   icon: 'fa-dashboard',
-                  page: 'home'
+                  page: 'home',
+                   options: [
+                     {title:'Messages!', icon: 'fa-envelope', page:''},
+                     {title:'Manage Trucks!', icon: 'fa-truck', page:'manageTruck'},
+                     {title:'View Requests!', icon: 'fa-suitcase', page:'manageTruck'},
+                     {title:'Support Tickets!', icon: 'fa-ticket', page:''}
+                     ]
                }, {
                   title: 'Trucks',
                   icon: 'fa-table',
@@ -107,7 +113,13 @@ class Cache {
                SideMenu: [{
                   title: 'Dashboard',
                   icon: 'fa-dashboard',
-                  page: 'home'
+                  page: 'home',
+                   options: [
+                     {title:'Messages!', icon: 'fa-envelope', page:''},
+                     {title:'Manage Trips!', icon: 'fa-truck', page:'manageTrip'},
+                     {title:'View Requests!', icon: 'fa-suitcase', page:'manageTrip'},
+                     {title:'Support Tickets!', icon: 'fa-ticket', page:''}
+                     ]
                }, {
                   title: 'Trips',
                   icon: 'fa-table',
@@ -211,7 +223,13 @@ class Cache {
                SideMenu: [{
                   title: 'Dashboard',
                   icon: 'fa-dashboard',
-                  page: 'home'
+                  page: 'home',
+                  options: [
+                     {title:'Messages!', icon: 'fa-envelope', page:''},
+                     {title:'New Trucks!', icon: 'fa-truck', page:'manageTruck'},
+                     {title:'New Trips!', icon: 'fa-suitcase', page:'manageTrip'},
+                     {title:'Support Tickets!', icon: 'fa-ticket', page:''}
+                     ]
                }, {
                   title: 'Trucks',
                   icon: 'fa-table',

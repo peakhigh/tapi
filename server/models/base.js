@@ -440,12 +440,12 @@ module.exports = class BaseSchema {
                }
                let where;               
                if (query.where) {
-                  where = JSON.parse(where);
+                  where = JSON.parse(query.where);
                } else if (query.queryStr && typeof query.queryStr === 'string' && extraOptions.queryFields) {
                   where = queryUtils.getQuery(query.queryStr, extraOptions.queryType || 'or', extraOptions.queryFields);
                }
                where = where || {};
-               // console.log(where, query);
+              // console.log(where, query);
                this.count(where).execAsync().then((total) => {
                   if (total === 0) {
                      if (extraOptions.response) {
