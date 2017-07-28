@@ -63,6 +63,26 @@ module.exports = class BaseSchema {
                         }
                      });
                   }
+                  if (serviceConfig.filterFields) {//import filter fields of the grid service
+                     Object.keys(serviceConfig.filterFields).forEach((field) => {
+                        if (!self.fieldServiceMap[field]) {
+                           self.fieldServiceMap[field] = [];
+                        }
+                        if (self.fieldServiceMap[field].indexOf(serviceName) < 0) {
+                           self.fieldServiceMap[field].push(serviceName);
+                        }
+                     });
+                  }
+                  if (serviceConfig.filterOverrideFields) {//import filter override fields of the grid service
+                     Object.keys(serviceConfig.filterOverrideFields).forEach((field) => {
+                        if (!self.fieldServiceMap[field]) {
+                           self.fieldServiceMap[field] = [];
+                        }
+                        if (self.fieldServiceMap[field].indexOf(serviceName) < 0) {
+                           self.fieldServiceMap[field].push(serviceName);
+                        }
+                     });
+                  }
                }
             });
          }
@@ -128,7 +148,7 @@ module.exports = class BaseSchema {
          if (source) {
             let sourceCopy = {};
             utils.cloneObject(source, sourceCopy);
-            if (args.isForm && sourceCopy.form && !args.onlyGrid) {
+            if (args && args.isForm && sourceCopy.form && !args.onlyGrid) {
                if (!destination.form) {
                   destination.form = {};
                }
@@ -138,7 +158,7 @@ module.exports = class BaseSchema {
                delete sourceCopy.form;
             }
 
-            if (args.isGrid && sourceCopy.grid) {
+            if (args &&  args.isGrid && sourceCopy.grid) {
                if (!destination.grid) {
                   destination.grid = {};
                }
@@ -148,7 +168,7 @@ module.exports = class BaseSchema {
                delete sourceCopy.grid;
             }
 
-            if (!args.onlyGrid) {
+            if (args && !args.onlyGrid) {
                utils.cloneObject(sourceCopy, destination, {
                   dontCloneDeep: true
                });
@@ -348,7 +368,7 @@ module.exports = class BaseSchema {
          }
 
          if (matchingServiceFields && matchingServiceFields.length > 0) {// if this field exists in any service
-            matchingServiceFields.forEach((matchingServiceField) => {
+            matchingServiceFields.forEach((matchingServiceField) => {               
                self.fieldServiceMap[matchingServiceField].forEach((serviceName) => { //get all the services which include this field
                   if (self.serviceConfigs[serviceName].type === 'grid' && !exposeInGrid) {
                      return; //respect the dontExpose setting at schema level
@@ -360,14 +380,27 @@ module.exports = class BaseSchema {
                   let serviceFieldConfig = {};
                   if (self.serviceConfigs[serviceName].type === 'grid' && fieldGridData && Object.keys(fieldGridData).length > 0) {
                      utils.cloneObject(fieldGridData, serviceFieldConfig); //if grid, copy field data of grid 
+                     //if filter field, add FieldFormData to the field in a seperate key which will be consumed by frontend    
+                     if (self.serviceConfigs[serviceName].filterFields && self.serviceConfigs[serviceName].filterFields.indexOf(fieldPath) >= 0) {//if present in filterFields list
+                         serviceFieldConfig.filterConfig = {};
+                         utils.cloneObject(fieldFormData, serviceFieldConfig.filterConfig); //copy form data into filterConfig key       
+                     }                         
                   } else { //if (self.serviceConfigs[serviceName].type === 'form') {
                      utils.cloneObject(fieldFormData, serviceFieldConfig); //if form/custom, copy field data of form                         
                   }
 
-                  if (self.serviceConfigs[serviceName].schemaOverrideFeilds && self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField] && Object.keys(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField]).length > 0) {
+                  if (self.serviceConfigs[serviceName].schemaOverrideFeilds && self.serviceConfigs[serviceName].schemaOverrideFeilds[fieldPath] && Object.keys(self.serviceConfigs[serviceName].schemaOverrideFeilds[fieldPath]).length > 0) {
                      // override customizations of the field defined at service level
                      // utils.cloneObject(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField], serviceFieldConfig);
-                     self.cloneHtmlAttributes(self.serviceConfigs[serviceName].schemaOverrideFeilds[matchingServiceField], serviceFieldConfig, {isGrid: true, isForm: true});
+                     self.cloneHtmlAttributes(self.serviceConfigs[serviceName].schemaOverrideFeilds[fieldPath], serviceFieldConfig);
+                  }
+                  //implement filterField overrides
+                  if (self.serviceConfigs[serviceName].filterOverrideFields && self.serviceConfigs[serviceName].filterOverrideFields[fieldPath] && Object.keys(self.serviceConfigs[serviceName].filterOverrideFields[fieldPath]).length > 0) {
+                     // override customizations of the field defined at service level
+                     if (!serviceFieldConfig.filterConfig) {
+                        serviceFieldConfig.filterConfig = {};
+                     }
+                     self.cloneHtmlAttributes(self.serviceConfigs[serviceName].filterOverrideFields[fieldPath], serviceFieldConfig.filterConfig);
                   }
                   if (!self.serviceSchemas[currentServiceKey]) {
                      self.serviceSchemas[currentServiceKey] = {};

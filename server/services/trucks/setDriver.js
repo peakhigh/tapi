@@ -5,7 +5,7 @@ module.exports = {
    requestType: 'get',
    schemaFields: ['driverId'], // pick fields configuration from default schema
    get: {
-       callback: (schema, serviceConfig, req, options, cb) => {//callback hook  - after serving the request - forms & grid
+       callback: (schema, serviceConfig, req, res, options, cb) => {//callback hook  - after serving the request - forms & grid
          console.log('get callback');
          console.log(schema);
          let driverscollection = 'Drivers';
@@ -20,14 +20,14 @@ module.exports = {
       }
    },
    post: {
-      preValidate: (serviceConfig, req, options, cb) => { //on post - validate, will get executed on POST service request
+      preValidate: (serviceConfig, req, res, options, cb) => { //on post - validate, will get executed on POST service request
          console.log('post prevalidate');
          if (!req.query.id) {
             return cb('Invalid Request');//if error, return as first argument
          }
          return cb();//if error, return as first argument
       },
-      callback: (serviceConfig, req, options, cb) => { //callback hook  for post request
+      callback: (serviceConfig, req, res, options, cb) => { //callback hook  for post request
          console.log('post callback');
          const model = require('mongoose').model(collection);    
          

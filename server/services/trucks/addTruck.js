@@ -23,11 +23,11 @@ module.exports = {
       // console.log(schema); 
    },
    get: {
-      preValidate: (serviceConfig, req, options, cb) => {//on init hook, will get executed on service request - init
+      preValidate: (serviceConfig, req, res, options, cb) => {//on init hook, will get executed on service request - init
          console.log('get prevalidate');
          cb();//if error, return as first argument
       },
-      callback: (schema, serviceConfig, req, options, cb) => {//callback hook  - after serving the request - forms & grid
+      callback: (schema, serviceConfig, req, res, options, cb) => {//callback hook  - after serving the request - forms & grid
          console.log('get callback', req.params.id);         
          if (req.params.id || req.query.id) {
             const model = require('mongoose').model(collection);
@@ -45,11 +45,11 @@ module.exports = {
       }
    },
    post: {
-      preValidate: (serviceConfig, req, options, cb) => { //on post - validate, will get executed on POST service request
+      preValidate: (serviceConfig, req, res, options, cb) => { //on post - validate, will get executed on POST service request
          console.log('post prevalidate');
          return cb();//if error, return as first argument
       },
-      callback: (serviceConfig, req, options, cb) => { //callback hook  for post request
+      callback: (serviceConfig, req, res, options, cb) => { //callback hook  for post request
          console.log('post callback');
          const model = require('mongoose').model(collection);
          /** TODO: if date searches not working on pickupdate & dropdates, change them to dates instead of strings while saving */

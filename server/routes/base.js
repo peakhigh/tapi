@@ -1,6 +1,7 @@
 const expressJwt = require('express-jwt');
 const utils = require('../utils/util');
 let cache = require('../utils/cache');
+let authUtils = require('../utils/auth');
 const httpUtils = require('../utils/http');
 const config = require('../../config/env');
 const express = require('express');
@@ -15,7 +16,7 @@ function processServiceRequestCallback(req, res, next, serviceConfig, httpMethod
    }
    if (serviceConfig[httpMethod] && serviceConfig[httpMethod].callback) {//on validate success, if callback present
       // let schema = cache.getRequestServiceSchema(req);
-      let args = [serviceConfig, req, options, (err, out) => {
+      let args = [serviceConfig, req, res, options, (err, out) => {
          if (err) {
             if (out) {//if out present on error, return ouput considering it as json response
                return res.json(out);
@@ -35,8 +36,16 @@ function processServiceRequestCallback(req, res, next, serviceConfig, httpMethod
 }
 
 function processServiceRequest(req, res, next, serviceConfig, httpMethod, options) {
+   if (serviceConfig.roles) {//check role permissions for this service
+      let tokenDetails = authUtils.decodeToken(req.headers);
+      if (tokenDetails && tokenDetails.role) {
+         if (serviceConfig.roles.indexOf(tokenDetails.role) < 0 ) {
+             return res.json(httpUtils.httpError(req, 'Invalid Request'));
+         }
+      }
+   }
    if (serviceConfig[httpMethod] && serviceConfig[httpMethod].preValidate) {//validate the request
-      let args = [serviceConfig, req, options, (err, out) => {
+      let args = [serviceConfig, req, res, options, (err, out) => {
          if (err) {//on error                              
             if (out) {//if out present on error, return ouput considering it as json response
                return res.json(out);

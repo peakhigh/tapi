@@ -7,7 +7,7 @@ module.exports = {
    type: 'custom',
    // schemaFields: [], // optional
    get: {
-      callback: (schema, serviceConfig, req, options, cb) => {
+      callback: (schema, serviceConfig, req, res, options, cb) => {
          console.log('get callback');
          cb(null, {test: 123});
       } //callback hook 
