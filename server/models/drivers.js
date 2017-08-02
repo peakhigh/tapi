@@ -8,17 +8,17 @@ const CurrentSchema = new BaseSchemaFactory({
    collection: 'Drivers',   
    schema: {
       firstname: {
-         type: String,
+         type: Schema.Types.String,
          required: true
       },
       lastname: {
-         type: String,
+         type: Schema.Types.String,
          required: true
       },
       address: schemaUtils.address(),
       contact: schemaUtils.contact(false),
       rating: {
-         type: String
+         type: Schema.Types.String
       }
    } 
 }); 

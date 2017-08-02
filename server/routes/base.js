@@ -39,7 +39,7 @@ function processServiceRequest(req, res, next, serviceConfig, httpMethod, option
    if (serviceConfig.roles) {//check role permissions for this service
       let tokenDetails = authUtils.decodeToken(req.headers);
       if (tokenDetails && tokenDetails.role) {
-         if (serviceConfig.roles.indexOf(tokenDetails.role) < 0 ) {
+         if (serviceConfig.roles.indexOf(tokenDetails.role) < 0) {
              return res.json(httpUtils.httpError(req, 'Invalid Request'));
          }
       }

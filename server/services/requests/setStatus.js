@@ -1,16 +1,13 @@
-/* dont use imports, use require, because errors are coming when we are dynamically using services in the base model*/
-let uiTypes = require('../../utils/ui-types');
-let authUtils = require('../../utils/auth');
-const collection = 'Trips';
+let Schema = require('mongoose').Schema;
+const collection = 'Requests';
 module.exports = {
    type: 'form',
    requestType: 'get',
-   schemaFields: ['comments'], // pick fields configuration from default schema
+   schemaFields: ['status'], // pick fields configuration from default schema
    schemaOverrideFeilds: {
-      comments: {
+      status: {
          required: true
       }
-
    },
    get: {
       preValidate: (serviceConfig, req, res, options, cb) => {//on init hook, will get executed on service request - init
@@ -27,7 +24,7 @@ module.exports = {
             cb(null, {
                data:  {
                   _id: req.params.id,
-                  comments: ' '
+                  status: ' '
                },
                schema: schema
             });
@@ -39,23 +36,19 @@ module.exports = {
    post: {
       preValidate: (serviceConfig, req, res, options, cb) => { //on post - validate, will get executed on POST service request
          console.log('post prevalidate');
-         if (!req.body._id) {
+         if (!req.query.id) {
             return cb('Invalid Request');//if error, return as first argument
          }
-         return cb();
+         return cb();//if error, return as first argument
       },
       callback: (serviceConfig, req, res, options, cb) => { //callback hook  for post request
          console.log('post callback');
-         const model = require('mongoose').model(collection);
-         if (req.body.comments && Array.isArray(req.body.comments) && req.body.comments.length > 0) {
-            let data = {
-               _id: req.body._id,
-               $push: { comments: { $each: req.body.comments } }
+         const model = require('mongoose').model(collection);        
+			let data = {
+				_id: req.query.id,
+               status: req.query.status
             };            
             model.editById(data, null, cb);
-         } else {
-            cb({});
-         }
-      }
+       }
    }
 };

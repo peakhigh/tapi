@@ -40,8 +40,8 @@ class Cache {
                    options: [
                      {title:'Messages!', icon: 'fa-envelope', page:''},
                      {title:'Manage Trucks!', icon: 'fa-truck', page:'manageTruck'},
-                     {title:'View Requests!', icon: 'fa-suitcase', page:'manageTruck'},
-                     {title:'Support Tickets!', icon: 'fa-ticket', page:''}
+                     {title:'Requests!', icon: 'fa-suitcase', page:'manageTruck'},
+                     {title:'Notifications!', icon: 'fa-ticket', page:''}
                      ]
                }, {
                   title: 'Trucks',
@@ -75,9 +75,15 @@ class Cache {
                         title: 'Search trips',
                         icon: 'fa-table',
                         page: 'searchTrips',
-                        service: 'trips/service/searchTrips',
-                        hide: true
+                        service: 'trips/service/pendingTrips'
                      }, 
+                      {
+                        title: 'Set Quote',
+                        icon: 'fa-table',
+                        page: 'setQuote',
+                        service: 'requests/service/setQuote',
+                        hide: true
+                     }
                   ]
                },
                 {
@@ -117,7 +123,7 @@ class Cache {
                    options: [
                      {title:'Messages!', icon: 'fa-envelope', page:''},
                      {title:'Manage Trips!', icon: 'fa-truck', page:'manageTrip'},
-                     {title:'View Requests!', icon: 'fa-suitcase', page:'manageTrip'},
+                     {title:'Requests!', icon: 'fa-suitcase', page:'manageTrip'},
                      {title:'Support Tickets!', icon: 'fa-ticket', page:''}
                      ]
                }, {
@@ -148,12 +154,11 @@ class Cache {
                         service: 'trips/service/pendingTrips'
                      },
                      {
-                        title: 'Set Quote',
+                        title: 'Requests',
                         icon: 'fa-table',
-                        page: 'setQuote',
-                        service: 'trips/service/setQuote',
-                        hide: true
-                     }, 
+                        page: 'viewTripRequests',
+                        service: 'trips/service/tripQuotes'
+                     },
                       {
                         title: 'Set Status',
                         icon: 'fa-table',

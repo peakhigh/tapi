@@ -158,7 +158,7 @@ module.exports = class BaseSchema {
                delete sourceCopy.form;
             }
 
-            if (args &&  args.isGrid && sourceCopy.grid) {
+            if (args && args.isGrid && sourceCopy.grid) {
                if (!destination.grid) {
                   destination.grid = {};
                }

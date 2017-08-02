@@ -5,6 +5,7 @@ const tripsRoutes = require('./trips');
 const trucksRoutes = require('./trucks');
 const drivers = require('./drivers');
 const files = require('./files');
+const requests = require('./requests');
 
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' }).array('photos', 3);
@@ -32,5 +33,7 @@ router.use('/auth', authRoutes);
 router.use('/drivers', drivers);
 
 router.use('/files', files);
+
+router.use('/requests', requests);
 
 module.exports = router;

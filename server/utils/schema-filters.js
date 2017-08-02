@@ -24,4 +24,4 @@ module.exports = {
          'drop.contact.alternativePhone': { op: '=' }
       };
    }
-}
+};
