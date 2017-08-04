@@ -123,8 +123,8 @@ class Cache {
                    options: [
                      {title:'Messages!', icon: 'fa-envelope', page:''},
                      {title:'Manage Trips!', icon: 'fa-truck', page:'manageTrip'},
-                     {title:'Requests!', icon: 'fa-suitcase', page:'manageTrip'},
-                     {title:'Support Tickets!', icon: 'fa-ticket', page:''}
+                     {title:'Bids!', icon: 'fa-suitcase', page:'manageTrip'},
+                     {title:'History!', icon: 'fa-history', page:''}
                      ]
                }, {
                   title: 'Trips',
@@ -136,28 +136,47 @@ class Cache {
                         icon: 'fa-table',
                         page: 'addTrip',
                         service: 'trips/service/addTrip'
-                     }, {
-                        title: 'Manage',
+                     },
+                     {
+                        title: 'Newly Added',
+                        icon: 'fa-table',
+                        page: 'newTrips',
+                        service: 'trips/service/newTrips'
+                     },
+                     {
+                        title: 'Manage Trips',
                         icon: 'fa-table',
                         page: 'manageTrip',
-                        service: 'trips/service/manageTrip'
+                        service: 'trips/service/manageTrips'
+                     },
+                     {
+                        title: 'Assigned Trips',
+                        icon: 'fa-table',
+                        page: 'assignedTrips',
+                        service: 'trips/service/assignedTrips'
                      },
                       {
-                        title: 'Running',
+                        title: 'Running Trips',
                         icon: 'fa-table',
                         page: 'runningTrips',
                         service: 'trips/service/runningTrips'
                      }, {
-                        title: 'Pending',
+                        title: 'PaymentDue',
                         icon: 'fa-table',
                         page: 'pendingTrips',
                         service: 'trips/service/pendingTrips'
                      },
                      {
-                        title: 'Requests',
+                        title: 'ViewBids',
                         icon: 'fa-table',
                         page: 'viewTripRequests',
                         service: 'trips/service/tripQuotes'
+                     },
+                     {
+                        title: 'History',
+                        icon: 'fa-table',
+                        page: 'historyTrips',
+                        service: 'trips/service/historyTrips'
                      },
                       {
                         title: 'Set Status',

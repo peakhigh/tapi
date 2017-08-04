@@ -3,6 +3,8 @@ let uiTypes = require('../../utils/ui-types');
 let authUtils = require('../../utils/auth');
 
 const fs = require('fs');
+const mime = require('mime');
+const path = require('path');
 
 const collection = 'files';
 module.exports = {
@@ -15,28 +17,31 @@ module.exports = {
    get: {
       preValidate: (serviceConfig, req, res, options, cb) => {//on init hook, will get executed on service request - init
          console.log('get prevalidate');
-         if (!req.params.id) {
+         if (!req.query.id) {
             return cb('Invalid Request');//if error, return as first argument
          }
          return cb();
       },
       callback: (schema, serviceConfig, req, res, options, cb) => {//callback hook  - after serving the request - forms & grid
-         //console.log('get callback', schema);
+
          const model = require('mongoose').model(collection);
-         if (req.params.id) {
-         /*where: {recordid : req.params.id}*/
-            //console.log(JSON.parse());
-            model.getByIdWithFields(req.params, {
-            selectFields: serviceConfig.schemaFields,
-            response: {
-               schema: schema
-            }
-         }, (error, data) => {  
-                return cb(null, data);
-            });
-         } else {
-            cb(null, schema);
-         }
+         let where = {id:req.query.id};
+         model.getById(where, {}, (error, data) => {
+               console.log(data);
+                let file = data.path;
+
+               let filename = path.basename(file);
+               let mimetype = mime.lookup(file);
+
+               res.setHeader('Content-disposition', 'attachment; filename=test.pdf');
+               res.setHeader('Content-type', mimetype);
+               res.setHeader('Set-Cookie', 'fileDownload=true; path=/');
+               res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+
+               let filestream = fs.createReadStream(file);
+               filestream.pipe(res);
+              // res.download(data.path);       
+         });
       }
    },
 };
