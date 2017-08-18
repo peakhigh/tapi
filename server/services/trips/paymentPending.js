@@ -14,13 +14,7 @@ module.exports = {
          console.log('get callback');
          const model = require('mongoose').model(collection);
          console.log(req.query);
-
-      /*  let query = {where: JSON.stringify({$or: [
-            {status: 'Cancelled'},
-            {status: 'Successful'}
-         ]})}; */
-         let query = {where: JSON.stringify({status: req.query.status})};
-         model.listFields(query, {
+         model.listFields({where: JSON.stringify({status: 'Paymentpending'})}, {
             queryFields: serviceConfig.defaultFilterFields,
             queryType: 'or',
             selectFields: serviceConfig.schemaFields,

@@ -50,7 +50,7 @@ module.exports = {
          organisation: {
             type: Schema.Types.String
          },         
-         address: {
+         city: {
             type: Schema.Types.String,
             required: true
          },

@@ -26,6 +26,7 @@ function login(req, res, next) {
         if (userRecord) {
          const token = jwt.sign({
             username: userRecord.userName,
+            _id: userRecord._id,
             role: userRecord.profile.userType,
             app: app
          }, config.jwtSecret);

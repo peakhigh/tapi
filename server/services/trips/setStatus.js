@@ -1,4 +1,6 @@
 let Schema = require('mongoose').Schema;
+let authUtils = require('../../utils/auth');
+
 const collection = 'Trips';
 module.exports = {
    type: 'form',
@@ -24,7 +26,7 @@ module.exports = {
             cb(null, {
                data:  {
                   _id: req.params.id,
-                  status: ' '
+                  status: ''
                },
                schema: schema
             });
@@ -36,7 +38,7 @@ module.exports = {
    post: {
       preValidate: (serviceConfig, req, res, options, cb) => { //on post - validate, will get executed on POST service request
          console.log('post prevalidate');
-         if (!req.body._id) {
+         if (!req.query.id) {
             return cb('Invalid Request');//if error, return as first argument
          }
          return cb();//if error, return as first argument
@@ -45,10 +47,11 @@ module.exports = {
          console.log('post callback');
          const model = require('mongoose').model(collection);        
 			let data = {
-				_id: req.body._id,
-               status: req.body.status
+				_id: req.query.id,
+               status: req.query.status
             };            
-            model.editById(data, null, cb);
+         
+         model.editById(data, null, cb);
        }
    }
 };

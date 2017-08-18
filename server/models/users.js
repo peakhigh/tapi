@@ -28,6 +28,9 @@ const CurrentSchema = new BaseSchemaFactory({
          enum: ['Male', 'Female'],
          default: 'Male'
       },
+      profilePic: {
+            type: String
+      },
       email: schemaTypeUtils.email(false, {required: true}), 
       mobile: schemaTypeUtils.mobile(false, {required: true}),
       alternativePhone: schemaTypeUtils.mobile(),

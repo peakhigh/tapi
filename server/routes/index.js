@@ -7,9 +7,6 @@ const drivers = require('./drivers');
 const files = require('./files');
 const requests = require('./requests');
 
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' }).array('photos', 3);
-
 const router = express.Router();	// eslint-disable-line new-cap
 
 /** GET /health-check - Check service health */

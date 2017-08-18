@@ -1,16 +1,15 @@
-/* dont use imports, use require, because errors are coming when we are dynamically using services in the base model*/
-let uiTypes = require('../../utils/ui-types');
+let Schema = require('mongoose').Schema;
 let authUtils = require('../../utils/auth');
+
 const collection = 'Trips';
 module.exports = {
    type: 'form',
    requestType: 'get',
-   schemaFields: ['comments'], // pick fields configuration from default schema
+   schemaFields: ['status', 'comments'], // pick fields configuration from default schema
    schemaOverrideFeilds: {
-      comments: {
+      status: {
          required: true
       }
-
    },
    get: {
       preValidate: (serviceConfig, req, res, options, cb) => {//on init hook, will get executed on service request - init
@@ -24,33 +23,14 @@ module.exports = {
          console.log('get callback', req.params.id);
          const model = require('mongoose').model(collection);
          if (req.params.id) {
-       /*        cb(null, {
+            cb(null, {
                data:  {
                   _id: req.params.id,
+                  status: '',
                   comments: ''
                },
                schema: schema
-            });  */
-            
-            if (!req.query.skip) {
-               req.query.skip = 0;
-               req.query.limit = 3;
-            }
-            console.log(req.query);
-            let params = {
-               id: req.params.id || req.query.id,
-               slice: {
-                  field: 'comments',
-                  skip: req.query.skip,
-                  limit: req.query.limit
-               }
-            };
-         model.getByIdFieldsWithSlice(params, {
-            fields: serviceConfig.schemaFields,
-            response: {
-               schema: schema
-            }
-          }, cb);  
+            });
          } else {
             cb(null, schema);
          }
@@ -58,33 +38,31 @@ module.exports = {
    },
    post: {
       preValidate: (serviceConfig, req, res, options, cb) => { //on post - validate, will get executed on POST service request
-         console.log('post prevalidate addComment');
+         console.log('post prevalidate');
          if (!req.body._id) {
             return cb('Invalid Request');//if error, return as first argument
          }
-         return cb();
+         return cb();//if error, return as first argument
       },
       callback: (serviceConfig, req, res, options, cb) => { //callback hook  for post request
          console.log('post callback');
-         const model = require('mongoose').model(collection);
-         console.log(req.body.comments);
-         if (req.body.comments) {
-            let data = {
-               _id: req.body._id,
+         const model = require('mongoose').model(collection);        
+			let data = {
+				_id: req.body._id,
+               status: req.body.status
             };            
 
-            let tokenDetails = authUtils.decodeToken(req.headers);
+        if (req.body.comments) {
+          let tokenDetails = authUtils.decodeToken(req.headers);
             let comment = {
                 date: new Date().toLocaleString(),
                 commentedby: tokenDetails.username,
-                comment: req.body.comments[0].comment
+                comment: req.body.comments
              };
             data.$push = { comments: comment };
-
-            model.editById(data, null, cb);
-         } else {
-            cb({});
-         }
-      }
+        }  
+         
+         model.editById(data, null, cb);
+       }
    }
 };

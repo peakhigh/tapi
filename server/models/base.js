@@ -678,6 +678,22 @@ module.exports = class BaseSchema {
                      return cb(err, null);
                   });
             },
+            getByIdFieldsWithSlice(params, extraOptions, cb) {              
+               this.findById(params.id).select(extraOptions.fields)
+                  .slice('comments', [0, 3])
+                  .lean().execAsync().then((record) => {
+                     if (record) {
+                        if (extraOptions.response) {
+                           console.log(record);
+                           extraOptions.response.data = record;
+                           return cb(null, extraOptions.response);
+                        }
+                        return cb(null, record);
+                     }
+                     const err = new APIError('No such record exists!', httpStatus.NOT_FOUND);
+                     return cb(err, null);
+                  });
+            },
             getByWhereWithFields(params, extraOptions, cb) {              
                this.findOne(params.where).select(extraOptions.fields)
                   .lean().execAsync().then((record) => {

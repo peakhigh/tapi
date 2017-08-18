@@ -3,6 +3,7 @@ let uiTypes = require('../../utils/ui-types');
 let authUtils = require('../../utils/auth');
 
 const multer = require('multer');
+//const upload = multer({ dest: 'uploads/' }).array('photos', 3);
 const upload = multer({ dest: 'uploads/' }).array('photos', 3);
 const fs = require('fs');
 
@@ -25,10 +26,10 @@ module.exports = {
       callback: (schema, serviceConfig, req, res, options, cb) => {//callback hook  - after serving the request - forms & grid
          //console.log('get callback', schema);
          const model = require('mongoose').model(collection);
-         if (req.params.id) {
-         /*where: {recordid : req.params.id}*/
-            //console.log(JSON.parse());
-            model.listFields({where: JSON.stringify({recordid : req.params.id})}, {
+         if (req.params.id) {           
+            req.query.where = {};
+            req.query.where = JSON.stringify({recordid : req.params.id});
+            model.listFields(req.query, {
             selectFields: serviceConfig.schemaFields,
             response: {
                schema: schema
@@ -61,7 +62,7 @@ module.exports = {
                for (let item in req.files) {
                   if (item) {
                      let doc = {
-                        createdby: 'not now',
+                        createdby: req.user.username,
                         recordid: req.query.id,
                         originalname: req.files[item].originalname,
                         mimetype: req.files[item].mimetype,
@@ -69,7 +70,7 @@ module.exports = {
                         typeofdocument: req.query.type
                      };
                      model.addOrEdit(doc, null, cb);
-                   //  console.log(req.files[item]);
+                     console.log(req.files[item]);
                   }
                }
            

@@ -1,28 +1,46 @@
 /* dont use imports, use require, because errors are coming when we are dynamically using services in the base model*/
 let uiTypes = require('../../utils/ui-types');
-let utils = require('../../utils/util');
-let cache = require('../../utils/cache');
-let authUtils = require('../../utils/auth');
-
-const collection = 'Users';
+// let ObjectID = require('mongodb').ObjectID;
+// const model = require('../../models/trips'); -- wont work as this file is required on model creation
+const collection = 'Trips';
 module.exports = {
    type: 'form',
    requestType: 'get',
-   schemaFields: ['firstName', 'lastName', 'gender', 'email', 'mobile', 'alternativePhone',
-             'organisationAddress', 'security.password', 'profilePic'], // pick fields configuration from default schema
+   schemaFields: ['pickup.date', 'pickup.address.city', 'pickup.material.name',
+             'pickup.material.materialType', 'pickup.material.weight', 'pickup.material.weightUnit', 'drop.address.city',
+                'vehicleRequirements.vehicleType', 'vehicleRequirements.vehicleCount', 'status'], // pick fields configuration from default schema
    schemaOverrideFeilds: {
-      
+      // 'pickup': {
+      //    minItems: 1
+      // },
+      'pickup.date': {
+         required: true
+      },
+      'pickup.address.city': {
+         required: true
+      },
+      'pickup.material.weight': {
+         required: true
+      },
+      'pickup.material.name': {
+         required: true
+      },
+      'pickup.material.materialType': uiTypes.select(),
+      'drop.address.city': {
+         required: true
+      },
+      'vehicleRequirements.vehicleType': uiTypes.select(),
    }, //override above listed schema fields         
    defaults: {
-      status: 'new'
+      status: 'New'
    },
    prepare: (cacheKey, schema, serviceConfig) => { //on schema prepare - sync call
       //add any extra fields which are not in schema etc, default values etc
       //can do based on role, app etc by using the "cacheKey"
-      //cacheKey format 'TRIPS_TRUCKS#ADMIN#USERS#SERVICE#addUser'
-      schema.security.confirmPassword = {};
-      utils.cloneObject(schema.security.password, schema.security.confirmPassword, false);
-      schema.security.confirmPassword.title = 'Confirm Password';      
+      //cacheKey format 'TRIPS_TRUCKS#ADMIN#TRIPS#FORM#ADDTRIP'
+
+      // console.log(cacheKey); 
+      // console.log(schema); 
    },
    get: {
       preValidate: (serviceConfig, req, res, options, cb) => {//on init hook, will get executed on service request - init
@@ -30,11 +48,7 @@ module.exports = {
          cb();//if error, return as first argument
       },
       callback: (schema, serviceConfig, req, res, options, cb) => {//callback hook  - after serving the request - forms & grid
-         console.log('get callback', req.params.id);        
-         let tokenDetails = authUtils.decodeToken(req.headers);
-         if (tokenDetails && tokenDetails.username) {
-          req.query.id = tokenDetails._id;
-         } 
+         console.log('get callback', req.params.id);         
          if (req.params.id || req.query.id) {
             const model = require('mongoose').model(collection);
             let params = {

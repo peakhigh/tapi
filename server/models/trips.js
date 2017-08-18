@@ -15,7 +15,8 @@ const CurrentSchema = new BaseSchemaFactory({
    schema: {
       status: {
          type: Schema.Types.String, //enum new, pending, ..
-         enum: ['New', 'Process', 'Running', 'Fail', 'Close', 'Canceled', 'Completed', 'Assigned'],
+         enum: ['New', 'Quoted', 'Paymentpending', 'Paymentmade', 'Waitingforassignment', 'Running', 
+         'Cancelled', 'Successful', 'Assigned'],
          default: 'New'
       },
       expectedTripCost: {
@@ -58,8 +59,8 @@ const CurrentSchema = new BaseSchemaFactory({
          },
          comment: schemaTypeUtils.description()
       },
-      vehicleRequirements: [{
-         vechicleType: {
+      vehicleRequirements: {
+         vehicleType: {
             type: Schema.Types.String, //enum needed -- closed Body, open body,trally, mini truck, auto     
             enum: ['Open Body', 'Closed Body', 'Trally', 'Mini Truck', 'Auto'],
             html: {               
@@ -74,20 +75,23 @@ const CurrentSchema = new BaseSchemaFactory({
          capacityUnit: uiTypes.weightUnit(),
          minRating: {
             type: Schema.Types.Number
+         },
+         vehicleCount: {
+            type: Schema.Types.Number
          }
-      }],    
+      },    
       totalWeight: {
          type: Schema.Types.Number
       },
       totalWeightUnit: uiTypes.weightUnit(),
       spends: schemaUtils.spend(true), 
-      pickup: [{                  
+      pickup: {                  
          date: schemaTypeUtils.date(false, {
             title: 'Date & Time'
          }),
          address: schemaUtils.address(),                                          
          contact: schemaUtils.contact(true),
-         material: [{
+         material: {
             name: {
                type: Schema.Types.String
             },
@@ -100,10 +104,10 @@ const CurrentSchema = new BaseSchemaFactory({
             approximateCost: {
                type: Schema.Types.Number
             }
-         }],
+         },
          formalities: schemaUtils.tripFormality()         
-      }],
-      drop: [{                
+      },
+      drop: {                
          date: schemaTypeUtils.date(false, {
             title: 'Date & Time'
          }), 
@@ -113,17 +117,25 @@ const CurrentSchema = new BaseSchemaFactory({
             type: [Schema.Types.String] //pickup.material.name array                     
          },
          formalities: schemaUtils.tripFormality()         
-      }],
-      comments: {
-         type: [Schema.Types.String],
-         html: {
-            form: {
-               items: {
-                  type: 'textarea'
-               }               
-            }
-         }      
       },
+      comments: [{
+         date: schemaTypeUtils.date(false, {
+            title: 'Date & Time'
+         }),
+         commentedby: {
+            type: Schema.Types.String
+         },
+         comment: {
+            type: Schema.Types.String,
+            html: {
+               form: {
+                  items: {
+                     type: 'textarea'
+                  }               
+               }
+            }      
+         }
+      }],
       // comments: schemaTypeUtils.description(false, {
       //    type: [String]
       // }), //schemaUtils.comment(true),

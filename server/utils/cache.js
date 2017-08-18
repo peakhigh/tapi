@@ -128,56 +128,98 @@ class Cache {
                      ]
                }, {
                   title: 'Trips',
-                  icon: 'fa-table',
+                  icon: 'fa-truck',
                   page: 'manageTrip',                  
                   service: 'trips/service/manageTrip',
                   Menu: [{
-                        title: 'Add New',
-                        icon: 'fa-table',
+                        title: 'Add Trip',
+                        icon: 'fa-plus',
                         page: 'addTrip',
-                        service: 'trips/service/addTrip'
+                        service: 'trips/service/addTrip',
+                        hide: true
                      },
                      {
-                        title: 'Newly Added',
-                        icon: 'fa-table',
-                        page: 'newTrips',
-                        service: 'trips/service/newTrips'
+                        title: 'Add Trip',
+                        icon: 'fa-plus',
+                        page: 'addTripMin',
+                        service: 'trips/service/addTripMin',
                      },
                      {
                         title: 'Manage Trips',
-                        icon: 'fa-table',
+                        icon: 'fa-list-ol',
                         page: 'manageTrip',
                         service: 'trips/service/manageTrips'
+                     },
+                      {
+                        title: 'New Trips',
+                        icon: 'fa-table',
+                        page: 'newTrips',
+                        service: 'trips/service/newTrips',
+                        hide: true
+                     },
+                     {
+                        title: 'Quoted Trips',
+                        icon: 'fa-table',
+                        page: 'viewQuotes',
+                        service: 'trips/service/QuotedTrips',
+                        hide: true
                      },
                      {
                         title: 'Assigned Trips',
                         icon: 'fa-table',
                         page: 'assignedTrips',
-                        service: 'trips/service/assignedTrips'
+                        service: 'trips/service/assignedTrips',
+                        hide: true
+                     },
+                     {
+                        title: 'Payment Pending',
+                        icon: 'fa-credit-card',
+                        page: 'paymentPending',
+                        service: 'trips/service/paymentPending',
+                        hide: true
+                     },
+                     {
+                        title: 'Payement Made',
+                        icon: 'fa-credit-card',
+                        page: 'paymentmadeTrips',
+                        service: 'trips/service/assignedTrips',
+                        hide: true
+                     },
+                     {
+                        title: 'Cancelled Trips',
+                        icon: 'fa-times',
+                        page: 'cancelledTrips',
+                        service: 'trips/service/historyTrips?status=Cancelled',
+                        hide: true
                      },
                       {
+                        title: 'Successful Trips',
+                        icon: 'fa-check',
+                        page: 'successfulTrips',
+                        service: 'trips/service/historyTrips?status=Successful',
+                        hide: true
+                     },
+                     {
                         title: 'Running Trips',
                         icon: 'fa-table',
                         page: 'runningTrips',
-                        service: 'trips/service/runningTrips'
-                     }, {
-                        title: 'PaymentDue',
-                        icon: 'fa-table',
-                        page: 'pendingTrips',
-                        service: 'trips/service/pendingTrips'
-                     },
-                     {
-                        title: 'ViewBids',
-                        icon: 'fa-table',
-                        page: 'viewTripRequests',
-                        service: 'trips/service/tripQuotes'
+                        service: 'trips/service/runningTrips',
+                        hide: true
                      },
                      {
                         title: 'History',
                         icon: 'fa-table',
                         page: 'historyTrips',
-                        service: 'trips/service/historyTrips'
+                        service: 'trips/service/historyTrips',
+                        hide: true
                      },
+                     {
+                        title: 'CancelTrip',
+                        icon: 'fa-table',
+                        page: 'cancelTrip',
+                        service: 'trips/service/cancelTrip',
+                        hide: true
+                     }, 
                       {
                         title: 'Set Status',
                         icon: 'fa-table',
@@ -186,21 +228,40 @@ class Cache {
                         hide: true
                      }, 
                      {
-                        title: 'Upload file',
+                        title: 'Cancel Trip',
                         icon: 'fa-table',
-                        page: 'uploadfiles',
+                        page: 'cancelTrip',
+                        service: 'trips/service/setStatus',
+                        hide: true
+                     }, 
+                     {
+                        title: 'Upload files',
+                        icon: 'fa-table',
+                        page: 'uploadDocs',
                         service: 'files/service/fileupload',
                         hide: true
                      },
                      {
-                        title: 'Add Comments',
+                        title: 'Comments',
                         icon: 'fa-table',
                         page: 'addComments',
                         service: 'trips/service/addComments',
                         hide: true
                      }
                   ]
-               }
+               },
+               {
+                  title: 'Update Profile',
+                  icon: 'fa-pencil-square-o',
+                  page: 'updateProfile',
+                  service: 'users/service/updateProfile'
+               },
+               {
+                  title: 'Account Details',
+                  icon: 'fa-user',
+                  page: 'viewProfile',
+                  service: 'users/service/updateProfile'
+               },
 
                ]
              }

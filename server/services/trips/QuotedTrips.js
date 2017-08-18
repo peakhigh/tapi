@@ -14,13 +14,7 @@ module.exports = {
          console.log('get callback');
          const model = require('mongoose').model(collection);
          console.log(req.query);
-
-      /*  let query = {where: JSON.stringify({$or: [
-            {status: 'Cancelled'},
-            {status: 'Successful'}
-         ]})}; */
-         let query = {where: JSON.stringify({status: req.query.status})};
-         model.listFields(query, {
+         model.listFields({where: JSON.stringify({status: 'Quoted'})}, {
             queryFields: serviceConfig.defaultFilterFields,
             queryType: 'or',
             selectFields: serviceConfig.schemaFields,
@@ -31,3 +25,26 @@ module.exports = {
       }
    }
 };
+
+ 
+          /*  model.aggregate([
+            {
+               $match:
+               {
+                  type: 'Bid',
+                  status: 'New'
+               }
+            },
+            {
+               $lookup:
+               {
+                  from: 'trips',
+                  localField: 'itemId',
+                  foreignField: '_id',
+                  as: 'trips'
+               }
+            }
+         ]).execAsync().then((results) => {
+            console.log(results);
+            return cb(null, {data: results});
+         }); */
