@@ -478,7 +478,7 @@ module.exports = class BaseSchema {
                   where = queryUtils.getQuery(query.queryStr, extraOptions.queryType || 'or', extraOptions.queryFields);
                }
                where = where || {};
-              // console.log(where, query);
+               console.log(where, query);
                this.count(where).execAsync().then((total) => {
                   if (total === 0) {
                      if (extraOptions.response) {

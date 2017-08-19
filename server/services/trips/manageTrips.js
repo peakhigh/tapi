@@ -14,6 +14,13 @@ module.exports = {
          console.log('get callback');
          const model = require('mongoose').model(collection);
          console.log(req.query);
+         if (!req.query.querystr) {
+            if (req.query.query) {
+               req.query.where = JSON.stringify(req.query.query); 
+            } else {
+               req.query = {where: JSON.stringify({status: req.query.status})};
+            }
+         }
          model.listFields(req.query, {
             queryFields: serviceConfig.defaultFilterFields,
             queryType: 'or',

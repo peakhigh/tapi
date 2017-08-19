@@ -3,8 +3,9 @@ let uiTypes = require('../../utils/ui-types');
 let authUtils = require('../../utils/auth');
 
 const multer = require('multer');
+//const uplo   ad = multer({ dest: 'uploads/' }).array('photos', 3);
 //const upload = multer({ dest: 'uploads/' }).array('photos', 3);
-const upload = multer({ dest: 'uploads/' }).array('photos', 3);
+const upload = multer({ dest: 'uploads/' }).single('qqfile');
 const fs = require('fs');
 
 const collection = 'files';
@@ -56,24 +57,19 @@ module.exports = {
          const model = require('mongoose').model(collection);
          upload(req, cb, (err) => {
             if (err) {
-               return cb('max 3 docs can upload'); 
+               console.log(err);
+               //return cb('max 3 docs can upload'); 
+               res.send(JSON.stringify({success: false, error: err}), {'Content-Type': 'text/plain'}, 404);
             }
-            
-               for (let item in req.files) {
-                  if (item) {
-                     let doc = {
-                        createdby: req.user.username,
-                        recordid: req.query.id,
-                        originalname: req.files[item].originalname,
-                        mimetype: req.files[item].mimetype,
-                        path: req.files[item].path,
-                        typeofdocument: req.query.type
-                     };
-                     model.addOrEdit(doc, null, cb);
-                     console.log(req.files[item]);
-                  }
-               }
-           
+               let doc = {
+                  createdby: req.user.username,
+                  recordid: req.query.id,
+                  originalname: req.file.originalname,
+                  mimetype: req.file.mimetype,
+                  path: req.file.path,
+                  typeofdocument: req.query.type
+               };
+               model.addOrEdit(doc, null, cb);
            // cb('OK');
          });
       }
@@ -104,7 +100,6 @@ module.exports = {
                           console.log('file deleted successfully');
                      });  
                   });
-                 // console.log(data);
                 }
                 
                 data.id = req.query.id;
