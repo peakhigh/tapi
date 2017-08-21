@@ -59,6 +59,29 @@ const CurrentSchema = new BaseSchemaFactory({
          },
          comment: schemaTypeUtils.description()
       },
+      paymentInfo: [{
+         amountPaid: {
+            type: Schema.Types.Number
+         },
+         modeOfPayment: {
+            type: Schema.Types.String,
+            enum: ['Online', 'BankDeposit'],
+            html: {               
+               form: {
+                  type: 'select'
+               }
+            }  
+         },
+         dateOfPayment: schemaTypeUtils.date(false, {
+            title: 'Date & Time'
+         }),
+         transactionid: {
+            type: Schema.Types.String
+         },
+         referenceDoc: {
+            type: Schema.Types.String
+         }
+      }],
       vehicleRequirements: {
          vehicleType: {
             type: Schema.Types.String, //enum needed -- closed Body, open body,trally, mini truck, auto     

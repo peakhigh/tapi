@@ -121,16 +121,16 @@ class Cache {
                   icon: 'fa-dashboard',
                   page: 'home',
                    options: [
-                     {title:'Messages!', icon: 'fa-envelope', page:''},
-                     {title:'Manage Trips!', icon: 'fa-truck', page:'manageTrip'},
-                     {title:'Bids!', icon: 'fa-suitcase', page:'manageTrip'},
-                     {title:'History!', icon: 'fa-history', page:''}
+                     {title:'Quotes!', icon: 'fa-suitcase', page:'Quoted'},
+                     {title:'Running!', icon: 'fa-truck', page:'Running'},
+                     {title:'Assigned!', icon: 'fa-truck', page:'Assigned'},
+                     {title:'Payment Pending!', icon: 'fa-credit-card', page:'Paymentpending'}
                      ]
                }, {
                   title: 'Trips',
                   icon: 'fa-truck',
                   page: 'manageTrip',                  
-                  service: 'trips/service/manageTrips?status=Running',
+                  service: 'trips/service/manageTrips',
                   Menu: [{
                         title: 'Add Trip',
                         icon: 'fa-plus',
@@ -148,71 +148,8 @@ class Cache {
                         title: 'Manage Trips',
                         icon: 'fa-list-ol',
                         page: 'manageTrip',
-                        service: 'trips/service/manageTrips?status=Running'
+                        service: 'trips/service/manageTrips'
                      },
-                      {
-                        title: 'New Trips',
-                        icon: 'fa-table',
-                        page: 'newTrips',
-                        service: 'trips/service/manageTrips?status=New',
-                        hide: true
-                     },
-                     {
-                        title: 'Quoted Trips',
-                        icon: 'fa-table',
-                        page: 'viewQuotes',
-                        service: 'trips/service/manageTrips?status=Quoted',
-                        hide: true
-                     },
-                     {
-                        title: 'Assigned Trips',
-                        icon: 'fa-table',
-                        page: 'assignedTrips',
-                        service: 'trips/service/manageTrips?status=Assigned',
-                        hide: true
-                     },
-                     {
-                        title: 'Payment Pending',
-                        icon: 'fa-credit-card',
-                        page: 'paymentPending',
-                        service: 'trips/service/manageTrips?status=Paymentpending',
-                        hide: true
-                     },
-                     {
-                        title: 'Payement Made',
-                        icon: 'fa-credit-card',
-                        page: 'paymentmadeTrips',
-                        service: 'trips/service/manageTrips?status=Paymentmade',
-                        hide: true
-                     },
-                     {
-                        title: 'Cancelled Trips',
-                        icon: 'fa-times',
-                        page: 'cancelledTrips',
-                        service: 'trips/service/manageTrips?status=Cancelled',
-                        hide: true
-                     },
-                      {
-                        title: 'Successful Trips',
-                        icon: 'fa-check',
-                        page: 'successfulTrips',
-                        service: 'trips/service/manageTrips?status=Successful',
-                        hide: true
-                     },
-                     {
-                        title: 'Running Trips',
-                        icon: 'fa-table',
-                        page: 'runningTrips',
-                        service: 'trips/service/manageTrips?status=Running',
-                        hide: true
-                     },
-                     {
-                        title: 'History',
-                        icon: 'fa-table',
-                        page: 'historyTrips',
-                        service: 'trips/service/historyTrips',
-                        hide: true
-                     }, 
                      {
                         title: 'CancelTrip',
                         icon: 'fa-table',
@@ -239,6 +176,20 @@ class Cache {
                         icon: 'fa-table',
                         page: 'addComments',
                         service: 'trips/service/addComments',
+                        hide: true
+                     },
+                     {
+                        title: 'Trip Details',
+                        icon: 'fa-table',
+                        page: 'viewTripDetails',
+                        service: 'trips/service/getTripDetails',
+                        hide: true
+                     },
+                     {
+                        title: 'Payment',
+                        icon: 'fa-table',
+                        page: 'tripPayment',
+                        service: 'trips/service/tripPayment',
                         hide: true
                      }
                   ]
