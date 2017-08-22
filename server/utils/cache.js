@@ -198,13 +198,15 @@ class Cache {
                   title: 'Update Profile',
                   icon: 'fa-pencil-square-o',
                   page: 'updateProfile',
-                  service: 'users/service/updateProfile'
+                  service: 'users/service/updateProfile',
+                  Menu:[]
                },
                {
                   title: 'Account Details',
                   icon: 'fa-user',
                   page: 'viewProfile',
-                  service: 'users/service/updateProfile'
+                  service: 'users/service/updateProfile',
+                  Menu: []
                },
 
                ]

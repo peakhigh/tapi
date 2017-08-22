@@ -62,7 +62,7 @@ module.exports = {
                res.send(JSON.stringify({success: false, error: err}), {'Content-Type': 'text/plain'}, 404);
             }
                let doc = {
-                  createdby: req.user.username,
+                  createdby: req.user,
                   recordid: req.query.id,
                   originalname: req.file.originalname,
                   mimetype: req.file.mimetype,
