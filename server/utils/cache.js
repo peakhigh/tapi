@@ -38,44 +38,52 @@ class Cache {
                   icon: 'fa-dashboard',
                   page: 'home',
                    options: [
-                     {title:'Messages!', icon: 'fa-envelope', page:''},
-                     {title:'Manage Trucks!', icon: 'fa-truck', page:'manageTruck'},
-                     {title:'Requests!', icon: 'fa-suitcase', page:'manageTruck'},
-                     {title:'Notifications!', icon: 'fa-ticket', page:''}
+                     {title:'Requests!', icon: 'fa-truck', page:''},
+                     {title:'Payment Pendinng!', icon: 'fa-credit-card', page:'manageTruck'},
+                     {title:'Payment Received!', icon: 'fa-credit-card', page:'manageTruck'},
+                     {title:'Trucks!', icon: 'fa-truck', page:'manageTrucks'}
                      ]
+               },
+               {
+                  title: 'Requests',
+                  icon: 'fa-envelope-open',
+                  page: 'truckRequests',
+                  /* service: 'requests/service/addRequest', */            
                }, {
                   title: 'Trucks',
-                  icon: 'fa-table',
-                  page: 'manageTruck',      
-                  service: 'trucks/service/manageTruck',            
+                  icon: 'fa-truck',
+                  page: 'manageTrucks',      
+                  service: 'trucks/service/manageTrucks',            
                   Menu: [{
-                        title: 'Add New',
-                        icon: 'fa-table',
+                        title: 'New Truck',
+                        icon: 'fa-plus',
                         page: 'addTruck',
                         service: 'trucks/service/addTruck'
                      }, {
                         title: 'Manage',
                         icon: 'fa-table',
-                        page: 'manageTruck',
-                        service: 'trucks/service/manageTruck'
+                        page: 'manageTrucks',
+                        service: 'trucks/service/manageTrucks'
                      }, {
                         title: 'Running',
                         icon: 'fa-table',
                         page: 'runningTrucks',
-                        service: 'trucks/service/runningTrucks'
-                     },
-                      {
-                        title: 'Set Driver',
-                        icon: 'fa-table',
-                        page: 'setDriver',
-                        service: 'trucks/service/setDriver',
+                        service: 'trucks/service/runningTrucks',
                         hide: true
-                     }, 
+                     },
+                     {
+                        title: 'Upload files',
+                        icon: 'fa-table',
+                        page: 'uploadDocs',
+                        service: 'files/service/fileupload',
+                        hide: true
+                     },
                      {
                         title: 'Search trips',
                         icon: 'fa-table',
                         page: 'searchTrips',
-                        service: 'trips/service/pendingTrips'
+                        service: 'trips/service/pendingTrips',
+                        hide: true
                      }, 
                       {
                         title: 'Set Quote',
@@ -88,23 +96,60 @@ class Cache {
                },
                 {
                   title: 'Drivers',
-                  icon: 'fa-table',
-                  page: 'manageDriver',                  
-                  service: 'drivers/service/manageDriver',
+                  icon: 'fa-user-circle',
+                  page: 'manageDrivers',                  
+                  service: 'drivers/service/manageDrivers',
                   Menu: [{
-                        title: 'Add New',
-                        icon: 'fa-table',
+                        title: 'New Driver',
+                        icon: 'fa-plus',
                         page: 'addDriver',
                         service: 'drivers/service/addDriver'
                      }, {
                         title: 'Manage',
                         icon: 'fa-table',
-                        page: 'manageDriver',
-                        service: 'drivers/service/manageDriver'
+                        page: 'manageDrivers',
+                        service: 'drivers/service/manageDrivers'
                      },
                   ]
-               }
-
+               },
+               {
+                  title: 'Payments',
+                  icon: 'fa-credit-card',
+                  page: 'payments',
+             /*      service: 'trucks/service/truckRequests',    */         
+               },
+               {
+                  title: 'Accounts',
+                  icon: 'fa-bank',
+                  page: 'manageBankAccounts',
+                  service: 'accounts/service/manageBankAccounts',      
+                  Menu: [{
+                     title: 'New Account',
+                     icon: 'fa-plus',
+                     page: 'addBankAccount',
+                     service: 'accounts/service/addBankAccount'
+                  }, {
+                     title: 'Manage',
+                     icon: 'fa-table',
+                     page: 'manageBankAccounts',
+                     service: 'accounts/service/manageBankAccounts'
+                  },
+                 ]      
+               },
+               {
+                  title: 'Update Profile',
+                  icon: 'fa-pencil-square-o',
+                  page: 'updateProfile',
+                  service: 'users/service/updateProfile',
+                  hide: true
+               },
+               {
+                  title: 'Account Details',
+                  icon: 'fa-user',
+                  page: 'viewProfile',
+                  service: 'users/service/updateProfile',
+                  hide: true
+               },
                ]
              }
          },
@@ -155,13 +200,6 @@ class Cache {
                         icon: 'fa-table',
                         page: 'cancelTrip',
                         service: 'trips/service/cancelTrip',
-                        hide: true
-                     }, 
-                      {
-                        title: 'Set Status',
-                        icon: 'fa-table',
-                        page: 'setStatus',
-                        service: 'trips/service/setStatus',
                         hide: true
                      }, 
                      {
@@ -318,13 +356,6 @@ class Cache {
                         page: 'pendingTrips',
                         service: 'trips/service/pendingTrips'
                      },
-                     {
-                        title: 'Set Status',
-                        icon: 'fa-table',
-                        page: 'setStatus',
-                        service: 'trips/service/setStatus',
-                        hide: true
-                     }, 
                      {
                         title: 'Upload file',
                         icon: 'fa-table',

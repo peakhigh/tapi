@@ -1,19 +1,15 @@
 /* dont use imports, use require, because errors are coming when we are dynamically using services in the base model*/
 let uiTypes = require('../../utils/ui-types');
 // let ObjectID = require('mongodb').ObjectID;
-// const model = require('../../models/trucks'); 
-const collection = 'Trucks';
+// const model = require('../../models/trips'); -- wont work as this file is required on model creation
+const collection = 'Accounts';
 module.exports = {
    type: 'form',
    requestType: 'get',
-   schemaFields: ['plateNumber', 'model', 'truckType',
-                      'capacity', 'capacityUnits', 'insurance.startDate', 'insurance.expiryDate', 'status', 
-                        'material.materialType', 'description', 'currentPoint', 'nextAvailableAt', 'nextFreeDate'], // pick fields configuration from default schema
+   schemaFields: ['accountNumber', 'accountName', 'bankName', 'ifscCode', 'branchAddress'], // pick fields configuration from default schema
    schemaOverrideFeilds: {
+   
    }, //override above listed schema fields         
-   defaults: {
-      status: 'Free'
-   },
    prepare: (cacheKey, schema, serviceConfig) => { //on schema prepare - sync call
       //add any extra fields which are not in schema etc, default values etc
       //can do based on role, app etc by using the "cacheKey"
@@ -28,7 +24,7 @@ module.exports = {
          cb();//if error, return as first argument
       },
       callback: (schema, serviceConfig, req, res, options, cb) => {//callback hook  - after serving the request - forms & grid
-         console.log('get callback');         
+         console.log('get callback', req.params.id);         
          if (req.params.id || req.query.id) {
             const model = require('mongoose').model(collection);
             let params = {

@@ -68,7 +68,6 @@ const CurrentSchema = new BaseSchemaFactory({
       material : {        
          materialType: {
             type: Schema.Types.String,
-            required: true
          },
          description: {
             type: Schema.Types.String,
@@ -82,13 +81,13 @@ const CurrentSchema = new BaseSchemaFactory({
       status: {
          type: Schema.Types.String,
          required: true,
-         enum: ['free', 'busy'],
+         enum: ['Running', 'Free', 'Deactivated'],
          html: {               
                form: {
                   type: 'select'
                }
          },
-         default: 'free'
+         default: 'Free'
       },
       nextFreeDate: {
          type: Date,

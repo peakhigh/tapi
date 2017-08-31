@@ -99,7 +99,7 @@ const CurrentSchema = new BaseSchemaFactory({
          lastLoginTokens: {
             type: [String]
          }
-      }            
+      }          
    },
    dontExpose: {
      manageFields: ['services'],

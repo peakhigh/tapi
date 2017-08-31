@@ -2,23 +2,39 @@ const BaseSchemaFactory = require('./base');
 const utils = require('../utils/util');
 let cache = require('../utils/cache');
 const schemaUtils = require('../utils/schema');
+const schemaTypes = require('../utils/schema-types');
 let Schema = require('mongoose').Schema;
 
 const CurrentSchema = new BaseSchemaFactory({ 
    collection: 'Drivers',   
    schema: {
-      firstname: {
+      name: {
          type: Schema.Types.String,
          required: true
       },
-      lastname: {
+      licenseNumber: {
          type: Schema.Types.String,
          required: true
       },
-      address: schemaUtils.address(),
-      contact: schemaUtils.contact(false),
-      rating: {
-         type: Schema.Types.String
+      licenseExpiryDate:schemaTypes.date(false, {
+         title: 'Date & Time'
+      }),
+      experience: {
+         type: Schema.Types.Number
+      },
+      email: schemaTypes.email(), 
+      mobile: schemaTypes.mobile(),
+      alternativePhone: schemaTypes.mobile(),
+      status: {
+         type: Schema.Types.String,
+         required: true,
+         enum: ['Assigned', 'Free', 'Deactivated'],
+         html: {               
+               form: {
+                  type: 'select'
+               }
+         },
+         default: 'Free'
       }
    } 
 }); 
