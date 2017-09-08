@@ -7,7 +7,7 @@ module.exports = {
    type: 'form',
    requestType: 'get',
    schemaFields: ['pickup.date', 'pickup.address.city', 'pickup.material.name',
-             'pickup.material.materialType', 'pickup.material.weight', 'pickup.material.weightUnit', 'drop.address.city',
+             'pickup.material.materialType', 'pickup.material.weight', 'pickup.material.weightUnit', 'drop.date', 'drop.address.city',
                 'vehicleRequirements.vehicleType', 'vehicleRequirements.vehicleCount', 'status'], // pick fields configuration from default schema
    schemaOverrideFeilds: {
       // 'pickup': {
@@ -26,6 +26,9 @@ module.exports = {
          required: true
       },
       'pickup.material.materialType': uiTypes.select(),
+      'drop.date': {
+         required: true
+      },
       'drop.address.city': {
          required: true
       },

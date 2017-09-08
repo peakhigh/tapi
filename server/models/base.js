@@ -292,7 +292,7 @@ module.exports = class BaseSchema {
 
          //set dbschema
          let fieldDBData = {};
-         utils.cloneObject(fieldDBData, fieldData);//get the common props
+         utils.cloneObject(fieldData, fieldDBData);//get the common props
          if (dbOnly && Object.keys(dbOnly).length > 0) {
             utils.cloneObject(dbOnly, fieldDBData);//attach the db specific
          }
@@ -357,11 +357,12 @@ module.exports = class BaseSchema {
          let matchingServiceFields = [];
          if (self.fieldServiceMap[field] && self.fieldServiceMap[field].length > 0) {// if this field exists in any service
             matchingServiceFields.push(field);
-         } else if (field.indexOf('.') > 0) { //to support normal & nested fields
+         }  
+         if (field.indexOf('.') > 0) { //to support normal & nested fields
             let nestedPath = '';
             for (let i = 0; i < fieldParts.length; i++) {
                nestedPath += ((i > 0) ? '.' : '') + fieldParts[i].replace('[', '').replace(']', '');
-               if (self.fieldServiceMap[nestedPath] && self.fieldServiceMap[nestedPath].length > 0) {
+               if (matchingServiceFields.indexOf(nestedPath) < 0 && self.fieldServiceMap[nestedPath] && self.fieldServiceMap[nestedPath].length > 0) {
                   matchingServiceFields.push(nestedPath);
                }
             }
