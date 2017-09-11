@@ -38,7 +38,7 @@ class Cache {
                   icon: 'fa-dashboard',
                   page: 'home',
                    options: [
-                     {title:'Requests!', icon: 'fa-truck', page:''},
+                     {title:'Requests!', icon: 'fa-envelope-open', page:'truckRequests'},
                      {title:'Payment Pendinng!', icon: 'fa-credit-card', page:'manageTruck'},
                      {title:'Payment Received!', icon: 'fa-credit-card', page:'manageTruck'},
                      {title:'Trucks!', icon: 'fa-truck', page:'manageTrucks'}
@@ -64,32 +64,12 @@ class Cache {
                         icon: 'fa-table',
                         page: 'manageTrucks',
                         service: 'trucks/service/manageTrucks'
-                     }, {
-                        title: 'Running',
-                        icon: 'fa-table',
-                        page: 'runningTrucks',
-                        service: 'trucks/service/runningTrucks',
-                        hide: true
-                     },
+                     }, 
                      {
                         title: 'Upload files',
                         icon: 'fa-table',
                         page: 'uploadDocs',
                         service: 'files/service/fileupload',
-                        hide: true
-                     },
-                     {
-                        title: 'Search trips',
-                        icon: 'fa-table',
-                        page: 'searchTrips',
-                        service: 'trips/service/pendingTrips',
-                        hide: true
-                     }, 
-                      {
-                        title: 'Set Quote',
-                        icon: 'fa-table',
-                        page: 'setQuote',
-                        service: 'requests/service/setQuote',
                         hide: true
                      }
                   ]
@@ -169,7 +149,7 @@ class Cache {
                      {title:'Quotes!', icon: 'fa-suitcase', page:'Quoted'},
                      {title:'Running!', icon: 'fa-truck', page:'Running'},
                      {title:'Assigned!', icon: 'fa-truck', page:'Assigned'},
-                     {title:'Payment Pending!', icon: 'fa-credit-card', page:'Paymentpending'}
+                     {title:'Payment Pendinng!', icon: 'fa-credit-card', page:'Paymentpending'}
                      ]
                }, {
                   title: 'Trips',
@@ -177,14 +157,14 @@ class Cache {
                   page: 'manageTrip',                  
                   service: 'trips/service/manageTrips',
                   Menu: [{
-                        title: 'Add Trip',
+                        title: 'New Trip',
                         icon: 'fa-plus',
                         page: 'addTrip',
                         service: 'trips/service/addTrip',
                         hide: true
                      },
                      {
-                        title: 'Add Trip',
+                        title: 'New Trip',
                         icon: 'fa-plus',
                         page: 'addTripMin',
                         service: 'trips/service/addTripMin',
@@ -294,132 +274,148 @@ class Cache {
                   icon: 'fa-dashboard',
                   page: 'home',
                   options: [
-                     {title:'Messages!', icon: 'fa-envelope', page:''},
-                     {title:'New Trucks!', icon: 'fa-truck', page:'manageTruck'},
-                     {title:'New Trips!', icon: 'fa-suitcase', page:'manageTrip'},
-                     {title:'Support Tickets!', icon: 'fa-ticket', page:''}
+                     {title:'Trips!', icon: 'fa-suitcase', page:'manageTrip'},
+                     {title:'Trucks!', icon: 'fa-truck', page:'manageTrucks'},
+                     {title:'Payments!', icon: 'fa-credit-card', page:'manageTrip'},
+                     {title:'Users!', icon: 'fa-user', page:'manageUsers'}
                      ]
-               }, {
-                  title: 'Trucks',
+               },
+               {
+                  title: 'Trips',
                   icon: 'fa-table',
-                  page: 'manageTruck',      
-                  service: 'trucks/service/manageTruck',            
+                  page: 'manageTrip',                  
+                  service: 'trips/service/manageTrips',
                   Menu: [{
-                        title: 'Add New',
-                        icon: 'fa-table',
+                     title: 'New Trip',
+                     icon: 'fa-plus',
+                     page: 'addTripMin',
+                     service: 'trips/service/addTripMin',
+                  },
+                   {
+                     title: 'Manage Trips',
+                     icon: 'fa-list-ol',
+                     page: 'manageTrip',
+                     service: 'trips/service/manageTrips'
+                  },
+                  {
+                     title: 'CancelTrip',
+                     icon: 'fa-table',
+                     page: 'cancelTrip',
+                     service: 'trips/service/cancelTrip',
+                     hide: true
+                  }, 
+                  {
+                     title: 'Upload files',
+                     icon: 'fa-table',
+                     page: 'uploadDocs',
+                     service: 'files/service/fileupload',
+                     hide: true
+                  },
+                  {
+                     title: 'Comments',
+                     icon: 'fa-table',
+                     page: 'addComments',
+                     service: 'trips/service/addComments',
+                     hide: true
+                  },
+                  {
+                     title: 'Trip Details',
+                     icon: 'fa-table',
+                     page: 'viewTripDetails',
+                     service: 'trips/service/getTripDetails',
+                     hide: true
+                  }
+                  ]
+               },               
+               {
+                  title: 'Trucks',
+                  icon: 'fa-truck',
+                  page: 'manageTrucks',      
+                  service: 'trucks/service/manageTrucks',            
+                  Menu: [{
+                        title: 'New Truck',
+                        icon: 'fa-plus',
                         page: 'addTruck',
                         service: 'trucks/service/addTruck'
                      }, {
                         title: 'Manage',
                         icon: 'fa-table',
-                        page: 'manageTruck',
-                        service: 'trucks/service/manageTruck'
-                     },
-                     {
-                        title: 'Running',
-                        icon: 'fa-table',
-                        page: 'runningTrucks',
-                        service: 'trucks/service/runningTrucks'
-                     },
-                      {
-                        title: 'Set Driver',
-                        icon: 'fa-table',
-                        page: 'setDriver',
-                        service: 'trucks/service/setDriver',
-                        hide: true
+                        page: 'manageTrucks',
+                        service: 'trucks/service/manageTrucks'
                      }, 
-                  ]
-               }, {
-                  title: 'Trips',
-                  icon: 'fa-table',
-                  page: 'manageTrip',                  
-                  service: 'trips/service/manageTrip',
-                  Menu: [{
-                        title: 'Add New',
-                        icon: 'fa-table',
-                        page: 'addTrip',
-                        service: 'trips/service/addTrip'
-                     }, {
-                        title: 'Manage',
-                        icon: 'fa-table',
-                        page: 'manageTrip',
-                        service: 'trips/service/manageTrip'
-                     }, 
-                      {
-                        title: 'Running',
-                        icon: 'fa-table',
-                        page: 'runningTrips',
-                        service: 'trips/service/runningTrips'
-                     }, {
-                        title: 'Pending',
-                        icon: 'fa-table',
-                        page: 'pendingTrips',
-                        service: 'trips/service/pendingTrips'
-                     },
                      {
-                        title: 'Upload file',
+                        title: 'Upload files',
                         icon: 'fa-table',
-                        page: 'uploadfiles',
+                        page: 'uploadDocs',
                         service: 'files/service/fileupload',
                         hide: true
                      },
-                     {
+                      {
                         title: 'Set Quote',
                         icon: 'fa-table',
                         page: 'setQuote',
-                        service: 'trips/service/setQuote',
-                        hide: true
-                     }, 
-                     {
-                        title: 'Add Comments',
-                        icon: 'fa-table',
-                        page: 'addComments',
-                        service: 'trips/service/addComments',
+                        service: 'requests/service/setQuote',
                         hide: true
                      }
                   ]
-               }, {
+               },
+               {
+                  title: 'Drivers',
+                  icon: 'fa-user-circle',
+                  page: 'manageDrivers',                  
+                  service: 'drivers/service/manageDrivers',
+                  Menu: [{
+                        title: 'New Driver',
+                        icon: 'fa-plus',
+                        page: 'addDriver',
+                        service: 'drivers/service/addDriver'
+                     }, {
+                        title: 'Manage',
+                        icon: 'fa-table',
+                        page: 'manageDrivers',
+                        service: 'drivers/service/manageDrivers'
+                     },
+                  ]
+               },
+               {
+                  title: 'Payments',
+                  icon: 'fa-credit-card',
+                  page: 'payments',
+             /*      service: 'trucks/service/truckRequests',    */         
+               },
+                {
                   title: 'Users',
                   icon: 'fa-table',
                   page: 'manageUsers',                  
-                  service: 'users/grid',
+                  service: 'users/service/manageUser',
                   Menu: [{
-                        title: 'Add User',
+                        title: 'New User',
                         icon: 'fa-table',
                         page: 'addUser',
                         service: 'users/service/addUser'
-                     }, {
-                        title: 'Update Profile',
-                        icon: 'fa-table',
-                        page: 'updateProfile',
-                        service: 'users/service/updateProfile'
-                     }, {
+                     },
+                     {
                         title: 'Manage',
                         icon: 'fa-table',
                         page: 'manageUsers',
                         service: 'users/service/manageUser'
                      }
                   ]
-               } 
-
-               // {
-               //    title: 'Drivers',
-               //    icon: 'fa-table',
-               //    page: 'manageDriver',                  
-               //    service: 'drivers/service/manageDriver',
-               //    Menu: [{
-               //          title: 'Add New',
-               //          icon: 'fa-table',
-               //          page: 'addDriver',
-               //          service: 'drivers/service/addDriver'
-               //       }, {
-               //          title: 'Manage',
-               //          icon: 'fa-table',
-               //          page: 'manageDriver',
-               //          service: 'drivers/service/manageDriver'
-               //       },
-               //    ]
-               // }
+               },
+               {
+                  title: 'Update Profile',
+                  icon: 'fa-pencil-square-o',
+                  page: 'updateProfile',
+                  service: 'users/service/updateProfile',
+                  hide: true
+               },
+               {
+                  title: 'Account Details',
+                  icon: 'fa-user',
+                  page: 'viewProfile',
+                  service: 'users/service/updateProfile',
+                  hide: true
+               },
                ]
             }
          }         

@@ -11,14 +11,15 @@ const CurrentSchema = new BaseSchemaFactory({
       message: {
          type: Schema.Types.String
       },
-      type: {
-         type: Schema.Types.String,
-         enum: ['Bid', 'Message', 'Ticket', 'Review', 'Rating'],
-         required: true
-      },
-      itemId: {   //trip or truck id
+      tripid: {  
          type: Schema.Types.ObjectId
       }, 
+      truckid: {
+         type: Schema.Types.ObjectId
+      },
+      driverid: {
+         type: Schema.Types.ObjectId
+      },
       fromUser: {
             type: Schema.Types.String
       },
@@ -27,13 +28,10 @@ const CurrentSchema = new BaseSchemaFactory({
       },
       status: {
          type: Schema.Types.String,
-         enum: ['New', 'Saved', 'Rejected', 'Approved', 'closed']
+         enum: ['Accepted', 'Rejected', 'Pending']
       },
       priceQuote: {
          type: Schema.Types.Number
-      },
-      rating: {
-         type: Schema.Types.String
       }
    } 
 }); 
