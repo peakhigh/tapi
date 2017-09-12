@@ -48,6 +48,24 @@ const CurrentSchema = new BaseSchemaFactory({
       },       
       paymentsReceived: schemaUtils.spend(true),        
       quotes: {
+         quotetype: {
+            type: Schema.Types.String,
+            enum: ['Flat', 'Tons'],
+            html: {               
+               form: {
+                  type: 'select'
+               }
+            }  
+         },
+         costPerTon: {
+            type: Schema.Types.Number
+         },
+         loadingPerTon: {
+            type: Schema.Types.Number
+         },
+         unLoadingPerTon: {
+            type: Schema.Types.Number
+         },
          cost: {
             type: Schema.Types.Number
          },

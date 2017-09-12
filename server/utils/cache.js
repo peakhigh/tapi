@@ -324,6 +324,13 @@ class Cache {
                      page: 'viewTripDetails',
                      service: 'trips/service/getTripDetails',
                      hide: true
+                  },
+                  {
+                     title: 'Set Quote',
+                     icon: 'fa-table',
+                     page: 'setTripQuote',
+                     service: 'trips/service/setQuote',
+                     hide: true
                   }
                   ]
                },               
@@ -348,13 +355,6 @@ class Cache {
                         icon: 'fa-table',
                         page: 'uploadDocs',
                         service: 'files/service/fileupload',
-                        hide: true
-                     },
-                      {
-                        title: 'Set Quote',
-                        icon: 'fa-table',
-                        page: 'setQuote',
-                        service: 'requests/service/setQuote',
                         hide: true
                      }
                   ]

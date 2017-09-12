@@ -3,15 +3,14 @@ let uiTypes = require('../../utils/ui-types');
 let authUtils = require('../../utils/auth');
 let ObjectID = require('mongodb').ObjectID;
 
-const collection = 'Requests';
+const collection = 'Trips';
 module.exports = {
    type: 'form',
    requestType: 'get',
-   schemaFields: ['priceQuote', 'message'], // pick fields configuration from default schema
+   schemaFields: ['quotes.quotetype', 'quotes.costPerTon', 'quotes.loadingPerTon', 'quotes.unLoadingPerTon',
+                'quotes.cost', 'quotes.comment'], // pick fields configuration from default schema
    schemaOverrideFeilds: {
-      priceQuote: {
-         required: true
-      }
+
    },
    get: {
       preValidate: (serviceConfig, req, res, options, cb) => {//on init hook, will get executed on service request - init
@@ -48,13 +47,23 @@ module.exports = {
          console.log('post callback');
          const model = require('mongoose').model(collection);
          let data = req.body;
-         let tokenDetails = authUtils.decodeToken(req.headers);
+       /*   let tokenDetails = authUtils.decodeToken(req.headers);
          if (tokenDetails && tokenDetails.username && tokenDetails.role) {
             data.fromUser = tokenDetails.username;  //it should be an unique id
           //  data.quotes.userRole = tokenDetails.role;
          } 
-         data.itemId = new ObjectID(data.itemId);
-        console.log(data);        
+         data.itemId = new ObjectID(data.itemId); */
+        
+/* 
+         let tokenDetails = authUtils.decodeToken(req.headers);
+         let comment = {
+             date: new Date().toLocaleString(),
+             commentedby: tokenDetails.username,
+             comment: req.body.quotes[0].quote
+          };
+         data.$push = { comments: comment }; */
+
+
          model.addOrEdit(data, null, cb);
       }
    }

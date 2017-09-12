@@ -9,13 +9,15 @@ module.exports = {
        callback: (schema, serviceConfig, req, res, options, cb) => {//callback hook  - after serving the request - forms & grid
          console.log('get callback');
          const model = require('mongoose').model(collection);
-
+         if (req.query.userType) {
+            req.query.where = JSON.stringify({'profile.userType':req.query.userType});
+         }
          model.listFields(req.query, {
             selectFields: serviceConfig.schemaFields,
             response: {
                schema: schema
             }
-         }, cb);
+         }, cb); 
       }
    }
 };

@@ -13,7 +13,6 @@ module.exports = {
        callback: (schema, serviceConfig, req, res, options, cb) => {//callback hook  - after serving the request - forms & grid
          console.log('get callback');
          const model = require('mongoose').model(collection);
-         console.log(req.query);
          if (!req.query.querystr) {
             if (req.query.query) {
                req.query.where = JSON.stringify(req.query.query); 
