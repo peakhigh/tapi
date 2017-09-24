@@ -45,10 +45,39 @@ class Cache {
                      ]
                },
                {
+                  title: 'Approve Trip',
+                  icon: 'fa-check-circle',
+                  page: 'acceptTripReq',
+                  hide: true,
+                  service: 'requests/service/addRequest'
+               },
+               {
+                  title: 'Reject Trip',
+                  icon: 'fa-ban',
+                  page: 'rejectTripReq',
+                  hide: true,
+                  service: 'requests/service/addRequest'
+               },
+               {
                   title: 'Requests',
                   icon: 'fa-envelope-open',
                   page: 'truckRequests',
-                  /* service: 'requests/service/addRequest', */            
+                  service: 'requests/service/addRequest', 
+                 /*  Menu: [{
+                     title: 'Approve Trip',
+                     icon: 'fa-check-circle',
+                     page: 'acceptTripReq',
+                     hide: true,
+                     service: 'requests/service/addRequest'
+                  },
+                  {
+                     title: 'Reject Trip',
+                     icon: 'fa-ban',
+                     page: 'rejectTripReq',
+                     hide: true,
+                     service: 'requests/service/addRequest'
+                  },
+               ] */
                }, {
                   title: 'Trucks',
                   icon: 'fa-truck',
@@ -330,6 +359,20 @@ class Cache {
                      icon: 'fa-table',
                      page: 'setTripQuote',
                      service: 'trips/service/setQuote',
+                     hide: true
+                  },
+                  {
+                     title: 'Current Location',
+                     icon: 'fa-map-marker',
+                     page: 'setLocation',
+                     service: 'trips/service/setLocation',
+                     hide: true
+                  },
+                  {
+                     title: 'Assign Truck',
+                     icon: 'fa-table',
+                     page: 'assignTruck',
+                     service: 'trucks/service/getFreeTrucks',
                      hide: true
                   }
                   ]

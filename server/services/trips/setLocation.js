@@ -1,15 +1,12 @@
-/* dont use imports, use require, because errors are coming when we are dynamically using services in the base model*/
-let uiTypes = require('../../utils/ui-types');
+let Schema = require('mongoose').Schema;
 let authUtils = require('../../utils/auth');
+
 const collection = 'Trips';
 module.exports = {
    type: 'form',
    requestType: 'get',
-   schemaFields: ['truckDetails'], // pick fields configuration from default schema
+   schemaFields: ['currentPoint', 'comments'], // pick fields configuration from default schema
    schemaOverrideFeilds: {
-      truckDetails: {
-         required: true
-      }
    },
    get: {
       preValidate: (serviceConfig, req, res, options, cb) => {//on init hook, will get executed on service request - init
@@ -34,7 +31,7 @@ module.exports = {
          }
       }
    },
-    post: {
+   post: {
       preValidate: (serviceConfig, req, res, options, cb) => { //on post - validate, will get executed on POST service request
          console.log('post prevalidate');
          if (!req.query.id) {
@@ -44,13 +41,22 @@ module.exports = {
       },
       callback: (serviceConfig, req, res, options, cb) => { //callback hook  for post request
          console.log('post callback');
-         const model = require('mongoose').model(collection);    
-         
-         let data = {
-            _id: req.query.id,
-             truckDetails: req.body.truckDetails
+         const model = require('mongoose').model(collection);        
+
+         let tokenDetails = authUtils.decodeToken(req.headers);
+         let comment = {
+             date: new Date().toLocaleString(),
+             commentedby: tokenDetails.username,
+             comment: req.body.comments[0].comment
+          };
+
+			let data = {
+				_id: req.query.id,
+            currentPoint: req.query.currentPoint,
+            comments: comment
             };            
-            model.editById(data, null, cb);
+         
+         model.editById(data, null, cb);
        }
    }
 };

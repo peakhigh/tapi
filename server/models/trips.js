@@ -15,7 +15,8 @@ const CurrentSchema = new BaseSchemaFactory({
    schema: {
       status: {
          type: Schema.Types.String, //enum new, pending, ..
-         enum: ['New', 'Quoted', 'Paymentpending', 'Paymentmade', 'Waitingforassignment', 'Running', 
+         enum: ['New', 'Quoted', 'PaymentPending', 'PaymentMade', 'PaymentReceived', 'PaymentApproved', 
+          'Waitingforassignment', 'Running', 
          'Cancelled', 'Successful', 'Assigned'],
          default: 'New'
       },

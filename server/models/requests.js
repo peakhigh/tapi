@@ -8,7 +8,7 @@ let Schema = require('mongoose').Schema;
 const CurrentSchema = new BaseSchemaFactory({ 
    collection: 'Requests',   
    schema: {
-      message: {
+      comment: {
          type: Schema.Types.String
       },
       tripid: {  
@@ -28,11 +28,15 @@ const CurrentSchema = new BaseSchemaFactory({
       },
       status: {
          type: Schema.Types.String,
-         enum: ['Accepted', 'Rejected', 'Pending']
+         enum: ['Accepted', 'Rejected', 'Pending'],
+         default: 'Pending'
       },
-      priceQuote: {
+      advance: {
          type: Schema.Types.Number
-      }
+      },
+      balance: {
+         type: Schema.Types.Number
+      },
    } 
 }); 
 module.exports = CurrentSchema.getSchema();
