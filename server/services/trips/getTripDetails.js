@@ -1,5 +1,6 @@
 /* dont use imports, use require, because errors are coming when we are dynamically using services in the base model*/
 let uiTypes = require('../../utils/ui-types');
+const extend = require('extend');
 // let ObjectID = require('mongodb').ObjectID;
 // const model = require('../../models/trips'); -- wont work as this file is required on model creation
 const collection = 'Trips';
@@ -36,6 +37,18 @@ module.exports = {
             let params = {
                id: req.params.id || req.query.id
             };
+
+
+            let owner = JSON.parse(req.headers.owner);
+            if (owner !== null && owner.role !== 'CALL_CENTER_USER') {
+               let obj = {
+                  createdBy : owner._id,
+                  /* 'updatedby' : req.headers.owner._id, */
+               };
+               extend(true, params, obj);
+           }
+   
+
             model.getById(params, {
                response: {
                   schema: schema

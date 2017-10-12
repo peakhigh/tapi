@@ -62,8 +62,8 @@ module.exports = {
              comment: req.body.quotes[0].quote
           };
          data.$push = { comments: comment }; */
-
-
+         console.log(data);
+         data.status = 'Quoted';
          model.addOrEdit(data, null, cb);
       }
    }

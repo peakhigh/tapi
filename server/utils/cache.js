@@ -62,7 +62,7 @@ class Cache {
                   title: 'Requests',
                   icon: 'fa-envelope-open',
                   page: 'truckRequests',
-                  service: 'requests/service/addRequest', 
+                  service: 'requests/service/manageRequests', 
                  /*  Menu: [{
                      title: 'Approve Trip',
                      icon: 'fa-check-circle',
@@ -125,7 +125,7 @@ class Cache {
                   title: 'Payments',
                   icon: 'fa-credit-card',
                   page: 'payments',
-             /*      service: 'trucks/service/truckRequests',    */         
+                  service: 'payments/service/managePayments',    
                },
                {
                   title: 'Accounts',
@@ -311,6 +311,7 @@ class Cache {
                },
                {
                   title: 'Trips',
+                  type: 'TRIP_ADMIN',
                   icon: 'fa-table',
                   page: 'manageTrip',                  
                   service: 'trips/service/manageTrips',
@@ -379,6 +380,7 @@ class Cache {
                },               
                {
                   title: 'Trucks',
+                  type: 'TRUCK_ADMIN',
                   icon: 'fa-truck',
                   page: 'manageTrucks',      
                   service: 'trucks/service/manageTrucks',            
@@ -404,6 +406,7 @@ class Cache {
                },
                {
                   title: 'Drivers',
+                  type: 'TRUCK_ADMIN',
                   icon: 'fa-user-circle',
                   page: 'manageDrivers',                  
                   service: 'drivers/service/manageDrivers',
@@ -424,7 +427,7 @@ class Cache {
                   title: 'Payments',
                   icon: 'fa-credit-card',
                   page: 'payments',
-             /*      service: 'trucks/service/truckRequests',    */         
+                  service: 'payments/service/managePayments',    
                },
                 {
                   title: 'Users',

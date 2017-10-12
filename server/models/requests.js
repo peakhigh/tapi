@@ -11,20 +11,23 @@ const CurrentSchema = new BaseSchemaFactory({
       comment: {
          type: Schema.Types.String
       },
-      tripid: {  
-         type: Schema.Types.ObjectId
+      tripDetails: {  
+         type: Schema.Types.ObjectId, 
+         ref: 'Trips'
       }, 
-      truckid: {
-         type: Schema.Types.ObjectId
+      truckDetails: {
+         type: Schema.Types.ObjectId, 
+         ref: 'Trucks',
       },
-      driverid: {
-         type: Schema.Types.ObjectId
+      driverDetails: {
+         type: Schema.Types.ObjectId, 
+         ref: 'Drivers',
       },
       fromUser: {
-            type: Schema.Types.String
+            type: Schema.Types.ObjectId
       },
       toUser: {
-         type: Schema.Types.String
+         type: Schema.Types.ObjectId
       },
       status: {
          type: Schema.Types.String,

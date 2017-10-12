@@ -3,41 +3,14 @@ let uiTypes = require('../../utils/ui-types');
 const extend = require('extend');
 // let ObjectID = require('mongodb').ObjectID;
 // const model = require('../../models/trips'); -- wont work as this file is required on model creation
-const collection = 'Trips';
+const collection = 'Payments';
 module.exports = {
    type: 'form',
    requestType: 'get',
-   schemaFields: ['pickup.date', 'pickup.address.city', 'pickup.material.name',
-             'pickup.material.materialType', 'pickup.material.weight', 'pickup.material.weightUnit', 'drop.date', 'drop.address.city',
-                'vehicleRequirements.vehicleType', 'vehicleRequirements.vehicleCount', 'status'], // pick fields configuration from default schema
+   schemaFields: ['amountTotal', 'duedate', 'tripid', 'truckid', 'fromUser', 'toUser', 'status', 'paymentlog'], // pick fields configuration from default schema
    schemaOverrideFeilds: {
-      // 'pickup': {
-      //    minItems: 1
-      // },
-      'pickup.date': {
-         required: true
-      },
-      'pickup.address.city': {
-         required: true
-      },
-      'pickup.material.weight': {
-         required: true
-      },
-      'pickup.material.name': {
-         required: true
-      },
-      'pickup.material.materialType': uiTypes.select(),
-      'drop.date': {
-         required: true
-      },
-      'drop.address.city': {
-         required: true
-      },
-      'vehicleRequirements.vehicleType': uiTypes.select(),
+   
    }, //override above listed schema fields         
-   defaults: {
-      status: 'New'
-   },
    prepare: (cacheKey, schema, serviceConfig) => { //on schema prepare - sync call
       //add any extra fields which are not in schema etc, default values etc
       //can do based on role, app etc by using the "cacheKey"
@@ -77,7 +50,7 @@ module.exports = {
          console.log('post callback');
          const model = require('mongoose').model(collection);
          /** TODO: if date searches not working on pickupdate & dropdates, change them to dates instead of strings while saving */
-        
+         
          let owner = JSON.parse(req.headers.owner);
          if (owner !== null && owner.role !== 'CALL_CENTER_USER') {
             let obj = {

@@ -492,7 +492,11 @@ module.exports = class BaseSchema {
                         total: 0
                      }); 
                   }
+                  if (typeof extraOptions.populateFields === 'undefined') {
+                     extraOptions.populateFields = '';
+                  }
                   this.find(where, extraOptions.selectFields.join(' '))
+                  .populate(extraOptions.populateFields)
                   .sort(((query.sort && Object.keys(query.sort).length > 0) ? query.sort : { createdAt: -1 }))
                   .skip((query.skip ? parseInt(query.skip, 10) : 0))
                   .limit((query.limit ? parseInt(query.limit, 10) : constants.DEFAULT_PAGE_SIZE))
@@ -624,21 +628,19 @@ module.exports = class BaseSchema {
                //    return cb(err, {success: false, _id: req.body._id, error: err});              
                // });  
                let _id = data._id || new ObjectID();
-               delete data._id;                              
-               console.log(data);
-               this.findOneAndUpdate({_id: _id}, data, {upsert: true, fields: {_id: 1}, new: true, runValidators: true}, (err, result) => { 
+               delete data._id;    
+                this.findOneAndUpdate({_id: _id}, data, {upsert: true, fields: {_id: 1}, new: true, runValidators: true}, (err, result) => { 
                   console.log(err, result);
                   if (err) {
                      return cb(err, {success: false, _id: data._id, error: err});
                   }
                   return cb(err, {success: true, _id: result._id});
-         
                   // if (result.n && result.upserted && result.upserted.length > 0 && result.upserted[0]._id) {//inserted
                   //    return cb(err, {success: true, _id: result.upserted[0]._id}); 
                   // } else if (result.nModified) {//updated
                   // }                                 
                   //   
-               });
+               }); 
             },
             getById(params, extraOptions, cb) {
                console.log('getById callback');

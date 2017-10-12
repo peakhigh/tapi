@@ -78,7 +78,19 @@ const CurrentSchema = new BaseSchemaFactory({
          },
          comment: schemaTypeUtils.description()
       },
-      paymentInfo: [{
+      paymentInfo: {
+         amountTotal: {
+            type: Schema.Types.String
+         },
+         duedate: schemaTypeUtils.date(false, {
+            title: 'Date & Time'
+         }),
+         status: {
+            type: Schema.Types.String,
+            enum: ['Paid', 'Received', 'Pending', 'PendingPayments', 'PendingReceivable'],
+            default: 'Pending'
+         },
+         paymentlog:[{
          amountPaid: {
             type: Schema.Types.Number
          },
@@ -100,7 +112,7 @@ const CurrentSchema = new BaseSchemaFactory({
          referenceDoc: {
             type: Schema.Types.String
          }
-      }],
+      }]},
       vehicleRequirements: {
          vehicleType: {
             type: Schema.Types.String, //enum needed -- closed Body, open body,trally, mini truck, auto     

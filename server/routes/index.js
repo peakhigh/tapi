@@ -7,6 +7,7 @@ const drivers = require('./drivers');
 const files = require('./files');
 const requests = require('./requests');
 const accounts = require('./accounts');
+const payments = require('./payments');
 
 const router = express.Router();	// eslint-disable-line new-cap
 
@@ -35,5 +36,7 @@ router.use('/files', files);
 router.use('/requests', requests);
 
 router.use('/accounts', accounts);
+
+router.use('/payments', payments);
 
 module.exports = router;

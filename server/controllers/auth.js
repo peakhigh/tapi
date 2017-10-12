@@ -43,7 +43,7 @@ function login(req, res, next) {
       }
       const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED);
       return next(err);
-  });
+  }); 
 }
 
 module.exports = { login };
