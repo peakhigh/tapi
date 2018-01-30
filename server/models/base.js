@@ -705,6 +705,7 @@ module.exports = class BaseSchema {
                            extraOptions.response.data = record;
                            return cb(null, extraOptions.response);
                         }
+                        console.log(record);
                         return cb(null, record);
                      }
                      const err = new APIError('No such record exists!', httpStatus.NOT_FOUND);

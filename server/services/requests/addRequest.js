@@ -18,13 +18,14 @@ module.exports = {
          return cb();
       },
       callback: (schema, serviceConfig, req, res, options, cb) => {//callback hook  - after serving the request - forms & grid
-         console.log('get callback', schema);
+      //   console.log('get callback', schema);
          if (req.params.id || req.query.id) {
             const model = require('mongoose').model(collection);
             let params = {
-               id: req.params.id || req.query.id
+               _id: req.params.id || req.query.id
             };
-            req.query.where = JSON.stringify({toUser:params.id}); 
+            //req.query.where = JSON.stringify({toUser:params.id}); 
+            req.query.where = params; 
              model.getByWhereWithFields(req.query, {
                response: {
                   schema: schema

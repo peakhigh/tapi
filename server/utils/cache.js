@@ -49,7 +49,6 @@ class Cache {
                   icon: 'fa-check-circle',
                   page: 'acceptTripReq',
                   hide: true,
-                  service: 'requests/service/addRequest'
                },
                {
                   title: 'Reject Trip',
