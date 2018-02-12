@@ -11,9 +11,6 @@ module.exports = {
    schemaOverrideFeilds: {
       
    }, //override above listed schema fields         
-   defaults: {
-      status: 'new'
-   },
    prepare: (cacheKey, schema, serviceConfig) => { //on schema prepare - sync call
       //add any extra fields which are not in schema etc, default values etc
       //can do based on role, app etc by using the "cacheKey"

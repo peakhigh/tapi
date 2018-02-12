@@ -21,7 +21,7 @@ module.exports = {
       //cacheKey format 'TRIPS_TRUCKS#ADMIN#TRIPS#FORM#ADDTRIP'
 
       // console.log(cacheKey); 
-       console.log(schema); 
+      // console.log(schema); 
    },
    get: {
       preValidate: (serviceConfig, req, res, options, cb) => {//on init hook, will get executed on service request - init

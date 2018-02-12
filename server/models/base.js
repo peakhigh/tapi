@@ -533,7 +533,7 @@ module.exports = class BaseSchema {
                console.log('update callback');
                let model = this;
                let _id = data._id;
-               console.log(JSON.stringify(data));
+          //     console.log(JSON.stringify(data));
                delete data._id;               
                this.update({_id: _id}, data, (err, result) => { 
                   console.log(err, result);

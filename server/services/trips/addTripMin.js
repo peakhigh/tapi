@@ -3,6 +3,7 @@ let uiTypes = require('../../utils/ui-types');
 const extend = require('extend');
 // let ObjectID = require('mongodb').ObjectID;
 // const model = require('../../models/trips'); -- wont work as this file is required on model creation
+let authUtils = require('../../utils/auth');
 const collection = 'Trips';
 module.exports = {
    type: 'form',
@@ -76,6 +77,7 @@ module.exports = {
       callback: (serviceConfig, req, res, options, cb) => { //callback hook  for post request
          console.log('post callback');
          const model = require('mongoose').model(collection);
+         const usermodel = require('mongoose').model('Users');
          /** TODO: if date searches not working on pickupdate & dropdates, change them to dates instead of strings while saving */
         
          let owner = JSON.parse(req.headers.owner);
@@ -88,8 +90,25 @@ module.exports = {
         } else {
            return cb('no owener info');
         }
-
-         model.addOrEdit(req.body, null, cb);
+        
+        
+        usermodel.getById({id:owner._id}, {}, (err, out) => {
+            if (err) {
+               console.log(err);
+                  return cb('failed to add the trip');
+            }
+            let data = req.body;
+            if (out && out.quote) {
+               if (out.quote.defaultQuoteForPeriod === 'true' && out.quote.payAllLater === 'false') {
+                     data.status = 'PaymentPending';
+               } else if (out.quote.defaultQuoteForPeriod === 'true' && 
+                           out.quote.payAllLater === 'true') {
+                  data.status = 'Approved';
+               }
+            } 
+             model.addOrEdit(data, null, cb);
+         //   return cb('New trip has been created');
+         });     
       }
    }
 };

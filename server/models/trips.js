@@ -15,8 +15,8 @@ const CurrentSchema = new BaseSchemaFactory({
    schema: {
       status: {
          type: Schema.Types.String, //enum new, pending, ..
-         enum: ['New', 'Quoted', 'PaymentPending', 'PaymentMade', 'PaymentReceived', 'PaymentApproved', 
-          'Waitingforassignment', 'Running', 
+         enum: ['New', 'Quoted', 'PaymentPending', 'PaymentMade', 'PaymentReceived', 'Approved', 
+          'Waiting for assignment', 'Running', 
          'Cancelled', 'Successful', 'Assigned'],
          default: 'New'
       },
@@ -64,7 +64,7 @@ const CurrentSchema = new BaseSchemaFactory({
          loadingPerTon: {
             type: Schema.Types.Number
          },
-         unLoadingPerTon: {
+         unloadingPerTon: {
             type: Schema.Types.Number
          },
          cost: {
@@ -75,7 +75,19 @@ const CurrentSchema = new BaseSchemaFactory({
          },
          userRole: {
             type: Schema.Types.String
-         },
+         },  
+         defaultQuoteForPeriod: {
+            type: Schema.Types.String
+         },  
+         payAllLater: {
+            type: Schema.Types.String
+         },     
+         startDate: schemaTypeUtils.date(false, {
+            title: 'Start Date'
+         }),
+         endDate: schemaTypeUtils.date(false, {
+            title: 'End Date'
+         }),
          comment: schemaTypeUtils.description()
       },
       paymentInfo: {

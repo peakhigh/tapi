@@ -99,7 +99,44 @@ const CurrentSchema = new BaseSchemaFactory({
          lastLoginTokens: {
             type: [String]
          }
-      }          
+      },
+      quote: {
+         quotetype: {
+            type: Schema.Types.String,
+            enum: ['Flat', 'Tons'],
+            html: {               
+               form: {
+                  type: 'select'
+               }
+            }  
+         },
+         costPerTon: {
+            type: Schema.Types.Number
+         },
+         loadingPerTon: {
+            type: Schema.Types.Number
+         },
+         unloadingPerTon: {
+            type: Schema.Types.Number
+         },
+         cost: {
+            type: Schema.Types.Number
+         }, 
+         defaultQuoteForPeriod: {
+            type: Schema.Types.String
+         },  
+         payAllLater: {
+            type: Schema.Types.String
+         },     
+         startDate: schemaTypeUtils.date(false, {
+            title: 'Start Date'
+         }),
+         endDate: schemaTypeUtils.date(false, {
+            title: 'End Date'
+         }),
+         comment: schemaTypeUtils.description()
+      },
+                
    },
    dontExpose: {
      manageFields: ['services'],

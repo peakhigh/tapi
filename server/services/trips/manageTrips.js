@@ -5,9 +5,11 @@ let schemaFilters = require('../../utils/schema-filters');
 const collection = 'Trips';
 module.exports = {
    type: 'grid',
-   roles: [cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.ADMIN.Code, cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code,
+   roles: [cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.ADMIN.Code,
+       cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.CALL_CENTER_USER.Code,
       cache.APP_CONFIG.TRIPS_TRUCKS.ROLES.TRIP_ADMIN.Code], //role based security for services
-   schemaFields: ['totalWeight', 'totalWeightUnit', 'pickup', 'drop', 'comments', 'vehicleRequirements', 'quotes', 'status'], // pick fields configuration from default schema   
+   schemaFields: ['totalWeight', 'totalWeightUnit', 'pickup', 'drop', 'comments', 
+   'vehicleRequirements', 'quotes', 'status'], // pick fields configuration from default schema   
    defaultFilterFields: schemaFilters.getTripDefaultFilters(), //common place
    filterFields: ['pickup.date', 'drop.date', 'status'],   
    get: {

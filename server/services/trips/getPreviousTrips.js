@@ -9,7 +9,7 @@ module.exports = {
    requestType: 'get',
    schemaFields: ['pickup.date', 'pickup.address.city', 'pickup.material.name',
              'pickup.material.materialType', 'pickup.material.weight', 'pickup.material.weightUnit', 'drop.date', 'drop.address.city',
-                'vehicleRequirements.vehicleType', 'vehicleRequirements.vehicleCount', 'status'], // pick fields configuration from default schema
+                'vehicleRequirements.vehicleType', 'vehicleRequirements.vehicleCount'], // pick fields configuration from default schema
    schemaOverrideFeilds: {
       // 'pickup': {
       //    minItems: 1
