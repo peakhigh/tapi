@@ -5,7 +5,7 @@ const collection = 'Trips';
 module.exports = {
    type: 'form',
    requestType: 'get',
-   schemaFields: ['quotes.cost', 'paymentInfo.paymentlog'], // pick fields configuration from default schema
+   schemaFields: ['quotes', 'paymentInfo'], // pick fields configuration from default schema
    schemaOverrideFeilds: {
       
    },

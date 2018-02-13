@@ -374,6 +374,13 @@ class Cache {
                      page: 'assignTruck',
                      service: 'trucks/service/getFreeTrucks',
                      hide: true
+                  },
+                  {
+                     title: 'Payment',
+                     icon: 'fa-table',
+                     page: 'tripPayment',
+                     service: 'trips/service/tripPayment',
+                     hide: true
                   }
                   ]
                },               
