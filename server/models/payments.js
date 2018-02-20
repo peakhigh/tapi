@@ -9,12 +9,6 @@ let Schema = require('mongoose').Schema;
 const CurrentSchema = new BaseSchemaFactory({ 
    collection: 'Payments',   
    schema: {
-      amountTotal: {
-         type: Schema.Types.String
-      },
-      duedate: schemaTypeUtils.date(false, {
-         title: 'Date & Time'
-      }),
       tripid: {  
          type: Schema.Types.ObjectId
       }, 
@@ -24,40 +18,46 @@ const CurrentSchema = new BaseSchemaFactory({
       driverid: {
          type: Schema.Types.ObjectId
       },
-      fromUser: {
+      payer: {
             type: Schema.Types.String
       },
-      toUser: {
+      payee: {
          type: Schema.Types.String
+      }, 
+      transferType: {
+         type: Schema.Types.String,
+         enum: ['InComing', 'OutGoing'],
+         required: true
+      },
+      amount: {
+         type: Schema.Types.Number,
+         required: true
       },
       status: {
          type: Schema.Types.String,
-         enum: ['Paid', 'Received', 'Pending', 'PendingPayments', 'PendingReceivable'],
-         default: 'Pending'
+         enum: ['Pending', 'Approved', 'Declined'],
+         default: 'Pending',
+         required: true
       },
-      paymentlog: [{
-         amountPaid: {
-            type: Schema.Types.Number
-         },
-         modeOfPayment: {
-            type: Schema.Types.String,
-            enum: ['Online', 'BankDeposit'],
-            html: {               
-               form: {
-                  type: 'select'
-               }
-            }  
-         },
-         dateOfPayment: schemaTypeUtils.date(false, {
-            title: 'Date & Time'
-         }),
-         transactionid: {
-            type: Schema.Types.String
-         },
-         referenceDoc: {
-            type: Schema.Types.String
-         }
-      }]
+      modeOfPayment: {
+         type: Schema.Types.String,
+         enum: ['Online', 'BankDeposit', 'Cash'],
+         required: true,
+         html: {               
+            form: {
+               type: 'select'
+            }
+         }  
+      },
+      dateOfPayment: schemaTypeUtils.date(false, {
+         title: 'Date & Time'
+      }),
+      transactionid: {
+         type: Schema.Types.String
+      },
+      referenceDoc: {
+         type: Schema.Types.String
+      }
    } 
 }); 
 module.exports = CurrentSchema.getSchema();

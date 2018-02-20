@@ -56,7 +56,6 @@ module.exports = {
          },
          location: {
             type: Schema.Types.String,
-            required: true
          },        
          zip: schemaTypes.zip()
          // country: { //enable this only when going out of india

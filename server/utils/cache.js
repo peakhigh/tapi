@@ -39,8 +39,8 @@ class Cache {
                   page: 'home',
                    options: [
                      {title:'Requests!', icon: 'fa-envelope-open', page:'truckRequests'},
-                     {title:'Payment Pendinng!', icon: 'fa-credit-card', page:'manageTruck'},
-                     {title:'Payment Received!', icon: 'fa-credit-card', page:'manageTruck'},
+                     {title:'Payment Pendinng!', icon: 'fa-credit-card', page:'payments'},
+                     {title:'Payment Received!', icon: 'fa-credit-card', page:'payments'},
                      {title:'Trucks!', icon: 'fa-truck', page:'manageTrucks'}
                      ]
                },
@@ -232,9 +232,9 @@ class Cache {
                         hide: true
                      },
                      {
-                        title: 'Payment',
+                        title: 'Log Payment',
                         icon: 'fa-table',
-                        page: 'tripPayment',
+                        page: 'logPaymentDetails',
                         service: 'trips/service/tripPayment',
                         hide: true
                      }
@@ -304,7 +304,7 @@ class Cache {
                   options: [
                      {title:'Trips!', icon: 'fa-suitcase', page:'manageTrip'},
                      {title:'Trucks!', icon: 'fa-truck', page:'manageTrucks'},
-                     {title:'Payments!', icon: 'fa-credit-card', page:'manageTrip'},
+                     {title:'Payments!', icon: 'fa-credit-card', page:'payments'},
                      {title:'Users!', icon: 'fa-user', page:'manageUsers'}
                      ]
                },
@@ -376,10 +376,17 @@ class Cache {
                      hide: true
                   },
                   {
-                     title: 'Payment',
+                     title: 'Log Payment',
                      icon: 'fa-table',
-                     page: 'tripPayment',
+                     page: 'logPaymentDetails',
                      service: 'trips/service/tripPayment',
+                     hide: true
+                  },
+                  {
+                     title: 'Payment Log',
+                     icon: 'fa-table',
+                     page: 'managePaymentLog',
+                     service: 'payments/service/managePaymentLog',
                      hide: true
                   }
                   ]
@@ -433,7 +440,13 @@ class Cache {
                   title: 'Payments',
                   icon: 'fa-credit-card',
                   page: 'payments',
-                  service: 'payments/service/managePayments',    
+                  service: 'trips/service/getTripsPayments',   
+                  Menu: [{
+                        title: 'Payments',
+                        icon: 'fa-credit-card',
+                        page: 'payments',
+                        service: 'trips/service/getTripsPayments'
+                  }] 
                },
                 {
                   title: 'Users',

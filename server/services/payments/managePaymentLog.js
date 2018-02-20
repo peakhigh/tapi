@@ -5,14 +5,14 @@ const collection = 'Payments';
 module.exports = {
    type: 'form',
    requestType: 'get',
-   schemaFields: ['amount', 'tripid', 'truckid', 'transferType', 
+   schemaFields: ['amount', 'tripid', 'truckid', 'transferType',
     'status', 'modeOfPayment', 'dateOfPayment', 'transactionid', 'referenceDoc'],
    
    get: {
        callback: (schema, serviceConfig, req, res, options, cb) => {//callback hook  - after serving the request - forms & grid
          console.log('get callback');
          const model = require('mongoose').model(collection);
-         console.log(req.query);
+         console.log(req.params);
 
          let where = {};
 
@@ -23,9 +23,10 @@ module.exports = {
                where = {status: req.query.status};
             }
          }
+
+         where.tripid = req.params.id;
        
         req.query.where = JSON.stringify(where);
-
          model.listFields(req.query, {
             selectFields: serviceConfig.schemaFields,
             response: {

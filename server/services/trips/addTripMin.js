@@ -8,9 +8,14 @@ const collection = 'Trips';
 module.exports = {
    type: 'form',
    requestType: 'get',
-   schemaFields: ['pickup.date', 'pickup.address.city', 'pickup.material.name',
-             'pickup.material.materialType', 'pickup.material.weight', 'pickup.material.weightUnit', 'drop.date', 'drop.address.city',
-                'vehicleRequirements.vehicleType', 'vehicleRequirements.vehicleCount', 'status'], // pick fields configuration from default schema
+   /* schemaFields: ['pickup.date', 'pickup.address.city', 'pickup.material.name',
+             'pickup.material.materialType', 'pickup.material.weight', 'pickup.material.weightUnit',
+              'drop.date', 'drop.address.city', 'vehicleRequirements.vehicleType', 
+              'vehicleRequirements.vehicleCount', 'status'], // pick fields configuration from default schema */
+
+  schemaFields: ['pickup.date', 'pickup.address', 'pickup.contact', 'pickup.material', 
+              'drop.date', 'drop.address', 'drop.contact', 'drop.itemsToDrop', 'vehicleRequirements',
+               'comments', 'totalWeight', 'totalWeightUnit', 'status'], // pick fields configuration from default schema           
    schemaOverrideFeilds: {
       // 'pickup': {
       //    minItems: 1
@@ -21,6 +26,9 @@ module.exports = {
       'pickup.address.city': {
          required: true
       },
+      'pickup.address.location': {
+         required: false
+      },
       'pickup.material.weight': {
          required: true
       },
@@ -30,6 +38,9 @@ module.exports = {
       'pickup.material.materialType': uiTypes.select(),
       'drop.date': {
          required: true
+      },
+      'drop.address.location': {
+         required: false
       },
       'drop.address.city': {
          required: true
@@ -88,7 +99,8 @@ module.exports = {
             };
             extend(true, req.body, obj);
         } else {
-           return cb('no owener info');
+           console.log('No owner info');
+           return cb('no owner info');
         }
         
         
@@ -107,7 +119,6 @@ module.exports = {
                }
             } 
              model.addOrEdit(data, null, cb);
-         //   return cb('New trip has been created');
          });     
       }
    }

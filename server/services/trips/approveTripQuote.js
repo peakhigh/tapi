@@ -46,7 +46,16 @@ module.exports = {
       callback: (serviceConfig, req, res, options, cb) => { //callback hook  for post request
          console.log('post callback');
          const model = require('mongoose').model(collection);        
-         req.body.status = 'PaymentMade';
+         
+         //Update tripadmin totalAmount and balance since user is agreed to pay this amount
+         let tripAdmin = {
+            totalAmount : req.body.quotes.cost,
+            balanceAmount : req.body.quotes.cost,
+            status : 'Pending'
+         };
+         req.body.tripAdmin = tripAdmin;
+         req.body.status = 'PaymentPending';
+
          model.editById(req.body, null, cb);
        }
    }

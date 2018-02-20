@@ -7,7 +7,8 @@ const collection = 'Payments';
 module.exports = {
    type: 'form',
    requestType: 'get',
-   schemaFields: ['amountTotal', 'duedate', 'tripid', 'truckid', 'fromUser', 'toUser', 'status', 'paymentlog'], // pick fields configuration from default schema
+   schemaFields: ['amount', 'tripid', 'truckid', 'transferType', 
+   'status', 'modeOfPayment', 'dateOfPayment', 'transactionid', 'referenceDoc'],
    schemaOverrideFeilds: {
    
    }, //override above listed schema fields         
@@ -49,20 +50,12 @@ module.exports = {
       callback: (serviceConfig, req, res, options, cb) => { //callback hook  for post request
          console.log('post callback');
          const model = require('mongoose').model(collection);
-         /** TODO: if date searches not working on pickupdate & dropdates, change them to dates instead of strings while saving */
          
-         let owner = JSON.parse(req.headers.owner);
-         if (owner !== null && owner.role !== 'CALL_CENTER_USER') {
-            let obj = {
-               createdBy : owner._id,
-               /* 'updatedby' : req.headers.owner._id, */
-            };
-            extend(true, req.body, obj);
-        } else {
-           return cb('no owener info');
-        }
-
-         model.addOrEdit(req.body, null, cb);
+        let data = {
+         _id: req.query.id,
+            status: req.query.status
+         };            
+         model.editById(data, null, cb);
       }
    }
 };

@@ -90,7 +90,37 @@ const CurrentSchema = new BaseSchemaFactory({
          }),
          comment: schemaTypeUtils.description()
       },
-      paymentInfo: {
+      tripAdmin:{
+         userId: {
+            type: Schema.Types.ObjectId
+         },
+         totalAmount: {
+            type: Schema.Types.Number
+         }, 
+         balanceAmount: {
+            type: Schema.Types.Number
+         },   
+         status: {
+            type: Schema.Types.String,
+            enum: ['ReceivedAll', 'Pending']
+         } 
+      },
+      truckAdmin:{
+         userId: {
+            type: Schema.Types.ObjectId
+         },
+         totalAmount: {
+            type: Schema.Types.Number
+         }, 
+         balanceAmount: {
+            type: Schema.Types.Number
+         },    
+         status: {
+            type: Schema.Types.String,
+            enum: ['PaidAll', 'Pending']
+         } 
+      },
+     /*  paymentInfo: {
          amountTotal: {
             type: Schema.Types.String
          },
@@ -104,10 +134,12 @@ const CurrentSchema = new BaseSchemaFactory({
          },
          paymentlog:[{
          amountPaid: {
-            type: Schema.Types.Number
+            type: Schema.Types.Number,
+            required: true
          },
          modeOfPayment: {
             type: Schema.Types.String,
+            required: true,
             enum: ['Online', 'BankDeposit'],
             html: {               
                form: {
@@ -116,7 +148,8 @@ const CurrentSchema = new BaseSchemaFactory({
             }  
          },
          dateOfPayment: schemaTypeUtils.date(false, {
-            title: 'Date & Time'
+            title: 'Date & Time',
+            required: true
          }),
          transactionid: {
             type: Schema.Types.String
@@ -124,7 +157,7 @@ const CurrentSchema = new BaseSchemaFactory({
          referenceDoc: {
             type: Schema.Types.String
          }
-      }]},
+      }]}, */
       vehicleRequirements: {
          vehicleType: {
             type: Schema.Types.String, //enum needed -- closed Body, open body,trally, mini truck, auto     
