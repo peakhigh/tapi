@@ -5,7 +5,8 @@ const collection = 'Requests';
 module.exports = {
    type: 'form',
    requestType: 'get',
-   schemaFields: ['quote', 'driverid', 'truckid', 'tripid', 'comment', 'fromUser', 'toUser', 'status'], // pick fields configuration from default schema
+   schemaFields: ['comment', 'tripDetails', 'truckDetails', 'driverDetails', 
+   'fromUser', 'toUser', 'status', 'advance', 'balance'], // pick fields configuration from default schema
    schemaOverrideFeilds: {
 
    },
@@ -26,6 +27,7 @@ module.exports = {
             };
             //req.query.where = JSON.stringify({toUser:params.id}); 
             req.query.where = params; 
+            console.log(req.query);
              model.getByWhereWithFields(req.query, {
                response: {
                   schema: schema

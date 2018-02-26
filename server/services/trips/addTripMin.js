@@ -76,6 +76,7 @@ module.exports = {
                }
             }, cb);
          } else {
+            console.log(schema);
             cb(null, schema);
          }
       }

@@ -38,16 +38,18 @@ class Cache {
                   icon: 'fa-dashboard',
                   page: 'home',
                    options: [
-                     {title:'Requests!', icon: 'fa-envelope-open', page:'truckRequests'},
+                     {title:'Requests!', icon: 'fa-envelope-open', page:'manageRequests'},
                      {title:'Payment Pendinng!', icon: 'fa-credit-card', page:'payments'},
                      {title:'Payment Received!', icon: 'fa-credit-card', page:'payments'},
                      {title:'Trucks!', icon: 'fa-truck', page:'manageTrucks'}
                      ]
                },
-               {
+
+                {
                   title: 'Approve Trip',
                   icon: 'fa-check-circle',
                   page: 'acceptTripReq',
+                  service: 'requests/service/addRequest',
                   hide: true,
                },
                {
@@ -56,13 +58,14 @@ class Cache {
                   page: 'rejectTripReq',
                   hide: true,
                   service: 'requests/service/addRequest'
-               },
+               }, 
                {
                   title: 'Requests',
                   icon: 'fa-envelope-open',
-                  page: 'truckRequests',
+                  page: 'manageRequests',
                   service: 'requests/service/manageRequests', 
-                 /*  Menu: [{
+                  Menu: []
+                /*    Menu: [{
                      title: 'Approve Trip',
                      icon: 'fa-check-circle',
                      page: 'acceptTripReq',
@@ -76,7 +79,7 @@ class Cache {
                      hide: true,
                      service: 'requests/service/addRequest'
                   },
-               ] */
+               ]  */
                }, {
                   title: 'Trucks',
                   icon: 'fa-truck',
@@ -124,7 +127,8 @@ class Cache {
                   title: 'Payments',
                   icon: 'fa-credit-card',
                   page: 'payments',
-                  service: 'payments/service/managePayments',    
+                  service: 'payments/service/managePayments',   
+                  Menu: [] 
                },
                {
                   title: 'Accounts',
@@ -441,12 +445,7 @@ class Cache {
                   icon: 'fa-credit-card',
                   page: 'payments',
                   service: 'trips/service/getTripsPayments',   
-                  Menu: [{
-                        title: 'Payments',
-                        icon: 'fa-credit-card',
-                        page: 'payments',
-                        service: 'trips/service/getTripsPayments'
-                  }] 
+                  Menu: [] 
                },
                 {
                   title: 'Users',
