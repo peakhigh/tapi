@@ -121,6 +121,13 @@ class Cache {
                         page: 'manageDrivers',
                         service: 'drivers/service/manageDrivers'
                      },
+                     {
+                        title: 'Upload files',
+                        icon: 'fa-table',
+                        page: 'uploadDocs',
+                        service: 'files/service/fileupload',
+                        hide: true
+                     }
                   ]
                },
                {
@@ -438,6 +445,13 @@ class Cache {
                         page: 'manageDrivers',
                         service: 'drivers/service/manageDrivers'
                      },
+                     {
+                        title: 'Upload files',
+                        icon: 'fa-table',
+                        page: 'uploadDocs',
+                        service: 'files/service/fileupload',
+                        hide: true
+                     }
                   ]
                },
                {

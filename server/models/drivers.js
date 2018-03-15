@@ -22,6 +22,9 @@ const CurrentSchema = new BaseSchemaFactory({
       experience: {
          type: Schema.Types.Number
       },
+      profilePic: {
+         type: String
+      },
       email: schemaTypes.email(), 
       mobile: schemaTypes.mobile(),
       alternativePhone: schemaTypes.mobile(),

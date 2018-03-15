@@ -27,22 +27,20 @@ module.exports = {
    post: {
       preValidate: (serviceConfig, req, res, options, cb) => { //on post - validate, will get executed on POST service request
          console.log('post prevalidate');
-         /* if (!req.query.userid) {
+          if (!req.query.userid || !req.query.type) {
             return cb('Invalid Request no userID');//if error, return as first argument
-         } */
+         } 
          return cb();
       },
       callback: (serviceConfig, req, res, options, cb) => { //callback hook  for post request
          console.log('post callback');
-         const model = require('mongoose').model('Users');   
-         console.log(req.query.userid);
+         const model = require('mongoose').model(req.query.type);  //req.query.type Users or Drivers
          const upload = multer({
             storage: multerS3({
                 s3: s3,
                 bucket: 'tripstrucksfiles/profilepics',
                 acl: 'public-read',
                 key: function (request, file, cba) {
-                    console.log(file);
                     cba(null, req.query.userid); 
                 }
             })
@@ -53,12 +51,12 @@ module.exports = {
                console.log(err);
                res.send(JSON.stringify({success: false, error: err}), {'Content-Type': 'text/plain'}, 404);
             }
-             console.log(req);
+            
                 let doc = {
                    _id: req.query.userid,
                   profilePic: req.file.location,
                };
-               console.log(doc);
+              
                model.addOrEdit(doc, null, cb);        
          }); 
       }

@@ -70,7 +70,6 @@ module.exports = {
                 s3: s3,
                 bucket: bucketname,
                 key: function (request, file, cba) {
-                    console.log(file);
                     cba(null, `${Date.now()}_${file.originalname}`); //use Date.now() for unique file keys
                 }
             })
@@ -79,11 +78,10 @@ module.exports = {
           upload(req, cb, (err) => {
             if (err) {
                console.log(err);
-               //return cb('max 3 docs can upload'); 
                res.send(JSON.stringify({success: false, error: err}), {'Content-Type': 'text/plain'}, 404);
             }
 
-             console.log(req);
+           //  console.log(req);
                 let doc = {
                   createdby: req.user,
                   recordid: req.query.id,

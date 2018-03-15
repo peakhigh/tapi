@@ -7,7 +7,7 @@ module.exports = {
    type: 'form',
    requestType: 'get',
    schemaFields: ['name', 'licenseNumber', 'licenseExpiryDate', 'experience', 'email', 'mobile',
-   'alternativePhone', 'status'], // pick fields configuration from default schema
+   'alternativePhone', 'status', 'profilePic'], // pick fields configuration from default schema
    get: {
        callback: (schema, serviceConfig, req, res, options, cb) => {//callback hook  - after serving the request - forms & grid
          console.log('get callback');
