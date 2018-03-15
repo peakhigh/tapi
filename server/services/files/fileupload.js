@@ -3,16 +3,24 @@ let uiTypes = require('../../utils/ui-types');
 let authUtils = require('../../utils/auth');
 
 const multer = require('multer');
-//const uplo   ad = multer({ dest: 'uploads/' }).array('photos', 3);
-//const upload = multer({ dest: 'uploads/' }).array('photos', 3);
-const upload = multer({ dest: 'uploads/' }).single('qqfile');
+const multerS3 = require('multer-s3');
+const aws = require('aws-sdk');
 const fs = require('fs');
+
+let s3config = require('./s3_config.json');
+
+const s3 = new aws.S3({
+   accessKeyId: s3config.accessKeyId,
+   secretAccessKey: s3config.secretAccessKey,
+   region: s3config.region
+});
 
 const collection = 'files';
 module.exports = {
    type: 'form',
    requestType: 'get',
-   schemaFields: ['createdby', 'recordid', 'originalname', 'mimetype', 'path', 'typeofdocument'], // pick fields configuration from default schema
+   schemaFields: ['createdby', 'recordid', 'originalname', 'mimetype', 'path', 'typeofdocument', 
+            'bucket', 'key', 'size'], // pick fields configuration from default schema
    schemaOverrideFeilds: {
 
    },
@@ -54,24 +62,42 @@ module.exports = {
       },
       callback: (serviceConfig, req, res, options, cb) => { //callback hook  for post request
          console.log('post callback');
-         const model = require('mongoose').model(collection);
-         upload(req, cb, (err) => {
+         const model = require('mongoose').model(collection);   
+
+         let bucketname = `tripstrucksfiles/docs/${req.query.id}`;  //tripid
+         const upload = multer({
+            storage: multerS3({
+                s3: s3,
+                bucket: bucketname,
+                key: function (request, file, cba) {
+                    console.log(file);
+                    cba(null, `${Date.now()}_${file.originalname}`); //use Date.now() for unique file keys
+                }
+            })
+         }).single('qqfile');
+         
+          upload(req, cb, (err) => {
             if (err) {
                console.log(err);
                //return cb('max 3 docs can upload'); 
                res.send(JSON.stringify({success: false, error: err}), {'Content-Type': 'text/plain'}, 404);
             }
-               let doc = {
+
+             console.log(req);
+                let doc = {
                   createdby: req.user,
                   recordid: req.query.id,
                   originalname: req.file.originalname,
                   mimetype: req.file.mimetype,
-                  path: req.file.path,
+                  key: req.file.key,
+                  location: req.file.location,
+                  bucket: req.file.bucket,
+                  size: req.file.size,
                   typeofdocument: req.query.type
                };
-               model.addOrEdit(doc, null, cb);
+               model.addOrEdit(doc, null, cb); 
            // cb('OK');
-         });
+         }); 
       }
    },
     delete: {
@@ -87,19 +113,18 @@ module.exports = {
          const model = require('mongoose').model(collection);
          if (req.query.id) {
             //first remove from the database
-            model.removeById({id: req.query.id}, {fields: serviceConfig.schemaFields}, (error, data) => {
+         model.removeById({id: req.query.id}, {fields: serviceConfig.schemaFields}, (error, data) => {
                 if (!error) {
-                  //delete file locally
-                   fs.stat(data.path, (err, stats) => {
-                  //   console.log(stats);//here we got all information of file in stats variable
-                     if (err) {
-                         return console.error(err);
-                     }
-                     fs.unlink(data.path, (err1) => {
-                          if (err1) return console.log(err1);
-                          console.log('file deleted successfully');
-                     });  
-                  });
+                  //Delete from the Amazon s3
+                   let params = {
+                     Bucket: data.bucket,
+                     Key: data.key
+                   };
+               
+                  s3.deleteObject(params, (err, dat) => {
+                     if (err) console.log(err);     
+                     else console.log(dat);   
+                  });  
                 }
                 
                 data.id = req.query.id;

@@ -7,10 +7,21 @@ const mime = require('mime');
 const path = require('path');
 
 const collection = 'files';
+
+const aws = require('aws-sdk');
+let s3config = require('./s3_config.json');
+
+const s3 = new aws.S3({
+   accessKeyId: s3config.accessKeyId,
+   secretAccessKey: s3config.secretAccessKey,
+   region: s3config.region
+});
+
 module.exports = {
    type: 'form',
    requestType: 'get',
-   schemaFields: ['createdby', 'recordid', 'originalname', 'mimetype', 'path', 'typeofdocument'], // pick fields configuration from default schema
+   schemaFields: ['createdby', 'recordid', 'originalname', 'mimetype', 'path', 'typeofdocument', 
+            'bucket', 'key', 'size'], // pick fields configuration from default schema
    schemaOverrideFeilds: {
 
    },
@@ -26,21 +37,14 @@ module.exports = {
 
          const model = require('mongoose').model(collection);
          let where = {id:req.query.id};
-         model.getById(where, {}, (error, data) => {
-               console.log(data);
-                let file = data.path;
-
-               let filename = path.basename(file);
-               let mimetype = mime.lookup(file);
-
-               res.setHeader('Content-disposition', 'attachment; filename=test.pdf');
-               res.setHeader('Content-type', mimetype);
-               res.setHeader('Set-Cookie', 'fileDownload=true; path=/');
-               res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-
-               let filestream = fs.createReadStream(file);
-               filestream.pipe(res);
-              // res.download(data.path);       
+         model.getById(where, {}, (error, data) => {                  
+              let params = {
+               Bucket: data.bucket,
+               Key: data.key,
+               Expires: 120     //120 seconds
+             };
+           let link = s3.getSignedUrl('getObject', params);
+           return cb(null, {url:link});
          });
       }
    },

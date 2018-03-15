@@ -22,7 +22,21 @@ const CurrentSchema = new BaseSchemaFactory({
          type: Schema.Types.String,
           required: true
       },
+      size: {            //size of the object
+         type: Schema.Types.Number
+      },
       path: {               //path in the server
+         type: Schema.Types.String,   
+      },
+      key: {               //key value in the server
+         type: Schema.Types.String,   
+         required: true
+      },
+      bucket: {               //bucket name in the s3
+         type: Schema.Types.String,   
+         required: true
+      },
+      location: {               //location in the s3
          type: Schema.Types.String,   
          required: true
       },
