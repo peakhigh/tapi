@@ -219,7 +219,8 @@ const CurrentSchema = new BaseSchemaFactory({
       },
       comments: [{
          date: schemaTypeUtils.date(false, {
-            title: 'Date & Time'
+            title: 'Date & Time',
+            required: false
          }),
          commentedby: {
             type: Schema.Types.String

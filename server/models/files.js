@@ -42,7 +42,6 @@ const CurrentSchema = new BaseSchemaFactory({
       },
       typeofdocument: {     //photo,license,idproof,invoice,loaded doc,unloaded doc
          type: Schema.Types.String,
-         enum: ['License', 'Photo', 'LoadDoc', 'UnloadDoc', 'Other'],
          default: 'Other',
          required: true
       }

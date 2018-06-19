@@ -15,7 +15,7 @@ module.exports = {
 
   schemaFields: ['pickup.date', 'pickup.address', 'pickup.contact', 'pickup.material', 
               'drop.date', 'drop.address', 'drop.contact', 'drop.itemsToDrop', 'vehicleRequirements',
-               'comments', 'totalWeight', 'totalWeightUnit', 'status'], // pick fields configuration from default schema           
+               'totalWeight', 'totalWeightUnit', 'status'], // pick fields configuration from default schema           
    schemaOverrideFeilds: {
       // 'pickup': {
       //    minItems: 1

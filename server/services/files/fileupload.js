@@ -76,14 +76,14 @@ module.exports = {
          }).single('qqfile');
          
           upload(req, cb, (err) => {
+             console.log(req.user);
             if (err) {
                console.log(err);
                res.send(JSON.stringify({success: false, error: err}), {'Content-Type': 'text/plain'}, 404);
             }
 
-           //  console.log(req);
                 let doc = {
-                  createdby: req.user,
+                  createdby: JSON.stringify(req.user),
                   recordid: req.query.id,
                   originalname: req.file.originalname,
                   mimetype: req.file.mimetype,
@@ -93,6 +93,7 @@ module.exports = {
                   size: req.file.size,
                   typeofdocument: req.query.type
                };
+               
                model.addOrEdit(doc, null, cb); 
            // cb('OK');
          }); 
